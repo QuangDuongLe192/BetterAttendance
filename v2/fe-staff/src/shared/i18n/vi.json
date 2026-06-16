@@ -1,0 +1,338 @@
+{
+  "attendance": {
+    "today": {
+      "title": "Hôm nay",
+      "eyebrow": "HÔM NAY",
+      "noShift": "Hôm nay bạn không có ca làm.",
+      "noShiftSub": "Nghỉ ngơi nhé.",
+      "yourShift": "Ca làm hôm nay",
+      "clockedInAt": "Đã chấm công vào lúc {{time}}",
+      "clockedOutAt": "Đã chấm công ra lúc {{time}}",
+      "totalHours": "Tổng giờ làm: {{hours}}",
+      "total": "Tổng: {{hours}}",
+      "clockIn": "Chấm công vào",
+      "clockOut": "Chấm công ra",
+      "holdToClockIn": "Giữ để chấm công",
+      "release": "Thả tay để xác nhận",
+      "swipeToClockIn": "Vuốt để chấm công vào",
+      "swipeToClockOut": "Vuốt để chấm công ra",
+      "viewDetail": "Xem chi tiết ca",
+      "thisWeek": "Tuần này",
+      "swapShift": "Đổi ca",
+      "activity": "Hoạt động",
+      "recentNotifications": "Thông báo gần đây",
+      "shiftEndedPrompt": "Ca làm đã kết thúc lúc {{time}}. Bạn có muốn chấm công ra?",
+      "clockOutNow": "Chấm công ra bây giờ",
+      "holdToCheckIn": "Chấm công vào",
+      "holdToCheckOut": "Chấm công ra",
+      "holding": "Đang xử lý...",
+      "upcomingShifts": "Ca tiếp theo",
+      "startsIn": "Bắt đầu sau {{n}} giờ",
+      "streakRecord": "Chuỗi {{n}} ngày đúng giờ — kỷ lục chi nhánh! 🏆",
+      "shiftSoon": "Ca {{role}} bắt đầu trong {{n}} phút. Chuẩn bị nhé! ⚡",
+      "bonusProgress": "Còn {{n}} giờ nữa đạt mốc thưởng tháng! 🎯",
+      "missedShift": "Vắng mặt",
+      "missedShiftSub": "Ca này đã kết thúc mà chưa có chấm công vào."
+    },
+    "weekly": {
+      "title": "Tuần này",
+      "eyebrow": "LỊCH LÀM VIỆC",
+      "prevWeek": "Tuần trước",
+      "nextWeek": "Tuần sau",
+      "thisWeek": "Tuần này",
+      "noShift": "Không có ca",
+      "shifts": "{{count}} ca trong tuần"
+    },
+    "earnings": {
+      "viewWeeklySchedule": "Xem lịch tuần"
+    },
+    "activity": {
+      "eyebrow": "HOẠT ĐỘNG",
+      "title": "Tháng này",
+      "empty": "Chưa có chấm công tháng này.",
+      "clockHistory": "Lịch sử chấm công",
+      "shiftsLogged": "ca đã ghi nhận"
+    },
+    "shift": {
+      "eyebrow": "CA LÀM",
+      "time": "Thời gian",
+      "location": "Địa điểm",
+      "address": "Địa chỉ",
+      "role": "Vị trí",
+      "breakWindow": "Giờ nghỉ",
+      "manager": "Quản lý",
+      "clockIn": "Chấm công vào",
+      "clockOut": "Chấm công ra",
+      "notes": "Ghi chú",
+      "requestSwap": "Đổi ca"
+    },
+    "shiftDetail": {
+      "title": "Chi tiết ca làm",
+      "notFound": "Không tìm thấy ca",
+      "expectedPay": "Dự kiến nhận"
+    },
+    "inbox": {
+      "eyebrow": "THÔNG BÁO",
+      "empty": "Bạn đã đọc hết.",
+      "new": "mới",
+      "markAllRead": "Đánh dấu đã đọc"
+    },
+    "error": {
+      "alreadyClockedIn": "Bạn đã chấm công vào rồi.",
+      "notClockedIn": "Bạn chưa chấm công vào.",
+      "networkError": "Lỗi kết nối. Vui lòng thử lại.",
+      "generic": "Đã xảy ra lỗi. Vui lòng thử lại."
+    }
+  },
+  "calendar": {
+    "title": "Lịch làm việc",
+    "eyebrow": "LỊCH",
+    "noShift": "Không có ca",
+    "prev": "Trước",
+    "next": "Sau",
+    "today": "Hôm nay",
+    "prevWeek": "Tuần trước",
+    "nextWeek": "Tuần sau",
+    "thisWeek": "Tuần này",
+    "days": "ngày",
+    "customPicker": {
+      "from": "Từ ngày",
+      "to": "Đến ngày"
+    },
+    "status": {
+      "completed": "Đã hoàn thành",
+      "cancelled": "Đã hủy",
+      "late": "Đi trễ",
+      "earlyLeave": "Về sớm",
+      "active": "Đang làm",
+      "absent": "Vắng mặt"
+    },
+    "clockIn": "Vào",
+    "clockOut": "Ra",
+    "dayOff": "Tuyệt vời, hôm nay bạn được nghỉ ngơi!",
+    "prevMonth": "Tháng trước",
+    "nextMonth": "Tháng sau"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "eyebrow": "THÔNG BÁO",
+    "all": "Tất cả",
+    "unread": "Chưa đọc",
+    "newSection": "Mới",
+    "earlierSection": "Trước đó",
+    "markAllRead": "Đánh dấu đã đọc tất cả",
+    "empty": "Không có thông báo",
+    "emptyUnread": "Bạn đã đọc hết thông báo"
+  },
+  "requests": {
+    "title": "Đăng ký đơn",
+    "eyebrow": "ĐƠN TỪ",
+    "createNew": "Tạo mới",
+    "history": "Lịch sử",
+    "types": {
+      "leave": "Nghỉ phép",
+      "late": "Đi trễ",
+      "early": "Về sớm",
+      "overtime": "Tăng ca",
+      "swap": "Đổi ca"
+    },
+    "status": {
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối"
+    },
+    "statusFilter": {
+      "all": "Tất cả",
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối"
+    },
+    "desc": {
+      "leave": "Xin nghỉ một hoặc nhiều ngày",
+      "late": "Thông báo đến trễ hơn giờ ca",
+      "early": "Xin về sớm hơn giờ kết thúc",
+      "swap": "Đổi ca với đồng nghiệp"
+    },
+    "formHint": {
+      "leave": "Điền ngày bắt đầu và kết thúc nghỉ",
+      "late": "Chọn ca và thời gian dự kiến đến",
+      "early": "Chọn ca và thời gian dự kiến về",
+      "swap": "Chọn đồng nghiệp muốn đổi ca cùng"
+    },
+    "section": {
+      "time": "Thời gian",
+      "shift": "Ca làm việc",
+      "swapWith": "Đổi ca với",
+      "reason": "Lý do"
+    },
+    "createHint": "Chọn loại đơn phù hợp với nhu cầu của bạn.",
+    "submittedSub": "Quản lý sẽ xem xét và phản hồi sớm nhất.",
+    "form": {
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "date": "Ngày",
+      "time": "Thời gian",
+      "selectShift": "Chọn ca",
+      "noUpcomingShifts": "Không có ca sắp tới",
+      "reason": "Lý do",
+      "reasonPlaceholder": "Nhập lý do của bạn…",
+      "teammate": "Đồng nghiệp",
+      "submit": "Gửi đơn",
+      "cancel": "Hủy",
+      "attachment": "Đính kèm (nếu có)"
+    },
+    "detail": {
+      "eyebrow": "CHI TIẾT ĐƠN",
+      "reviewer": "Người duyệt",
+      "submittedAt": "Ngày nộp",
+      "reviewedAt": "Ngày duyệt",
+      "comment": "Nhận xét"
+    },
+    "empty": "Chưa có đơn nào",
+    "submitted": "Đã gửi đơn thành công"
+  },
+  "expectedSalary": {
+    "title": "Lương dự kiến",
+    "eyebrow": "LƯƠNG DỰ KIẾN",
+    "payDate": "Ngày thanh toán: {{date}}",
+    "empty": "Chưa có dữ liệu thu nhập tháng này",
+    "shifts": "Số ca",
+    "shiftsUnit": "ca làm",
+    "hours": "Giờ làm",
+    "hoursUnit": "giờ",
+    "howCalc": "Chi tiết từng ca",
+    "payPeriod": "Cách tính lương",
+    "payPeriodDesc": "Lương được tính theo công thức: số giờ thực tế × mức lương theo giờ của từng ca. Lương được thanh toán vào ngày 5 của tháng kế tiếp.",
+    "formula": "{{hours}} giờ × {{rate}}₫/giờ",
+    "total": "Tổng dự kiến",
+    "ratePerHour": "Đơn giá/giờ",
+    "monthNav": "Tháng {{month}}/{{year}}",
+    "location": "Địa điểm",
+    "noShiftData": "Chưa có dữ liệu ca làm"
+  },
+  "language": {
+    "title": "Ngôn ngữ",
+    "eyebrow": "NGÔN NGỮ",
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "profile": {
+    "eyebrow": "Tài Khoản",
+    "role": {
+      "staff": "Nhân viên",
+      "manager": "Quản lý",
+      "admin": "Quản trị viên"
+    },
+    "settings": "Cài đặt",
+    "payInfo": "Lương dự kiến",
+    "activity": "Hoạt động",
+    "privacy": "Bảo mật & Mật khẩu",
+    "about": "Về ứng dụng",
+    "help": "Trợ giúp",
+    "terms": "Điều khoản sử dụng",
+    "signOut": "Đăng xuất",
+    "signOutConfirm": "Bạn sẽ bị đăng xuất khỏi tài khoản.",
+    "version": "Phiên bản 1.4.2",
+    "language": "Ngôn ngữ",
+    "appearance": "Giao diện",
+    "light": "Sáng",
+    "dark": "Tối",
+    "cozy": "Thoải mái",
+    "compact": "Gọn",
+    "density": "Mật độ"
+  },
+  "auth": {
+    "title": "Chào mừng trở lại",
+    "sub": "Đăng nhập để chấm công ca làm.",
+    "staffId": "Mã nhân viên",
+    "password": "Mật khẩu",
+    "signIn": "Đăng nhập",
+    "forgot": "Quên mật khẩu?",
+    "poweredBy": "Bảo mật bởi Candylio Workforce"
+  },
+  "validation": {
+    "onWifi": "Đã kết nối Wi-Fi cửa hàng",
+    "offWifi": "Chưa kết nối Wi-Fi cửa hàng",
+    "inRange": "Bạn đang ở cửa hàng",
+    "outRange": "Bạn chưa ở cửa hàng",
+    "outOfRange": "Kết nối Wi-Fi cửa hàng hoặc có mặt tại địa điểm để chấm công.",
+    "outOfWifi": "Bạn chưa kết nối Wi-Fi cửa hàng.",
+    "outOfGeo": "Bạn chưa ở trong phạm vi địa điểm làm việc."
+  },
+  "nav": {
+    "today": "Hôm nay",
+    "calendar": "Lịch",
+    "notifications": "Thông báo",
+    "requests": "Đơn từ",
+    "profile": "Tôi",
+    "adminRequests": "Duyệt đơn",
+    "managerCalendar": "Lịch CN"
+  },
+  "admin": {
+    "requests": {
+      "title": "Duyệt đơn",
+      "pending": "Chờ duyệt",
+      "history": "Lịch sử",
+      "approve": "Duyệt",
+      "reject": "Từ chối",
+      "noRequests": "Không có đơn nào chờ duyệt"
+    }
+  },
+  "manager": {
+    "calendar": {
+      "title": "Lịch chi nhánh",
+      "byEmployee": "Theo nhân viên",
+      "byDay": "Theo ngày"
+    }
+  },
+  "common": {
+    "back": "Quay lại",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "submit": "Gửi",
+    "details": "Chi tiết",
+    "on": "Bật",
+    "off": "Tắt",
+    "characters": "ký tự",
+    "isRequired": "là bắt buộc",
+    "loadMore": "Xem thêm",
+    "greeting": {
+      "morning": "Chào buổi sáng",
+      "afternoon": "Chào buổi chiều",
+      "evening": "Chào buổi tối"
+    },
+    "elapsed": "{{h}} giờ {{m}} phút",
+    "dismiss": "Bỏ qua"
+  },
+  "auth": {
+    "title": "Chào mừng trở lại",
+    "sub": "Đăng nhập bằng tài khoản Lark để bắt đầu.",
+    "signIn": "Đăng nhập bằng Lark",
+    "poweredBy": "Bảo mật bởi Candylio Workforce",
+    "error": {
+      "generic": "Đăng nhập thất bại. Vui lòng thử lại.",
+      "invalid_code": "Phiên đăng nhập hết hạn. Vui lòng thử lại."
+    }
+  },
+  "error": {
+    "generic": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "already_clocked_in": "Bạn đã chấm công vào rồi.",
+    "not_clocked_in": "Bạn chưa chấm công vào.",
+    "network_error": "Lỗi kết nối. Vui lòng thử lại.",
+    "token_expired": "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
+    "timeout": "Yêu cầu hết thời gian. Vui lòng thử lại.",
+    "forbidden": "Bạn không có quyền truy cập."
+  },
+  "gpsCheck": {
+    "checking": "Đang xác định vị trí...",
+    "checkingSub": "Vui lòng cấp quyền truy cập vị trí nếu được hỏi",
+    "success": "Trong phạm vi cho phép",
+    "successSub": "Bạn có thể chấm công",
+    "failed": "Ngoài phạm vi cho phép",
+    "failedSub": "Bạn đang cách vị trí làm việc {{distance}}m",
+    "confirmClockIn": "Chấm công vào",
+    "confirmClockOut": "Chấm công ra",
+    "retry": "Thử lại",
+    "back": "Quay lại"
+  }
+}

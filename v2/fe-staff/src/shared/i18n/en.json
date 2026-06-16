@@ -1,0 +1,325 @@
+{
+  "attendance": {
+    "today": {
+      "title": "Today",
+      "eyebrow": "01 — TODAY",
+      "noShift": "No shift scheduled today. Enjoy your day off.",
+      "noShiftSub": "See you next shift.",
+      "yourShift": "Today's shift",
+      "clockedInAt": "Clocked in at {{time}}",
+      "clockedOutAt": "Clocked out at {{time}}",
+      "totalHours": "Total hours: {{hours}}",
+      "total": "Total: {{hours}}",
+      "clockIn": "Clock in",
+      "clockOut": "Clock out",
+      "holdToClockIn": "Hold to clock in",
+      "release": "Release to confirm",
+      "swipeToClockIn": "Swipe to clock in",
+      "swipeToClockOut": "Swipe to clock out",
+      "viewDetail": "View shift detail",
+      "thisWeek": "This week",
+      "swapShift": "Swap shift",
+      "activity": "Activity",
+      "recentNotifications": "Recent notifications",
+      "shiftEndedPrompt": "Your shift ended at {{time}}. Would you like to clock out?",
+      "clockOutNow": "Clock out now",
+      "holdToCheckIn": "Clock In",
+      "holdToCheckOut": "Clock Out",
+      "holding": "Processing...",
+      "upcomingShifts": "Upcoming shift",
+      "startsIn": "Starts in {{n}}h",
+      "streakRecord": "{{n}}-day on-time streak — branch record! 🏆",
+      "shiftSoon": "{{role}} shift starts in {{n}} min. Get ready! ⚡",
+      "bonusProgress": "{{n}} more hours to hit your attendance bonus! 🎯",
+      "missedShift": "Missed",
+      "missedShiftSub": "This shift ended without a clock-in."
+    },
+    "weekly": {
+      "title": "This week",
+      "eyebrow": "02 — SCHEDULE",
+      "prevWeek": "Previous",
+      "nextWeek": "Next",
+      "thisWeek": "This week",
+      "noShift": "No shift",
+      "shifts": "{{count}} shifts this week"
+    },
+    "earnings": {
+      "viewWeeklySchedule": "View weekly schedule"
+    },
+    "activity": {
+      "eyebrow": "04 — ACTIVITY",
+      "title": "This month",
+      "empty": "No clock-ins yet this month.",
+      "clockHistory": "Clock history",
+      "shiftsLogged": "shifts logged"
+    },
+    "shift": {
+      "eyebrow": "SHIFT",
+      "time": "Time",
+      "location": "Location",
+      "address": "Address",
+      "role": "Role",
+      "breakWindow": "Break window",
+      "manager": "Manager",
+      "clockIn": "Clock-in",
+      "clockOut": "Clock-out",
+      "notes": "Notes",
+      "requestSwap": "Request swap"
+    },
+    "shiftDetail": {
+      "title": "Shift Detail",
+      "notFound": "Shift not found",
+      "expectedPay": "Expected pay"
+    },
+    "inbox": {
+      "eyebrow": "05 — INBOX",
+      "empty": "You're all caught up.",
+      "new": "new",
+      "markAllRead": "Mark all read"
+    },
+    "error": {
+      "alreadyClockedIn": "You've already clocked in.",
+      "notClockedIn": "You haven't clocked in yet.",
+      "networkError": "Connection error. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "error": {
+    "generic": "Something went wrong. Please try again.",
+    "token_expired": "Session expired. Please sign in again.",
+    "timeout": "Request timed out. Please try again.",
+    "forbidden": "You don't have permission to access this."
+  },
+  "calendar": {
+    "title": "Schedule",
+    "eyebrow": "CALENDAR",
+    "noShift": "No shift",
+    "prev": "Prev",
+    "next": "Next",
+    "today": "Today",
+    "prevWeek": "Previous",
+    "nextWeek": "Next",
+    "thisWeek": "This week",
+    "days": "days",
+    "customPicker": {
+      "from": "From",
+      "to": "To"
+    },
+    "status": {
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "late": "Late",
+      "earlyLeave": "Early leave",
+      "active": "On shift",
+      "absent": "Absent"
+    },
+    "clockIn": "In",
+    "clockOut": "Out",
+    "dayOff": "Great, you have a day off today!",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "eyebrow": "NOTIFICATIONS",
+    "all": "All",
+    "unread": "Unread",
+    "newSection": "New",
+    "earlierSection": "Earlier",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications",
+    "emptyUnread": "You're all caught up"
+  },
+  "requests": {
+    "title": "Requests",
+    "eyebrow": "REQUESTS",
+    "createNew": "Create",
+    "history": "History",
+    "types": {
+      "leave": "Leave",
+      "late": "Late arrival",
+      "early": "Early leave",
+      "overtime": "Overtime",
+      "swap": "Shift swap"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "statusFilter": {
+      "all": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "desc": {
+      "leave": "Request one or more days off",
+      "late": "Notify a late arrival for a shift",
+      "early": "Request to leave before shift ends",
+      "swap": "Swap your shift with a teammate"
+    },
+    "formHint": {
+      "leave": "Enter the start and end date of your leave",
+      "late": "Choose your shift and expected arrival time",
+      "early": "Choose your shift and expected early departure time",
+      "swap": "Select the teammate you want to swap with"
+    },
+    "section": {
+      "time": "Time",
+      "shift": "Shift",
+      "swapWith": "Swap with",
+      "reason": "Reason"
+    },
+    "createHint": "Choose the type of request that fits your need.",
+    "submittedSub": "Your manager will review and respond as soon as possible.",
+    "form": {
+      "startDate": "Start date",
+      "endDate": "End date",
+      "date": "Date",
+      "time": "Time",
+      "selectShift": "Select shift",
+      "noUpcomingShifts": "No upcoming shifts",
+      "reason": "Reason",
+      "reasonPlaceholder": "Enter your reason…",
+      "teammate": "Teammate",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "attachment": "Attachment (optional)"
+    },
+    "detail": {
+      "eyebrow": "REQUEST DETAIL",
+      "reviewer": "Reviewer",
+      "submittedAt": "Submitted",
+      "reviewedAt": "Reviewed",
+      "comment": "Comment"
+    },
+    "empty": "No requests yet",
+    "submitted": "Request submitted successfully"
+  },
+  "expectedSalary": {
+    "title": "Expected Salary",
+    "eyebrow": "EXPECTED SALARY",
+    "payDate": "Payment date: {{date}}",
+    "empty": "No earnings data for this month",
+    "shifts": "Shifts",
+    "shiftsUnit": "shifts",
+    "hours": "Hours",
+    "hoursUnit": "hrs",
+    "howCalc": "Shift breakdown",
+    "payPeriod": "How salary is calculated",
+    "payPeriodDesc": "Salary is calculated as actual hours worked × hourly rate for each shift. Payment is made on the 5th of the following month.",
+    "formula": "{{hours}} hrs × {{rate}}₫/hr",
+    "total": "Projected total",
+    "ratePerHour": "Rate per hour",
+    "monthNav": "Month {{month}}/{{year}}",
+    "location": "Location",
+    "noShiftData": "No shift data yet"
+  },
+  "language": {
+    "title": "Language",
+    "eyebrow": "LANGUAGE",
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "profile": {
+    "eyebrow": "PROFILE",
+    "role": {
+      "staff": "Staff",
+      "manager": "Manager",
+      "admin": "Admin"
+    },
+    "settings": "Settings",
+    "payInfo": "Expected Salary",
+    "activity": "Activity",
+    "privacy": "Security & Password",
+    "about": "About",
+    "help": "Help & support",
+    "terms": "Terms of service",
+    "signOut": "Sign out",
+    "signOutConfirm": "You will be signed out of your account.",
+    "version": "Version 1.4.2",
+    "language": "Language",
+    "appearance": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "cozy": "Cozy",
+    "compact": "Compact",
+    "density": "Density"
+  },
+  "auth": {
+    "title": "Welcome back",
+    "sub": "Sign in to clock in for your shifts.",
+    "staffId": "Staff ID",
+    "password": "Password",
+    "signIn": "Sign in",
+    "forgot": "Forgot password?",
+    "poweredBy": "Secured by Candylio Workforce"
+  },
+  "validation": {
+    "onWifi": "Connected to store Wi-Fi",
+    "offWifi": "Not on store Wi-Fi",
+    "inRange": "You're at the store",
+    "outRange": "Not at the store",
+    "outOfRange": "Connect to store Wi-Fi or be on site to clock in.",
+    "outOfWifi": "You're not on store Wi-Fi.",
+    "outOfGeo": "You're outside the store's location range."
+  },
+  "nav": {
+    "today": "Today",
+    "calendar": "Calendar",
+    "notifications": "Alerts",
+    "requests": "Requests",
+    "profile": "You",
+    "adminRequests": "Approve",
+    "managerCalendar": "Branch"
+  },
+  "admin": {
+    "requests": {
+      "title": "Approve Requests",
+      "pending": "Pending",
+      "history": "History",
+      "approve": "Approve",
+      "reject": "Reject",
+      "noRequests": "No pending requests"
+    }
+  },
+  "manager": {
+    "calendar": {
+      "title": "Branch Calendar",
+      "byEmployee": "By employee",
+      "byDay": "By day"
+    }
+  },
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "details": "Details",
+    "on": "On",
+    "off": "Off",
+    "characters": "characters",
+    "isRequired": "is required",
+    "loadMore": "Load more",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "elapsed": "{{h}}h {{m}}m",
+    "dismiss": "Dismiss"
+  },
+  "gpsCheck": {
+    "checking": "Checking your location...",
+    "checkingSub": "Please allow location access if prompted",
+    "success": "Within allowed range",
+    "successSub": "You can clock in now",
+    "failed": "Outside allowed range",
+    "failedSub": "You are {{distance}}m away from the work location",
+    "confirmClockIn": "Clock in now",
+    "confirmClockOut": "Clock out now",
+    "retry": "Try again",
+    "back": "Go back"
+  }
+}

@@ -1,0 +1,97 @@
+# ==============================================================================
+# 1. FRONTEND: Node.js / Vite / React / TypeScript
+# ==============================================================================
+# Thư viện tải về
+node_modules/
+jspm_packages/
+
+# Thư mục build của Vite
+dist/
+dist-ssr/
+build/
+
+# Logs của package manager
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Caches của công cụ Frontend
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+.npm/
+
+# ==============================================================================
+# 2. BACKEND: .NET 8 / C# / Native AOT
+# ==============================================================================
+# Thư mục build và file tạm của C#
+[Bb]in/
+[Oo]bj/
+
+# Các file cấu hình cá nhân của người dùng C#
+*.user
+*.userosscache
+*.sln.docstates
+
+# ==============================================================================
+# 3. AWS Lambda / Serverless (Cho Backend)
+# ==============================================================================
+# Các file nén zip dùng để deploy lên AWS
+*.zip
+
+# Thư mục build của các công cụ AWS
+.aws-sam/
+cdk.out/
+.serverless/
+
+# ==============================================================================
+# 4. MÔI TRƯỜNG & SECRETS (Quan trọng cho cả FE & BE)
+# ==============================================================================
+# Biến môi trường local của Vite và .NET (KHÔNG BAO GIỜ COMMIT LÊN GIT)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+secrets.json
+appsettings.Local.json
+
+# Local SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# ==============================================================================
+# 5. IDE & HỆ ĐIỀU HÀNH (VS Code, Rider, macOS, Windows)
+# ==============================================================================
+# JetBrains (Rider, WebStorm)
+.idea/
+*.sln.iml
+
+# Visual Studio & VS Code
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# macOS & Windows
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# ==============================================================================
+# 6. TESTING & COVERAGE
+# ==============================================================================
+TestResults/
+*.coverage
+*.coveragexml
+coverage/
+.ast-graph/
