@@ -252,42 +252,20 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
           <Section>
             <div style={sectionLabel}>{t('setup.staff.detail.pay.label')}</div>
             {!isEditing ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 12, padding: '3px 10px', borderRadius: 999,
-                  background: staff.payType === 'hourly' ? 'rgba(0,180,160,0.09)' : 'rgba(139,92,246,0.09)',
-                  color: staff.payType === 'hourly' ? '#00897B' : '#7C3AED', fontWeight: 600 }}>
-                  {staff.payType === 'hourly' ? t('setup.staff.detail.pay.hourly') : t('setup.staff.detail.pay.monthly')}
-                </span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>
-                  {fmtVND(staff.rate ?? staff.monthly ?? 0)}
-                  <span style={{ color: '#9BAAB5', fontWeight: 400, fontSize: 12 }}>{staff.payType === 'hourly' ? t('setup.staff.detail.pay.perHour') : t('setup.staff.detail.pay.perMonth')}</span>
-                </span>
-              </div>
+              <PayView
+                payType={staff.payType as 'hourly' | 'monthly'}
+                rate={staff.rate ?? 0}
+                monthly={staff.monthly ?? 0}
+                t={t}
+              />
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['hourly', 'monthly'] as const).map(pt => (
-                    <button key={pt} onClick={() => setDraft(d => ({ ...d, payType: pt }))} style={{
-                      padding: '5px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                      border: `1.5px solid ${draft.payType === pt ? '#00B4A0' : 'rgba(200,212,220,0.5)'}`,
-                      background: draft.payType === pt ? 'rgba(0,180,160,0.09)' : 'rgba(255,255,255,0.6)',
-                      color: draft.payType === pt ? '#00897B' : '#6B7E8E',
-                      transition: 'all 120ms',
-                    }}>
-                      {pt === 'hourly' ? t('setup.staff.detail.pay.hourly') : t('setup.staff.detail.pay.monthly')}
-                    </button>
-                  ))}
-                </div>
-                {draft.payType === 'hourly' ? (
-                  <Field label={t('setup.staff.detail.pay.hourlyField')}>
-                    <Input value={draft.rate.toLocaleString('vi-VN')} onChange={v => setDraft(d => ({ ...d, rate: Number(v.replace(/\D/g, '')) || 0 }))} mono suffix={t('setup.staff.detail.pay.perHour')} />
-                  </Field>
-                ) : (
-                  <Field label={t('setup.staff.detail.pay.monthlyField')}>
-                    <Input value={draft.monthly.toLocaleString('vi-VN')} onChange={v => setDraft(d => ({ ...d, monthly: Number(v.replace(/\D/g, '')) || 0 }))} mono suffix={t('setup.staff.detail.pay.perMonth')} />
-                  </Field>
-                )}
-              </div>
+              <PayEdit
+                payType={draft.payType}
+                rate={draft.rate}
+                monthly={draft.monthly}
+                onChange={updates => setDraft(d => ({ ...d, ...updates }))}
+                t={t}
+              />
             )}
           </Section>
 
@@ -317,6 +295,68 @@ function Section({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(200,212,220,0.2)' }}>
       {children}
+    </div>
+  );
+}
+
+interface PayViewProps {
+  payType: 'hourly' | 'monthly';
+  rate: number;
+  monthly: number;
+  t: (k: string) => string;
+}
+
+function PayView({ payType, rate, monthly, t }: PayViewProps) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <span style={{ fontSize: 12, padding: '3px 10px', borderRadius: 999,
+        background: payType === 'hourly' ? 'rgba(0,180,160,0.09)' : 'rgba(139,92,246,0.09)',
+        color: payType === 'hourly' ? '#00897B' : '#7C3AED', fontWeight: 600 }}>
+        {payType === 'hourly' ? t('setup.staff.detail.pay.hourly') : t('setup.staff.detail.pay.monthly')}
+      </span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>
+        {fmtVND(rate ?? monthly ?? 0)}
+        <span style={{ color: '#9BAAB5', fontWeight: 400, fontSize: 12 }}>
+          {payType === 'hourly' ? t('setup.staff.detail.pay.perHour') : t('setup.staff.detail.pay.perMonth')}
+        </span>
+      </span>
+    </div>
+  );
+}
+
+interface PayEditProps {
+  payType: 'hourly' | 'monthly';
+  rate: number;
+  monthly: number;
+  onChange: (updates: Partial<{ payType: 'hourly' | 'monthly'; rate: number; monthly: number }>) => void;
+  t: (k: string) => string;
+}
+
+function PayEdit({ payType, rate, monthly, onChange, t }: PayEditProps) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', gap: 4 }}>
+        {(['hourly', 'monthly'] as const).map(pt => (
+          <button key={pt} onClick={() => onChange({ payType: pt })} style={{
+            padding: '5px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+            border: `1.5px solid ${payType === pt ? '#00B4A0' : 'rgba(200,212,220,0.5)'}`,
+            background: payType === pt ? 'rgba(0,180,160,0.09)' : 'rgba(255,255,255,0.6)',
+            color: payType === pt ? '#00897B' : '#6B7E8E',
+            transition: 'all 120ms',
+          }}>
+            {pt === 'hourly' ? t('setup.staff.detail.pay.hourly') : t('setup.staff.detail.pay.monthly')}
+          </button>
+        ))}
+      </div>
+      {payType === 'hourly' ? (
+        <Field label={t('setup.staff.detail.pay.hourlyField')}>
+          <Input value={rate.toLocaleString('vi-VN')} onChange={v => onChange({ rate: Number(v.replace(/\D/g, '')) || 0 })} mono suffix={t('setup.staff.detail.pay.perHour')} />
+        </Field>
+      ) : (
+        <Field label={t('setup.staff.detail.pay.monthlyField')}>
+          <Input value={monthly.toLocaleString('vi-VN')} onChange={v => onChange({ monthly: Number(v.replace(/\D/g, '')) || 0 })} mono suffix={t('setup.staff.detail.pay.perMonth')} />
+        </Field>
+      )}
     </div>
   );
 }
