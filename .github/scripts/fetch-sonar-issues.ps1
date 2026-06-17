@@ -1,8 +1,13 @@
+$ErrorActionPreference = 'Stop'
+
 param(
     [string]$SonarHostUrl    = $env:SONAR_HOST_URL,
     [string]$SonarToken      = $env:SONAR_TOKEN,
     [int]$TimeoutMinutes     = 10
 )
+
+if (-not $SonarHostUrl) { Write-Error "SONAR_HOST_URL is not set"; exit 1 }
+if (-not $SonarToken)   { Write-Error "SONAR_TOKEN is not set";   exit 1 }
 
 # Read project key from sonar-project.properties
 $projectKey = (Get-Content "sonar-project.properties" |
