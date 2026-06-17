@@ -14,6 +14,86 @@ function generateKey(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+interface ShiftCtaProps {
+  isMissed: boolean;
+  isClockedOut: boolean;
+  isOverdue: boolean;
+  isClockedIn: boolean;
+  needsGpsPage: boolean;
+  canClock: boolean;
+  clockInPending: boolean;
+  clockOutPending: boolean;
+  endLabel: string;
+  onClockIn: () => void;
+  onClockOut: () => void;
+  t: (k: string, opts?: Record<string, unknown>) => string;
+}
+
+function ShiftCta({
+  isMissed, isClockedOut, isOverdue, isClockedIn,
+  needsGpsPage, canClock, clockInPending, clockOutPending,
+  endLabel, onClockIn, onClockOut, t,
+}: ShiftCtaProps) {
+  if (isMissed) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, padding: '10px 14px', borderRadius: 10, background: 'rgba(255,80,80,0.12)' }}>
+        <Icons.alert size={16} sw={2} style={{ color: 'var(--c-danger, #ff5252)', flexShrink: 0 }} />
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-danger, #ff5252)' }}>{t('attendance.today.missedShift')}</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>{t('attendance.today.missedShiftSub')}</div>
+        </div>
+      </div>
+    );
+  }
+  if (isClockedOut) return null;
+  if (isOverdue && isClockedIn) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
+        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 5 }}>
+          <Icons.alert size={13} sw={2} style={{ flexShrink: 0, color: '#ff4444' }} />
+          {t('attendance.today.shiftEndedPrompt', { time: endLabel })}
+        </span>
+        <button
+          className={`cd-hold-btn${clockOutPending ? ' cd-hold-btn--disabled' : ''}`}
+          disabled={clockOutPending}
+          style={{ background: 'rgba(30,45,61,0.3)' }}
+          onClick={onClockOut}
+        >
+          <span className="cd-hold-btn__label">
+            {clockOutPending ? '…' : t('attendance.today.holdToCheckOut')}
+          </span>
+        </button>
+      </div>
+    );
+  }
+  if (isClockedIn) {
+    return (
+      <button
+        className={`cd-hold-btn${clockOutPending ? ' cd-hold-btn--disabled' : ''}`}
+        disabled={clockOutPending}
+        style={{ background: 'rgba(30,45,61,0.3)' }}
+        onClick={onClockOut}
+      >
+        <span className="cd-hold-btn__label">
+          {clockOutPending ? '…' : t('attendance.today.holdToCheckOut')}
+        </span>
+      </button>
+    );
+  }
+  const clockInDisabled = !needsGpsPage && !canClock;
+  return (
+    <button
+      className={`cd-hold-btn${clockInDisabled ? ' cd-hold-btn--disabled' : ''}`}
+      disabled={clockInDisabled}
+      onClick={onClockIn}
+    >
+      <span className="cd-hold-btn__label">
+        {clockInPending ? '…' : clockInDisabled ? t('validation.outOfRange') : t('attendance.today.holdToCheckIn')}
+      </span>
+    </button>
+  );
+}
+
 export function HeroShiftCard({ shift }: { shift: ShiftItemDto }) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -154,55 +234,20 @@ export function HeroShiftCard({ shift }: { shift: ShiftItemDto }) {
       )}
 
       {/* CTA */}
-      {isMissed ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, padding: '10px 14px', borderRadius: 10, background: 'rgba(255,80,80,0.12)' }}>
-          <Icons.alert size={16} sw={2} style={{ color: 'var(--c-danger, #ff5252)', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-danger, #ff5252)' }}>{t('attendance.today.missedShift')}</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>{t('attendance.today.missedShiftSub')}</div>
-          </div>
-        </div>
-      ) : !isClockedOut && (
-        isOverdue && isClockedIn ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 5 }}>
-              <Icons.alert size={13} sw={2} style={{ flexShrink: 0, color: '#ff4444' }} />
-              {t('attendance.today.shiftEndedPrompt', { time: endLabel })}
-            </span>
-            <button
-              className={`cd-hold-btn${clockOut.isPending ? ' cd-hold-btn--disabled' : ''}`}
-              disabled={clockOut.isPending}
-              style={{ background: 'rgba(30,45,61,0.3)' }}
-              onClick={handleClockOut}
-            >
-              <span className="cd-hold-btn__label">
-                {clockOut.isPending ? '…' : t('attendance.today.holdToCheckOut')}
-              </span>
-            </button>
-          </div>
-        ) : isClockedIn ? (
-          <button
-            className={`cd-hold-btn${clockOut.isPending ? ' cd-hold-btn--disabled' : ''}`}
-            disabled={clockOut.isPending}
-            style={{ background: 'rgba(30,45,61,0.3)' }}
-            onClick={handleClockOut}
-          >
-            <span className="cd-hold-btn__label">
-              {clockOut.isPending ? '…' : t('attendance.today.holdToCheckOut')}
-            </span>
-          </button>
-        ) : (
-          <button
-            className={`cd-hold-btn${(!needsGpsPage && !canClock) ? ' cd-hold-btn--disabled' : ''}`}
-            disabled={!needsGpsPage && !canClock}
-            onClick={handleClockIn}
-          >
-            <span className="cd-hold-btn__label">
-              {clockIn.isPending ? '…' : (!needsGpsPage && !canClock) ? t('validation.outOfRange') : t('attendance.today.holdToCheckIn')}
-            </span>
-          </button>
-        )
-      )}
+      <ShiftCta
+        isMissed={isMissed}
+        isClockedOut={isClockedOut}
+        isOverdue={isOverdue}
+        isClockedIn={isClockedIn}
+        needsGpsPage={needsGpsPage}
+        canClock={canClock}
+        clockInPending={clockIn.isPending}
+        clockOutPending={clockOut.isPending}
+        endLabel={endLabel}
+        onClockIn={handleClockIn}
+        onClockOut={handleClockOut}
+        t={t}
+      />
     </div>
   );
 }
