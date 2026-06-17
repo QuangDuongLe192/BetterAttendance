@@ -40,6 +40,51 @@ export function Locations({ openId, isLoading, error, onEditingChange }: Locatio
 }
 
 
+function deriveModeLabel(mode: string[], t: (k: string) => string): string {
+  const hasWifi = mode.includes('wifi');
+  const hasGeo = mode.includes('geo');
+  if (hasWifi && hasGeo) return t('setup.locations.validation.both.title');
+  if (hasWifi) return t('setup.locations.validation.wifiOnly.title');
+  if (hasGeo) return t('setup.locations.validation.gpsOnly.title');
+  return t('setup.locations.validation.none.title');
+}
+
+interface TabBtnProps {
+  id: 'infor' | 'staff';
+  label: string;
+  icon: string;
+  active: boolean;
+  disabled: boolean;
+  disabledHint: string;
+  onSelect: (id: 'infor' | 'staff') => void;
+}
+
+function TabButton({ id, label, icon, active, disabled, disabledHint, onSelect }: TabBtnProps) {
+  const IconComp = Icons[icon as keyof typeof Icons];
+  return (
+    <button
+      onClick={disabled ? undefined : () => onSelect(id)}
+      disabled={disabled}
+      title={disabled ? disabledHint : undefined}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        padding: '8px 18px', borderRadius: 8, border: 'none',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        fontSize: 13, fontWeight: active ? 700 : 500,
+        color: disabled ? '#C8D4DC' : active ? '#fff' : '#6B7E8E',
+        background: active ? '#1E2D3D' : 'transparent',
+        boxShadow: active ? '0 2px 8px rgba(30,45,61,0.25)' : 'none',
+        opacity: disabled ? 0.5 : 1,
+        transition: 'all 160ms cubic-bezier(0.2,0.7,0.2,1)',
+        fontFamily: 'var(--font-display)',
+      }}
+    >
+      <IconComp size={13} stroke={disabled ? '#C8D4DC' : active ? '#fff' : '#9BAAB5'} />
+      {label}
+    </button>
+  );
+}
+
 function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location; scrollToStaff?: boolean; onEditingChange?: (v: boolean) => void }) {
   const navigate = useNavigate();
   const { t } = useTranslation('setup');
@@ -78,14 +123,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
 
   const hasInvalidBssid = draft.networks.some(n => n.bssid !== '' && !/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(n.bssid));
 
-  const modeLabel = (() => {
-    const hasWifi = draft.mode.includes('wifi');
-    const hasGeo = draft.mode.includes('geo');
-    if (hasWifi && hasGeo) return t('setup.locations.validation.both.title');
-    if (hasWifi) return t('setup.locations.validation.wifiOnly.title');
-    if (hasGeo) return t('setup.locations.validation.gpsOnly.title');
-    return t('setup.locations.validation.none.title');
-  })();
+  const modeLabel = deriveModeLabel(draft.mode, t);
 
   const active = (loc.activeValidation ?? []).length > 0;
 
@@ -194,34 +232,8 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
         {/* Tab switcher */}
         <div className="loc-section" style={{ animationDelay: '80ms', display: 'flex' }}>
           <div style={{ display: 'inline-flex', ...glass, borderRadius: 10, padding: 3, gap: 2 }}>
-            {([['infor', t('setup.locations.tab.info'), 'settings'], ['staff', t('setup.locations.tab.staff'), 'users']] as const).map(([id, label, icon]) => {
-              const IconComp = Icons[icon as keyof typeof Icons];
-              const active = tab === id;
-              const disabled = id === 'staff' && isEditing;
-              return (
-                <button
-                  key={id}
-                  onClick={disabled ? undefined : () => setTab(id)}
-                  disabled={disabled}
-                  title={disabled ? t('setup.locations.tab.staffDisabledHint') : undefined}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '8px 18px', borderRadius: 8, border: 'none',
-                    cursor: disabled ? 'not-allowed' : 'pointer',
-                    fontSize: 13, fontWeight: active ? 700 : 500,
-                    color: disabled ? '#C8D4DC' : active ? '#fff' : '#6B7E8E',
-                    background: active ? '#1E2D3D' : 'transparent',
-                    boxShadow: active ? '0 2px 8px rgba(30,45,61,0.25)' : 'none',
-                    opacity: disabled ? 0.5 : 1,
-                    transition: 'all 160ms cubic-bezier(0.2,0.7,0.2,1)',
-                    fontFamily: 'var(--font-display)',
-                  }}
-                >
-                  <IconComp size={13} stroke={disabled ? '#C8D4DC' : active ? '#fff' : '#9BAAB5'} />
-                  {label}
-                </button>
-              );
-            })}
+            <TabButton id="infor" label={t('setup.locations.tab.info')} icon="settings" active={tab === 'infor'} disabled={false} disabledHint="" onSelect={setTab} />
+            <TabButton id="staff" label={t('setup.locations.tab.staff')} icon="users" active={tab === 'staff'} disabled={isEditing} disabledHint={t('setup.locations.tab.staffDisabledHint')} onSelect={setTab} />
           </div>
         </div>
 
