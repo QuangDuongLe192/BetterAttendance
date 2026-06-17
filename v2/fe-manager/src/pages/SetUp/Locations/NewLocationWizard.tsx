@@ -72,6 +72,28 @@ const sectionLabel: React.CSSProperties = {
   letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 8,
 };
 
+// ─── Validators ───────────────────────────────────────────────────────────────
+
+function validateBasic(draft: DraftLocation, t: (k: string) => string): Record<string, string> {
+  const errs: Record<string, string> = {};
+  if (!draft.name.trim()) errs.name = t('setup.wizard.basic.errName');
+  if (!draft.address.trim()) errs.address = t('setup.wizard.basic.errAddress');
+  return errs;
+}
+
+const BSSID_RE = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
+
+function validateWifi(draft: DraftLocation, t: (k: string) => string): Record<string, string> {
+  const errs: Record<string, string> = {};
+  if (draft.networks.length === 0 || !draft.networks.some(n => n.bssid.trim() !== ''))
+    errs.wifi = t('setup.wizard.wifi.errRequired');
+  draft.networks.forEach((n, i) => {
+    if (n.bssid.trim() && !BSSID_RE.test(n.bssid.trim()))
+      errs[`bssid_${i}`] = t('setup.wizard.wifi.errBssid');
+  });
+  return errs;
+}
+
 // ─── Root Component ───────────────────────────────────────────────────────────
 
 export function NewLocationWizard({ onDone }: { onDone: () => void }) {
@@ -91,21 +113,10 @@ export function NewLocationWizard({ onDone }: { onDone: () => void }) {
     setDraft(d => ({ ...d, [k]: v }));
 
   const validate = (s: number): boolean => {
-    const errs: Record<string, string> = {};
     const key = steps[s - 1]?.key;
-    if (key === 'basic') {
-      if (!draft.name.trim()) errs.name = t('setup.wizard.basic.errName');
-      if (!draft.address.trim()) errs.address = t('setup.wizard.basic.errAddress');
-    }
-    if (key === 'wifi') {
-      const BSSID_RE = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
-      if (draft.networks.length === 0 || !draft.networks.some(n => n.bssid.trim() !== ''))
-        errs.wifi = t('setup.wizard.wifi.errRequired');
-      draft.networks.forEach((n, i) => {
-        if (n.bssid.trim() && !BSSID_RE.test(n.bssid.trim()))
-          errs[`bssid_${i}`] = t('setup.wizard.wifi.errBssid');
-      });
-    }
+    const errs = key === 'basic' ? validateBasic(draft, t)
+      : key === 'wifi' ? validateWifi(draft, t)
+      : {};
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
