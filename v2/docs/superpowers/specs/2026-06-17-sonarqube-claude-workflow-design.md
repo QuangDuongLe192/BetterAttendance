@@ -18,10 +18,10 @@ Push to GitHub
      │
      ▼
 ┌─────────────────────────────────────────────────┐
-│  GitHub Actions (self-hosted runner)             │
+│  GitHub Actions (windows-latest, GitHub-hosted)  │
 │                                                 │
 │  Job 1: sonar-scan                              │
-│    sonar-scanner ──► SonarQube Server (private) │
+│    sonar-scanner ──► SonarQube (via ngrok URL)  │
 │    poll api/ce/task until SUCCESS               │
 │    query api/issues/search ──► sonar-issues.json│
 │    upload artifact                              │
@@ -71,7 +71,7 @@ User reviews each Draft PR → converts to ready → merges
 | Upload artifact | `actions/upload-artifact` |
 
 Environment variables required in runner:
-- `SONAR_HOST_URL` — internal URL of SonarQube server
+- `SONAR_HOST_URL` — ngrok URL pointing to local SonarQube (stored in GitHub Secrets, must be updated manually each time ngrok restarts)
 - `SONAR_TOKEN` — SonarQube user token (stored in GitHub Secrets)
 
 ### Job 2 — `track-issues`
@@ -204,7 +204,9 @@ If a previously closed issue's fingerprint reappears in a new analysis, Claude r
 
 ## Constraints & Assumptions
 
-- Self-hosted GitHub Actions runner is on same network as SonarQube server
+- GitHub Actions runner is `windows-latest` (GitHub-hosted); SonarQube is exposed via ngrok
+- `SONAR_HOST_URL` secret must be updated manually each time ngrok restarts (free plan, URL changes on restart)
+- Existing `.github/workflows/build.yml` already has `SONAR_TOKEN` and `SONAR_HOST_URL` wired up — reuse the same secrets
 - `SONAR_TOKEN` has at least "Browse" permission on the project
 - `sonar-project.properties` exists at repo root (already present)
 - `gh` CLI is available on the runner
