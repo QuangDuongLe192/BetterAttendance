@@ -22,6 +22,51 @@ const NAV_IDS = ['overview', 'locations', 'roles', 'staff', 'delegated', 'audit'
 
 type SectionId = typeof NAV_IDS[number];
 
+interface WorkspaceDef {
+  id: string;
+  label: string;
+  sub: string;
+  path: string;
+  current: boolean;
+}
+
+function buildWorkspaces(
+  isAdmin: boolean,
+  hasMgr: boolean,
+  hasFinance: boolean,
+  mgrPath: string,
+  t: (k: string) => string,
+): WorkspaceDef[] {
+  return [
+    { id: 'setup', label: t('setup.workspace.title'), sub: t('setup.workspace.sub'), path: '/setup', current: true },
+    ...(hasMgr ? [{ id: 'manager', label: t('setup.workspace.manager.title'), sub: t('setup.workspace.manager.sub'), path: mgrPath, current: false }] : []),
+    ...(hasFinance ? [{ id: 'finance', label: t('setup.workspace.finance.title'), sub: t('setup.workspace.finance.sub'), path: '/finance', current: false }] : []),
+  ];
+}
+
+interface SectionProps {
+  active: SectionId;
+  subId?: string;
+  onNav: (id: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  onEditingChange: (v: boolean) => void;
+  onDirtyRoles: (v: boolean) => void;
+  onDirtyDelegated: (v: boolean) => void;
+}
+
+function renderSection({ active, subId, onNav, isLoading, error, onEditingChange, onDirtyRoles, onDirtyDelegated }: SectionProps) {
+  if (active === 'overview') return <Overview onNav={onNav} isLoading={isLoading} error={error} />;
+  if (active === 'locations') return subId
+    ? <Locations openId={subId} isLoading={isLoading} error={error} onEditingChange={onEditingChange} />
+    : <LocationsList isLoading={isLoading} error={error} />;
+  if (active === 'roles') return <Roles isLoading={isLoading} error={error} onDirtyChange={onDirtyRoles} />;
+  if (active === 'staff') return <Staff isLoading={isLoading} error={error} />;
+  if (active === 'delegated') return <Delegated isLoading={isLoading} error={error} onDirtyChange={onDirtyDelegated} />;
+  if (active === 'audit') return <AuditLog isLoading={isLoading} error={error} />;
+  return <Overview onNav={onNav} isLoading={isLoading} error={error} />;
+}
+
 export function SetupApp() {
   const { t } = useTranslation('setup');
   const { section, subId } = useParams<{ section?: string; subId?: string }>();
@@ -66,23 +111,7 @@ export function SetupApp() {
   const mgrPath = mgrStores[0] ? `/manager/home/${mgrStores[0]}` : '/manager/home/all';
   const hasMgr = isAdmin || mgrStores.length > 0;
   const hasFinance = isAdmin || (user?.access.some(a => a.type === 'FINANCE') ?? false);
-  const workspaces = [
-    { id: 'setup', label: t('setup.workspace.title'), sub: t('setup.workspace.sub'), path: '/setup', current: true },
-    ...(hasMgr ? [{ id: 'manager', label: t('setup.workspace.manager.title'), sub: t('setup.workspace.manager.sub'), path: mgrPath, current: false }] : []),
-    ...(hasFinance ? [{ id: 'finance', label: t('setup.workspace.finance.title'), sub: t('setup.workspace.finance.sub'), path: '/finance', current: false }] : []),
-  ];
-
-  const renderContent = () => {
-    if (active === 'overview') return <Overview onNav={onNav} isLoading={isLoading} error={error} />;
-    if (active === 'locations') return subId
-      ? <Locations openId={subId} isLoading={isLoading} error={error} onEditingChange={setIsEditingLocation} />
-      : <LocationsList isLoading={isLoading} error={error} />;
-    if (active === 'roles') return <Roles isLoading={isLoading} error={error} onDirtyChange={setIsDirtyRoles} />;
-    if (active === 'staff') return <Staff isLoading={isLoading} error={error} />;
-    if (active === 'delegated') return <Delegated isLoading={isLoading} error={error} onDirtyChange={setIsDirtyDelegated} />;
-    if (active === 'audit') return <AuditLog isLoading={isLoading} error={error} />;
-    return <Overview onNav={onNav} isLoading={isLoading} error={error} />;
-  };
+  const workspaces = buildWorkspaces(isAdmin, hasMgr, hasFinance, mgrPath, t);
 
   const cur = NAV.find(n => n.id === active);
 
@@ -254,7 +283,7 @@ export function SetupApp() {
           <main style={{ flex: 1, padding: isNewLocation ? 0 : '40px 40px 80px' }}>
             {isNewLocation
               ? <NewLocationWizard onDone={() => navigate('/setup/locations')} />
-              : renderContent()
+              : renderSection({ active, subId, onNav, isLoading, error, onEditingChange: setIsEditingLocation, onDirtyRoles: setIsDirtyRoles, onDirtyDelegated: setIsDirtyDelegated })
             }
           </main>
         </div>
