@@ -29,6 +29,7 @@ Create a new GitHub Issue with:
   - `bug` if `type == "BUG"`
   - `vulnerability` if `type == "VULNERABILITY"`
   - `code-smell` if `type == "CODE_SMELL"`
+- **Capture the issue number:** Use `gh issue create --json number --jq '.number'` flags to capture the returned issue number for writing to `new-issues.json`.
 - Body:
 ```
 | Field    | Value |

@@ -50,7 +50,7 @@ git push origin fix/sonar-{number}
 
 ```bash
 gh pr create \
-  --title "fix: [SonarQube] {issue_title} (#{number})" \
+  --title "fix: [SonarQube] {rule} (#{number})" \
   --body $'## SonarQube Fix\n\nCloses #{number}\n\n**Rule:** {rule}\n**File:** {component}:{line}\n**Message:** {message}\n\n## Changes\n\n{2-3 sentence description of the fix}\n\n---\n🤖 Auto-fixed by Claude via SonarQube workflow' \
   --draft \
   --head "fix/sonar-{number}" \
@@ -68,4 +68,4 @@ git worktree remove ../worktrees/fix-{number}
 **Rules:**
 - Complete all 7 steps for one issue before starting the next
 - Never commit files outside `../worktrees/fix-{number}/`
-- `{issue_title}` = the GitHub Issue title (without the `[SonarQube]` prefix and file/line suffix — just the rule name portion)
+- `{rule}` = the SonarQube rule identifier (e.g., `squid:S3776`)
