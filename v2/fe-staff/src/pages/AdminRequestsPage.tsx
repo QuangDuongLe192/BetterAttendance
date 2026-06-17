@@ -450,6 +450,37 @@ function SheetDetail({ id, onClose }: SheetDetailProps) {
   );
 }
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+function buildBranchMap(
+  pendingAll: AdminRequestDto[],
+  historyAll: AdminRequestDto[],
+): Map<string, { pendingCount: number; colorIdx: number }> {
+  const map = new Map<string, { pendingCount: number; colorIdx: number }>();
+  for (const r of pendingAll) {
+    if (!map.has(r.branchName)) {
+      map.set(r.branchName, { pendingCount: 0, colorIdx: map.size });
+    }
+    map.get(r.branchName)!.pendingCount += 1;
+  }
+  for (const r of historyAll) {
+    if (!map.has(r.branchName)) {
+      map.set(r.branchName, { pendingCount: 0, colorIdx: map.size });
+    }
+  }
+  return map;
+}
+
+function buildBranchItems(
+  branches: { name: string; pendingCount: number; colorIdx: number }[],
+) {
+  return branches.map(b => ({
+    key: b.name,
+    label: b.name,
+    dotColor: BRANCH_COLORS[b.colorIdx % BRANCH_COLORS.length],
+    count: b.pendingCount,
+  }));
+}
+
 // ── Main page ──────────────────────────────────────────────────────────────
 export function AdminRequestsPage() {
   const { t } = useTranslation();
@@ -460,19 +491,7 @@ export function AdminRequestsPage() {
   const pendingAll = pendingData?.requests ?? [];
   const historyAll = historyData?.requests ?? [];
 
-  // Build branch list sorted by pending count
-  const branchMap = new Map<string, { pendingCount: number; colorIdx: number }>();
-  for (const r of pendingAll) {
-    if (!branchMap.has(r.branchName)) {
-      branchMap.set(r.branchName, { pendingCount: 0, colorIdx: branchMap.size });
-    }
-    branchMap.get(r.branchName)!.pendingCount += 1;
-  }
-  for (const r of historyAll) {
-    if (!branchMap.has(r.branchName)) {
-      branchMap.set(r.branchName, { pendingCount: 0, colorIdx: branchMap.size });
-    }
-  }
+  const branchMap = buildBranchMap(pendingAll, historyAll);
   const branches = Array.from(branchMap.entries())
     .map(([name, v]) => ({ name, ...v }))
     .sort((a, b) => b.pendingCount - a.pendingCount);
@@ -506,13 +525,7 @@ export function AdminRequestsPage() {
     setSelectedId(null);
   };
 
-  // Branch dropdown items
-  const branchItems = branches.map(b => ({
-    key: b.name,
-    label: b.name,
-    dotColor: BRANCH_COLORS[b.colorIdx % BRANCH_COLORS.length],
-    count: b.pendingCount,
-  }));
+  const branchItems = buildBranchItems(branches);
 
   // Type dropdown items
   const typeItems = (['all', 'leave', 'late', 'early'] as TypeFilter[]).map(f => ({
