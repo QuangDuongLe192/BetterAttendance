@@ -13,7 +13,7 @@
       "mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql",
       "mcp__claude_ai_Atlassian__getTransitionsForJiraIssue",
       "mcp__claude_ai_Atlassian__transitionJiraIssue",
-      "Bash(Get-ChildItem -Path \"D:\\\\candylio\\\\better-attendance\\\\v2\" -Recurse -Directory)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Project\\\\better-attendance\\\\v2\" -Recurse -Directory)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)",
       "mcp__claude_ai_Atlassian__getJiraIssue"
