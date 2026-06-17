@@ -1,10 +1,10 @@
-$ErrorActionPreference = 'Stop'
-
 param(
     [string]$SonarHostUrl    = $env:SONAR_HOST_URL,
     [string]$SonarToken      = $env:SONAR_TOKEN,
     [int]$TimeoutMinutes     = 10
 )
+
+$ErrorActionPreference = 'Stop'
 
 if (-not $SonarHostUrl) { throw "SONAR_HOST_URL is not set" }
 if (-not $SonarToken)   { throw "SONAR_TOKEN is not set" }
