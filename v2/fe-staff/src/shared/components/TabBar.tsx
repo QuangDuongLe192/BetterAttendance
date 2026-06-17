@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNotificationStore } from '../../store/notificationStore';
@@ -28,11 +29,10 @@ const MANAGER_TAB: TabDef = {
   path: '/manager/calendar',
 };
 
-function TabIcon({ tabKey, active }: { tabKey: string; active: boolean }) {
-  const color = active ? 'var(--c-teal)' : 'var(--fg-3)';
-  const s = 22;
+type TabIconRenderer = (color: string, s: number, active: boolean) => React.ReactElement | null;
 
-  if (tabKey === 'today') return (
+const TAB_ICONS: Record<string, TabIconRenderer> = {
+  today: (color, s, active) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="3" y="5" width="18" height="16" rx="2.5" stroke={color} strokeWidth="1.8" />
       <path d="M3 10h18" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
@@ -40,9 +40,8 @@ function TabIcon({ tabKey, active }: { tabKey: string; active: boolean }) {
       {active && <circle cx="12" cy="16" r="1.5" fill={color} />}
       {!active && <path d="M8 14h2M14 14h2M8 17.5h2M14 17.5h2" stroke={color} strokeWidth="1.5" strokeLinecap="round" />}
     </svg>
-  );
-
-  if (tabKey === 'calendar') return (
+  ),
+  calendar: (color, s) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="3" y="5" width="18" height="16" rx="2.5" stroke={color} strokeWidth="1.8" />
       <path d="M3 10h18" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
@@ -50,27 +49,24 @@ function TabIcon({ tabKey, active }: { tabKey: string; active: boolean }) {
       <path d="M7.5 14.5h3v2.5h-3z" fill={color} rx="0.5" />
       <path d="M13.5 14.5h3v2.5h-3z" fill={color} rx="0.5" />
     </svg>
-  );
-
-  if (tabKey === 'notifications') return (
+  ),
+  notifications: (color, s, active) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 3.5-1.5 5-1.5 5h16s-1.5-1.5-1.5-5A6.5 6.5 0 0 0 12 3z"
         stroke={color} strokeWidth="1.8" strokeLinejoin="round"
         fill={active ? `${color}22` : 'none'} />
       <path d="M10 18.5a2 2 0 0 0 4 0" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
     </svg>
-  );
-
-  if (tabKey === 'profile') return (
+  ),
+  profile: (color, s, active) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="8" r="3.5" stroke={color} strokeWidth="1.8"
         fill={active ? `${color}22` : 'none'} />
       <path d="M4 19.5C4 16.46 7.58 14 12 14s8 2.46 8 5.5"
         stroke={color} strokeWidth="1.8" strokeLinecap="round" />
     </svg>
-  );
-
-  if (tabKey === 'adminRequests') return (
+  ),
+  adminRequests: (color, s, active) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="4" y="3" width="16" height="18" rx="2.5" stroke={color} strokeWidth="1.8"
         fill={active ? `${color}15` : 'none'} />
@@ -78,9 +74,8 @@ function TabIcon({ tabKey, active }: { tabKey: string; active: boolean }) {
       <circle cx="16.5" cy="16.5" r="3" fill={active ? color : 'none'} stroke={color} strokeWidth="1.5" />
       <path d="M15.5 16.5l.8.8 1.5-1.5" stroke={active ? 'white' : color} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-
-  if (tabKey === 'managerCalendar') return (
+  ),
+  managerCalendar: (color, s, active) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="3" y="5" width="18" height="16" rx="2.5" stroke={color} strokeWidth="1.8"
         fill={active ? `${color}15` : 'none'} />
@@ -88,9 +83,13 @@ function TabIcon({ tabKey, active }: { tabKey: string; active: boolean }) {
       <path d="M8 3v4M16 3v4" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
       <path d="M7 15l2.5 2.5L17 13" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
+  ),
+};
 
-  return null;
+function TabIcon({ tabKey, active }: { tabKey: string; active: boolean }) {
+  const color = active ? 'var(--c-teal)' : 'var(--fg-3)';
+  const s = 22;
+  return TAB_ICONS[tabKey]?.(color, s, active) ?? null;
 }
 
 export function TabBar() {
