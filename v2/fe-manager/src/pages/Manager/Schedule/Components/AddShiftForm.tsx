@@ -8,6 +8,29 @@ import type { ShiftEntity } from '../../../../services/Job/job';
 import { VN_OFFSET_MS } from '../../../../services/Job/job';
 
 
+function calcShiftDuration(startTime: string, endTime: string): { totalMins: number; isOvernight: boolean } {
+  const [sh, sm] = startTime.split(':').map(Number);
+  const [eh, em] = endTime.split(':').map(Number);
+  const raw = (eh * 60 + em) - (sh * 60 + sm);
+  if (raw === 0) return { totalMins: 0, isOvernight: false };
+  if (raw > 0) return { totalMins: raw, isOvernight: false };
+  return { totalMins: raw + 24 * 60, isOvernight: true };
+}
+
+interface FormState { staffId: string; locationId: string; roleId: string; dateStr: string; startTime: string; endTime: string; }
+
+function detectChanges(form: FormState, existing: ShiftEntity | undefined, isEdit: boolean): boolean {
+  if (!isEdit || !existing) return true;
+  return (
+    form.staffId !== existing.larkUserId ||
+    form.locationId !== existing.locationId ||
+    form.roleId !== existing.roleId ||
+    form.dateStr !== dateStrFromVN(existing.scheduleInTime) ||
+    form.startTime !== timeStrFromVN(existing.scheduleInTime) ||
+    form.endTime !== timeStrFromVN(existing.scheduleOutTime)
+  );
+}
+
 export interface AddCtx {
   staffId: string;
   dateStr: string;  // YYYY-MM-DD, '' = no pre-selection
@@ -65,28 +88,14 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
   const selectedStaff = STAFF.find(s => s.larkUserId === form.staffId);
   const roleOptions = (selectedStaff?.roleIds ?? []).map(id => roleById(id)).filter(Boolean) as NonNullable<ReturnType<typeof roleById>>[];
 
-  const { totalMins, isOvernight } = (() => {
-    const [sh, sm] = form.startTime.split(':').map(Number);
-    const [eh, em] = form.endTime.split(':').map(Number);
-    const raw = (eh * 60 + em) - (sh * 60 + sm);
-    if (raw === 0) return { totalMins: 0, isOvernight: false };
-    if (raw > 0) return { totalMins: raw, isOvernight: false };
-    return { totalMins: raw + 24 * 60, isOvernight: true };
-  })();
+  const { totalMins, isOvernight } = calcShiftDuration(form.startTime, form.endTime);
 
   const fmtTotal = (mins: number) => {
     const h = Math.floor(mins / 60), m = mins % 60;
     return m > 0 ? `${h} giờ ${m} phút` : `${h} giờ`;
   };
 
-  const hasChanges = !isEdit || !existing || (
-    form.staffId !== existing.larkUserId ||
-    form.locationId !== existing.locationId ||
-    form.roleId !== existing.roleId ||
-    form.dateStr !== dateStrFromVN(existing.scheduleInTime) ||
-    form.startTime !== timeStrFromVN(existing.scheduleInTime) ||
-    form.endTime !== timeStrFromVN(existing.scheduleOutTime)
-  );
+  const hasChanges = detectChanges(form, existing, isEdit);
 
   const canSave = !!(form.staffId && form.roleId && totalMins > 0 && hasChanges);
 
