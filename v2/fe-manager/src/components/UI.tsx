@@ -14,9 +14,20 @@ export function Eyebrow({ children, color, style }: { children: ReactNode; color
   );
 }
 
+type BtnVariant = 'primary' | 'secondary' | 'ghost' | 'subtle' | 'border' | 'dark';
+
+function getVariantStyle(variant: BtnVariant, hovered: boolean, accent: string): CSSProperties {
+  if (variant === 'primary')   return { background: hovered ? '#008C7C' : accent, color: '#fff' };
+  if (variant === 'secondary') return { background: hovered ? '#1E2D3D' : 'transparent', color: hovered ? '#fff' : '#1E2D3D', border: '1.5px solid #1E2D3D' };
+  if (variant === 'ghost')     return { background: hovered ? '#F0F3F5' : 'transparent', color: '#1E2D3D' };
+  if (variant === 'subtle')    return { background: hovered ? '#E6F8F6' : '#F7F9FA', color: '#1E2D3D', border: '1px solid #E8ECEF' };
+  if (variant === 'border')    return { background: hovered ? '#E6F8F6' : '#fff', color: '#008C7C', border: '1px solid #008C7C' };
+  return { background: hovered ? '#2c425aff' : '#1E2D3D', color: '#fff', border: '1px solid #008C7C' };
+}
+
 interface BtnProps {
   children?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'subtle' | 'border' | 'dark';
+  variant?: BtnVariant;
   onClick?: () => void;
   icon?: ReactNode;
   style?: CSSProperties;
@@ -28,14 +39,7 @@ export function Btn({ children, variant = 'primary', onClick, icon, style, size 
   const [h, setH] = useState(false);
   const pad = size === 'sm' ? '8px 14px' : size === 'lg' ? '14px 28px' : '10px 18px';
   const fs = size === 'sm' ? 13 : size === 'lg' ? 15 : 14;
-  let s: CSSProperties = {};
-  if (variant === 'primary') s = { background: h ? '#008C7C' : accent, color: '#fff' };
-  else if (variant === 'secondary') s = { background: h ? '#1E2D3D' : 'transparent', color: h ? '#fff' : '#1E2D3D', border: '1.5px solid #1E2D3D' };
-  else if (variant === 'ghost') s = { background: h ? '#F0F3F5' : 'transparent', color: '#1E2D3D' };
-  else if (variant === 'subtle') s = { background: h ? '#E6F8F6' : '#F7F9FA', color: '#1E2D3D', border: '1px solid #E8ECEF' };
-  else if (variant === 'border') s = { background: h ? '#E6F8F6' : '#fff' , color: '#008C7C', border: '1px solid #008C7C' };
-  else if (variant === 'dark') s = { background: h ? '#2c425aff' : '#1E2D3D' , color: '#fff', border: '1px solid #008C7C' };
-
+  let s: CSSProperties = getVariantStyle(variant, h, accent);
   if (disabled) s = { ...s, opacity: 0.4, cursor: 'not-allowed' };
   return (
     <button onClick={disabled ? undefined : onClick}
