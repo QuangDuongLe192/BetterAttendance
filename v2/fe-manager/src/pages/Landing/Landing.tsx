@@ -62,32 +62,43 @@ interface DerivedAccess {
   finLocs: string[];
 }
 
+function resolveDefaultId(hasAdmin: boolean, mgrLocs: string[], finLocs: string[]): string | null {
+  if (hasAdmin) return 'setup';
+  if (mgrLocs.length) return 'manager';
+  if (finLocs.length) return 'finance';
+  return null;
+}
+
 function deriveAccess(access: AccessRow[]): DerivedAccess {
   const hasAdmin = access.some(a => a.type === 'ADMIN');
   const mgrLocs = [...new Set(access.filter(a => a.type === 'MANAGER' && a.locationId).map(a => a.locationId as string))];
   const finEntries = access.filter(a => a.type === 'FINANCE');
   const finOrgWide = finEntries.some(a => a.locationId === null);
-  const finLocs = finOrgWide ? [] : [...new Set(finEntries.filter(a => a.locationId).map(a => a.locationId as string))];
+  const finLocsRaw = [...new Set(finEntries.filter(a => a.locationId).map(a => a.locationId as string))];
   const allLocIds = LOCATIONS.map(l => l.locationId);
+  const finGlobal = hasAdmin || finOrgWide;
+  const finLocs = finOrgWide ? allLocIds : finLocsRaw;
 
   const visible: DerivedAccess['visible'] = [];
-  if (hasAdmin)
+  if (hasAdmin) {
     visible.push({ ...WORKSPACES.setup, locs: allLocIds, scope: 'global' });
-  if (hasAdmin || mgrLocs.length) {
-    const locs = hasAdmin ? allLocIds : mgrLocs;
-    visible.push({ ...WORKSPACES.manager, locs, scope: hasAdmin ? 'global' : 'scoped' });
   }
-  if (hasAdmin || finLocs.length || finOrgWide)
-    visible.push({ ...WORKSPACES.finance, locs: (hasAdmin || finOrgWide) ? allLocIds : finLocs, scope: (hasAdmin || finOrgWide) ? 'global' : 'scoped' });
+  if (hasAdmin || mgrLocs.length) {
+    visible.push({
+      ...WORKSPACES.manager,
+      locs: hasAdmin ? allLocIds : mgrLocs,
+      scope: hasAdmin ? 'global' : 'scoped',
+    });
+  }
+  if (finGlobal || finLocs.length) {
+    visible.push({
+      ...WORKSPACES.finance,
+      locs: finGlobal ? allLocIds : finLocs,
+      scope: finGlobal ? 'global' : 'scoped',
+    });
+  }
 
-  const finLocsForDisplay = finOrgWide ? allLocIds : finLocs;
-
-  let defaultId: string | null = null;
-  if (hasAdmin) defaultId = 'setup';
-  else if (mgrLocs.length) defaultId = 'manager';
-  else if (finLocsForDisplay.length) defaultId = 'finance';
-
-  return { visible, defaultId, hasAdmin, mgrLocs, finLocs: finLocsForDisplay };
+  return { visible, defaultId: resolveDefaultId(hasAdmin, mgrLocs, finLocs), hasAdmin, mgrLocs, finLocs };
 }
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
