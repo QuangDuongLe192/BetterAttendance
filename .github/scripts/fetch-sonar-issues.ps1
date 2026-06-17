@@ -6,8 +6,8 @@ param(
     [int]$TimeoutMinutes     = 10
 )
 
-if (-not $SonarHostUrl) { Write-Error "SONAR_HOST_URL is not set"; exit 1 }
-if (-not $SonarToken)   { Write-Error "SONAR_TOKEN is not set";   exit 1 }
+if (-not $SonarHostUrl) { throw "SONAR_HOST_URL is not set" }
+if (-not $SonarToken)   { throw "SONAR_TOKEN is not set" }
 
 # Read project key from sonar-project.properties
 $projectKey = (Get-Content "sonar-project.properties" |
@@ -15,8 +15,7 @@ $projectKey = (Get-Content "sonar-project.properties" |
     Select-Object -First 1) -replace "^sonar\.projectKey=", ""
 
 if (-not $projectKey) {
-    Write-Error "sonar.projectKey not found in sonar-project.properties"
-    exit 1
+    throw "sonar.projectKey not found in sonar-project.properties"
 }
 
 # Read CE task ID written by sonarqube-scan-action
@@ -25,8 +24,7 @@ $ceTaskId = (Get-Content ".scannerwork/report-task.txt" -ErrorAction SilentlyCon
     Select-Object -First 1) -replace "^ceTaskId=", ""
 
 if (-not $ceTaskId) {
-    Write-Error "ceTaskId not found in .scannerwork/report-task.txt"
-    exit 1
+    throw "ceTaskId not found in .scannerwork/report-task.txt"
 }
 
 Write-Host "Polling CE task: $ceTaskId"
@@ -39,14 +37,13 @@ do {
     $status = $task.task.status
     Write-Host "  status: $status"
 
-    if ($status -eq "FAILED")    { Write-Error "CE task FAILED";    exit 1 }
-    if ($status -eq "CANCELLED") { Write-Error "CE task CANCELLED"; exit 1 }
+    if ($status -eq "FAILED")    { throw "CE task FAILED" }
+    if ($status -eq "CANCELLED") { throw "CE task CANCELLED" }
     if ($status -ne "SUCCESS")   { Start-Sleep -Seconds 5 }
 } while ($status -ne "SUCCESS" -and (Get-Date) -lt $deadline)
 
 if ($status -ne "SUCCESS") {
-    Write-Error "Timed out waiting for CE task after $TimeoutMinutes minutes"
-    exit 1
+    throw "Timed out waiting for CE task after $TimeoutMinutes minutes"
 }
 
 Write-Host "Analysis complete. Fetching issues for project: $projectKey"
