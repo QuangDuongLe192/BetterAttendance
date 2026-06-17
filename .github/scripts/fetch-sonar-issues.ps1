@@ -34,6 +34,7 @@ $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
 
 do {
     $task   = Invoke-RestMethod -Uri "$SonarHostUrl/api/ce/task?id=$ceTaskId" -Headers $headers
+    Write-Host "DEBUG response: $($task | ConvertTo-Json -Depth 3 -Compress)"
     $status = $task.task.status
     Write-Host "  status: $status"
 
