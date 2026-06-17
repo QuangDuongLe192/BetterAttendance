@@ -29,7 +29,10 @@ if (-not $ceTaskId) {
 
 Write-Host "Polling CE task: $ceTaskId"
 
-$headers  = @{ Authorization = "Bearer $SonarToken" }
+$headers  = @{
+    Authorization              = "Bearer $SonarToken"
+    "ngrok-skip-browser-warning" = "true"
+}
 $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
 
 do {
