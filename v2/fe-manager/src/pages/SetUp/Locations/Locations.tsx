@@ -50,13 +50,13 @@ function deriveModeLabel(mode: string[], t: (k: string) => string): string {
 }
 
 interface TabBtnProps {
-  id: 'infor' | 'staff';
-  label: string;
-  icon: string;
-  active: boolean;
-  disabled: boolean;
-  disabledHint: string;
-  onSelect: (id: 'infor' | 'staff') => void;
+  readonly id: 'infor' | 'staff';
+  readonly label: string;
+  readonly icon: string;
+  readonly active: boolean;
+  readonly disabled: boolean;
+  readonly disabledHint: string;
+  readonly onSelect: (id: 'infor' | 'staff') => void;
 }
 
 function TabButton({ id, label, icon, active, disabled, disabledHint, onSelect }: TabBtnProps) {
