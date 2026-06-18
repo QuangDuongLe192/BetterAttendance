@@ -253,7 +253,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
             <div style={sectionLabel}>{t('setup.staff.detail.pay.label')}</div>
             {!isEditing ? (
               <PayView
-                payType={staff.payType as 'hourly' | 'monthly'}
+                payType={staff.payType}
                 rate={staff.rate ?? 0}
                 monthly={staff.monthly ?? 0}
                 t={t}
