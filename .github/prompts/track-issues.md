@@ -24,7 +24,10 @@ For each finding in `sonar-issues.json`, determine which case applies:
 **Case A — No existing issue matches the fingerprint (new finding):**
 
 Create a new GitHub Issue with:
-- Title: `[SonarQube] {rule} — {component}:{line}`
+- Title: một câu ngắn gọn bằng tiếng Anh mô tả vấn đề cụ thể, ví dụ:
+  - `Cognitive Complexity too high in AuthService.login()` thay vì `squid:S3776 — src/auth.ts:42`
+  - `Unused variable 'result' in ShiftForm.tsx` thay vì `typescript:S1481 — src/ShiftForm.tsx:18`
+  - Quy tắc: **không dùng rule ID trong title**, mô tả vấn đề thực sự ở đâu
 - Labels: `sonarqube` AND exactly one of:
   - `bug` if `type == "BUG"`
   - `vulnerability` if `type == "VULNERABILITY"`
@@ -40,6 +43,12 @@ Create a new GitHub Issue with:
 | File     | {component} |
 | Line     | {line} |
 | Message  | {message} |
+
+## Vấn đề
+{1-2 câu giải thích rule này kiểm tra điều gì và tại sao nó là vấn đề}
+
+## Cách fix
+{2-4 bullet points gợi ý cách giải quyết cụ thể cho đoạn code này, dựa trên rule và message}
 
 <!-- sonar-fingerprint: {rule}::{component}::{line} -->
 ```
