@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { useNavigate, useLocation as useRouterLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ConfirmLeaveDialog } from '../../../components/ConfirmLeaveDialog';
@@ -59,6 +59,26 @@ interface TabBtnProps {
   onSelect: (id: 'infor' | 'staff') => void;
 }
 
+function getTabButtonStyle(active: boolean, disabled: boolean): CSSProperties {
+  return {
+    display: 'flex', alignItems: 'center', gap: 6,
+    padding: '8px 18px', borderRadius: 8, border: 'none',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    fontSize: 13, fontWeight: active ? 700 : 500,
+    color: disabled ? '#C8D4DC' : active ? '#fff' : '#6B7E8E',
+    background: active ? '#1E2D3D' : 'transparent',
+    boxShadow: active ? '0 2px 8px rgba(30,45,61,0.25)' : 'none',
+    opacity: disabled ? 0.5 : 1,
+    transition: 'all 160ms cubic-bezier(0.2,0.7,0.2,1)',
+    fontFamily: 'var(--font-display)',
+  };
+}
+
+function getIconStroke(active: boolean, disabled: boolean): string {
+  if (disabled) return '#C8D4DC';
+  return active ? '#fff' : '#9BAAB5';
+}
+
 function TabButton({ id, label, icon, active, disabled, disabledHint, onSelect }: TabBtnProps) {
   const IconComp = Icons[icon as keyof typeof Icons];
   return (
@@ -66,20 +86,9 @@ function TabButton({ id, label, icon, active, disabled, disabledHint, onSelect }
       onClick={disabled ? undefined : () => onSelect(id)}
       disabled={disabled}
       title={disabled ? disabledHint : undefined}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 6,
-        padding: '8px 18px', borderRadius: 8, border: 'none',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontSize: 13, fontWeight: active ? 700 : 500,
-        color: disabled ? '#C8D4DC' : active ? '#fff' : '#6B7E8E',
-        background: active ? '#1E2D3D' : 'transparent',
-        boxShadow: active ? '0 2px 8px rgba(30,45,61,0.25)' : 'none',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'all 160ms cubic-bezier(0.2,0.7,0.2,1)',
-        fontFamily: 'var(--font-display)',
-      }}
+      style={getTabButtonStyle(active, disabled)}
     >
-      <IconComp size={13} stroke={disabled ? '#C8D4DC' : active ? '#fff' : '#9BAAB5'} />
+      <IconComp size={13} stroke={getIconStroke(active, disabled)} />
       {label}
     </button>
   );
