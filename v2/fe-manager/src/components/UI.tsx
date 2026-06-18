@@ -16,13 +16,17 @@ export function Eyebrow({ children, color, style }: { children: ReactNode; color
 
 type BtnVariant = 'primary' | 'secondary' | 'ghost' | 'subtle' | 'border' | 'dark';
 
+const VARIANT_STYLES: Record<BtnVariant, (h: boolean, accent: string) => CSSProperties> = {
+  primary:   (h, accent) => ({ background: h ? '#008C7C' : accent, color: '#fff' }),
+  secondary: (h) => ({ background: h ? '#1E2D3D' : 'transparent', color: h ? '#fff' : '#1E2D3D', border: '1.5px solid #1E2D3D' }),
+  ghost:     (h) => ({ background: h ? '#F0F3F5' : 'transparent', color: '#1E2D3D' }),
+  subtle:    (h) => ({ background: h ? '#E6F8F6' : '#F7F9FA', color: '#1E2D3D', border: '1px solid #E8ECEF' }),
+  border:    (h) => ({ background: h ? '#E6F8F6' : '#fff', color: '#008C7C', border: '1px solid #008C7C' }),
+  dark:      (h) => ({ background: h ? '#2c425aff' : '#1E2D3D', color: '#fff', border: '1px solid #008C7C' }),
+};
+
 function getVariantStyle(variant: BtnVariant, hovered: boolean, accent: string): CSSProperties {
-  if (variant === 'primary')   return { background: hovered ? '#008C7C' : accent, color: '#fff' };
-  if (variant === 'secondary') return { background: hovered ? '#1E2D3D' : 'transparent', color: hovered ? '#fff' : '#1E2D3D', border: '1.5px solid #1E2D3D' };
-  if (variant === 'ghost')     return { background: hovered ? '#F0F3F5' : 'transparent', color: '#1E2D3D' };
-  if (variant === 'subtle')    return { background: hovered ? '#E6F8F6' : '#F7F9FA', color: '#1E2D3D', border: '1px solid #E8ECEF' };
-  if (variant === 'border')    return { background: hovered ? '#E6F8F6' : '#fff', color: '#008C7C', border: '1px solid #008C7C' };
-  return { background: hovered ? '#2c425aff' : '#1E2D3D', color: '#fff', border: '1px solid #008C7C' };
+  return VARIANT_STYLES[variant](hovered, accent);
 }
 
 interface BtnProps {

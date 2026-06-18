@@ -114,9 +114,10 @@ export function NewLocationWizard({ onDone }: { onDone: () => void }) {
 
   const validate = (s: number): boolean => {
     const key = steps[s - 1]?.key;
-    const errs = key === 'basic' ? validateBasic(draft, t)
-      : key === 'wifi' ? validateWifi(draft, t)
-      : {};
+    let errs: Record<string, string>;
+    if (key === 'basic') errs = validateBasic(draft, t);
+    else if (key === 'wifi') errs = validateWifi(draft, t);
+    else errs = {};
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
