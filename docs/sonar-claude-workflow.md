@@ -19,7 +19,7 @@ Workflow này tự động hóa quá trình từ lúc developer push code đến
   ```bash
   ngrok http 9000
   ```
-- **Claude Code CLI** cài đặt trên máy local
+- **Claude Code CLI** cài đặt trên máy local (chỉ cần cho flow thủ công)
 
 ### GitHub Secrets
 Vào repo → Settings → Secrets and variables → Actions → New repository secret:
@@ -28,20 +28,21 @@ Vào repo → Settings → Secrets and variables → Actions → New repository 
 |--------|---------|
 | `SONAR_TOKEN` | Token SonarQube (tạo tại SonarQube → My Account → Security) |
 | `SONAR_HOST_URL` | URL ngrok hiện tại, ví dụ `https://xxxx.ngrok-free.app` |
+| `ANTHROPIC_API_KEY` | API key của Anthropic (chỉ cần cho flow tự động) |
 
 > **Lưu ý:** ngrok free plan đổi URL mỗi lần restart. Cần update `SONAR_HOST_URL` thủ công sau mỗi lần restart ngrok.
 
 ### GitHub Labels
-Tạo các labels sau trong repo (Settings → Labels):
+Chỉ `sonarqube` là bắt buộc. Các labels còn lại nên có để theo dõi trạng thái:
 
-| Label | Màu | Mô tả |
-|-------|-----|-------|
-| `sonarqube` | `#e11d48` | Đánh dấu issue từ SonarQube |
-| `bug` | `#d73a4a` | Lỗi runtime |
-| `vulnerability` | `#b91c1c` | Lỗ hổng bảo mật |
-| `code-smell` | `#f97316` | Code chất lượng thấp |
-| `in-progress` | `#ffa500` | Đang được Claude fix |
-| `in-review` | `#0075ca` | Draft PR đã tạo, chờ review |
+| Label | Màu | Bắt buộc | Mô tả |
+|-------|-----|----------|-------|
+| `sonarqube` | `#e11d48` | Có | Đánh dấu issue từ SonarQube |
+| `bug` | `#d73a4a` | Không | Lỗi runtime |
+| `vulnerability` | `#b91c1c` | Không | Lỗ hổng bảo mật |
+| `code-smell` | `#f97316` | Không | Code chất lượng thấp |
+| `in-progress` | `#ffa500` | Không | Đang được Claude fix |
+| `in-review` | `#0075ca` | Không | Draft PR đã tạo, chờ review |
 
 ```bash
 gh label create "sonarqube"      --color "e11d48" --description "Đánh dấu issue từ SonarQube"
@@ -52,9 +53,39 @@ gh label create "in-review"      --color "0075ca" --description "Draft PR đã t
 ```
 
 ### GitHub Project
-Tạo hoặc dùng Project có sẵn (ví dụ Project #1).
 
-Bật automation tại Project → Settings → Workflows:
+Issues sẽ được tự động thêm vào GitHub Project sau khi tạo.
+
+#### Dùng project có sẵn
+
+Lấy project number bằng lệnh:
+```bash
+gh project list --owner QuangDuongLe192
+```
+
+Ví dụ output:
+```
+NUMBER  TITLE           STATE
+1       BetterAttendance  open
+```
+
+Mở [track-issues.md](.github/prompts/track-issues.md), tìm dòng:
+```bash
+gh project item-add 1 --owner QuangDuongLe192 ...
+```
+Thay số `1` bằng project number tương ứng.
+
+#### Tạo project mới
+
+```bash
+gh project create --owner QuangDuongLe192 --title "SonarQube Fixes"
+```
+
+Lệnh trả về project number mới — điền vào `track-issues.md` như trên.
+
+#### Bật automation
+
+Vào Project → Settings → Workflows, bật 3 rules:
 - **Item added to project** → Status: `Todo`
 - **Pull request opened** → Status: `In Progress`
 - **Item closed** → Status: `Done`
@@ -66,7 +97,7 @@ Bật automation tại Project → Settings → Workflows:
 ```
 .github/
 ├── workflows/
-│   └── build.yml                  # GitHub Actions: scan + fetch issues
+│   └── build.yml                  # GitHub Actions: scan + fetch + track + fix
 ├── scripts/
 │   └── fetch-sonar-issues.ps1     # PowerShell: poll CE task + phân trang API
 ├── prompts/
@@ -80,79 +111,90 @@ sonar-project.properties           # Cấu hình SonarQube project
 
 ---
 
-## Flow chi tiết
+## Flow 1 — Tự động (GitHub Actions)
 
-### Giai đoạn 1 — GitHub Actions (tự động khi push lên main)
+Toàn bộ quy trình chạy tự động sau mỗi lần push lên `main`. Yêu cầu `ANTHROPIC_API_KEY` trong GitHub Secrets.
 
 ```
 git push → main
     │
     ▼
-[Job: build]
-    ├─ Checkout code
-    ├─ SonarQube scan (sonarqube-scan-action)
-    ├─ fetch-sonar-issues.ps1
-    │     ├─ Poll CE task đến khi SUCCESS
-    │     ├─ Fetch tất cả issues theo trang (ps=500)
-    │     └─ Ghi sonar-issues.json
+[Job 1: build]
+    ├─ SonarQube scan
+    ├─ Fetch tất cả issues (có phân trang)
     └─ Upload sonar-issues.json làm artifact
+    │
+    ▼
+[Job 2: track-issues]
+    ├─ Download sonar-issues.json
+    ├─ Claude so sánh findings với GitHub Issues hiện có
+    │     ├─ Finding mới       → Tạo issue + add vào Project
+    │     ├─ Finding còn đó    → Comment "still present"
+    │     ├─ Finding tái xuất  → Reopen issue
+    │     └─ Finding đã fix    → Close issue
+    └─ Upload new-issues.json làm artifact
+    │
+    ▼
+[Job 3: fix-issues]  ← bỏ qua nếu new-issues.json rỗng
+    └─ Claude fix từng issue mới:
+          ├─ Label in-progress
+          ├─ Tạo branch fix/sonar-{N}
+          ├─ Fix code → commit → push
+          ├─ Tạo Draft PR (Closes #{N})
+          └─ Label in-review
+    │
+    ▼
+Developer review và merge từng Draft PR
+    │
+    ▼
+Issue tự đóng → Project item → Done
+    │
+    ▼
+[Lần push tiếp theo] → vòng lặp tiếp tục
 ```
 
-### Giai đoạn 2 — Triage (Developer chạy thủ công)
+Có thể kích hoạt thủ công (không cần push) tại:
+> GitHub → Actions → Build → Run workflow
+
+---
+
+## Flow 2 — Thủ công (Claude Code CLI)
+
+Dùng khi không muốn dùng `ANTHROPIC_API_KEY` trên GitHub, hoặc muốn kiểm soát từng bước.
+
+### Bước 1 — Lấy sonar-issues.json
+
+**Option A: Download từ GitHub Actions artifact** (sau khi Job 1 đã chạy)
+```bash
+gh run download --name sonar-issues --dir . --repo QuangDuongLe192/BetterAttendance
+```
+
+**Option B: Chạy script trực tiếp** (cần ngrok đang chạy)
+```powershell
+$env:SONAR_HOST_URL = "https://xxxx.ngrok-free.app"
+$env:SONAR_TOKEN    = "sqp_xxxxxxxxxxxx"
+.github/scripts/fetch-sonar-issues.ps1
+```
+
+### Bước 2 — Claude tạo/cập nhật GitHub Issues
 
 ```bash
-# Bước 1: Lấy sonar-issues.json về local
-gh run download --name sonar-issues --dir . --repo QuangDuongLe192/BetterAttendance
-
-# Bước 2: Claude tạo/cập nhật GitHub Issues
 claude "$(cat .github/prompts/track-issues.md)"
 ```
 
-Claude xử lý từng finding theo 4 trường hợp:
-
-| Case | Điều kiện | Hành động |
-|------|-----------|-----------|
-| A | Finding mới, chưa có issue | Tạo issue mới + add vào Project #1 |
-| B | Issue đang open, không có PR | Comment "still present" |
-| B* | Issue đang `in-review` hoặc `in-progress` | Bỏ qua |
-| C | Issue đã closed, finding tái xuất | Reopen + comment |
-| D | Issue open nhưng finding đã biến mất | Comment "resolved" + close |
-
 Kết quả: file `new-issues.json` chứa danh sách issues vừa tạo mới.
 
-### Giai đoạn 3 — Fix (Developer chạy thủ công)
+### Bước 3 — Claude fix từng issue
 
 ```bash
 claude "$(cat .github/prompts/fix-issues.md)"
 ```
 
-Claude xử lý từng issue trong `new-issues.json`:
+Bỏ qua tự động nếu `new-issues.json` rỗng.
 
-```
-Với mỗi issue:
-    ├─ Label in-progress + comment "Fix in progress..."
-    ├─ git worktree add ../worktrees/fix-{N} -b fix/sonar-{N}
-    ├─ Đọc file lỗi, hiểu vấn đề
-    ├─ Sửa code (minimal change)
-    ├─ git commit + git push
-    ├─ gh pr create --draft (Closes #{N})
-    └─ Label in-review + comment "PR #{pr_number}"
-```
+### Bước 4 — Review và merge
 
-### Giai đoạn 4 — Review (Developer)
-
-- Vào GitHub → Pull Requests → xem các Draft PR
-- Review từng PR, merge nếu đồng ý
-- Issue tự động close khi merge (vì có `Closes #{N}`)
-- Project item tự chuyển sang **Done**
-
----
-
-## Vòng lặp
-
-Mỗi lần merge PR sẽ trigger push → main → GitHub Actions chạy lại scan:
-- Issues đã fix: biến mất khỏi SonarQube → Case D → close
-- Issues mới phát sinh: Case A → tạo issue mới → fix tiếp
+Vào GitHub → Pull Requests → review từng Draft PR → merge.
 
 ---
 
@@ -164,6 +206,27 @@ Mỗi lần merge PR sẽ trigger push → main → GitHub Actions chạy lại 
 | Đang fix | `in-progress` | Claude đang tạo worktree và sửa code |
 | Chờ review | `in-review` | Draft PR đã tạo |
 | Xong | *(closed)* | PR đã merge |
+
+---
+
+## Xử lý finding cũ chưa fix
+
+Theo mặc định, `track-issues.md` chỉ đưa **findings mới** vào `new-issues.json`. Findings cũ chưa fix (Case B) chỉ nhận comment "still present".
+
+Để fix thủ công một issue cụ thể, tạo `new-issues.json` với dữ liệu từ issue đó rồi chạy bước 3:
+
+```json
+[
+  {
+    "number": 42,
+    "rule": "squid:S3776",
+    "component": "src/features/auth/auth.service.ts",
+    "line": 42,
+    "message": "Cognitive Complexity of 18 exceeds 15",
+    "type": "CODE_SMELL"
+  }
+]
+```
 
 ---
 
@@ -180,3 +243,9 @@ Script đã hỗ trợ phân trang. Nếu vẫn thiếu, kiểm tra `$response.p
 
 ### Claude không tìm thấy gh CLI
 Đảm bảo đang chạy lệnh `claude` trong terminal đã đăng nhập `gh auth login`.
+
+### GitHub Actions không tạo được PR
+Vào repo → Settings → Actions → General → Workflow permissions → bật **"Allow GitHub Actions to create and approve pull requests"**.
+
+### new-issues.json rỗng dù có issues trên GitHub
+Các issues đó đã tồn tại từ lần chạy trước (fingerprint đã match). Xem phần **Xử lý finding cũ chưa fix** ở trên.
