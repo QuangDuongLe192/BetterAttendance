@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 
 jobs:
@@ -58,6 +59,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: sonar-issues
+
+      - name: Limit to 1 issue (testing)
+        run: jq '{"issues": .issues[0:1], "total": 1}' sonar-issues.json > tmp.json && mv tmp.json sonar-issues.json
 
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
