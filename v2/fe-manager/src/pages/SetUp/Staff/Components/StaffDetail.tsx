@@ -306,7 +306,7 @@ interface PayViewProps {
   t: (k: string) => string;
 }
 
-function PayView({ payType, rate, monthly, t }: PayViewProps) {
+function PayView({ payType, rate, monthly, t }: Readonly<PayViewProps>) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 12, padding: '3px 10px', borderRadius: 999,
