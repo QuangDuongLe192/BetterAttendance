@@ -52,8 +52,18 @@ if ($status -ne "SUCCESS") {
 
 Write-Host "Analysis complete. Fetching issues for project: $projectKey"
 
-$url      = "$SonarHostUrl/api/issues/search?projectKeys=$projectKey&resolved=false&ps=500"
-$response = Invoke-RestMethod -Uri $url -Headers $headers
-$response | ConvertTo-Json -Depth 10 | Set-Content "sonar-issues.json" -Encoding UTF8
+$allIssues = @()
+$page      = 1
+$pageSize  = 500
 
-Write-Host "Saved $($response.total) issues to sonar-issues.json"
+do {
+    $url      = "$SonarHostUrl/api/issues/search?projectKeys=$projectKey&resolved=false&ps=$pageSize&p=$page"
+    $response = Invoke-RestMethod -Uri $url -Headers $headers
+    $allIssues += $response.issues
+    Write-Host "  Fetched page $page ($($allIssues.Count)/$($response.paging.total))"
+    $page++
+} while ($allIssues.Count -lt $response.paging.total)
+
+@{ issues = $allIssues; total = $allIssues.Count } | ConvertTo-Json -Depth 10 | Set-Content "sonar-issues.json" -Encoding UTF8
+
+Write-Host "Saved $($allIssues.Count) issues to sonar-issues.json"

@@ -32,7 +32,11 @@ Create a new GitHub Issue with:
   - `bug` if `type == "BUG"`
   - `vulnerability` if `type == "VULNERABILITY"`
   - `code-smell` if `type == "CODE_SMELL"`
-- **Capture the issue number:** Use `gh issue create --json number --jq '.number'` flags to capture the returned issue number for writing to `new-issues.json`.
+- **Capture the issue number and URL:** Use `gh issue create --json number,url --jq '{number: .number, url: .url}'` flags to capture both for the next steps.
+- **Add to GitHub Project:** After creating the issue, run:
+  ```bash
+  gh project item-add 1 --owner QuangDuongLe192 --url {issue_url}
+  ```
 - Body:
 ```
 | Field    | Value |

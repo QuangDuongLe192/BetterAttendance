@@ -41,3 +41,88 @@ jobs:
         with:
           name: sonar-issues
           path: sonar-issues.json
+
+  track-issues:
+    name: Create GitHub Issues
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      issues: write
+      contents: read
+      actions: read
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Download sonar-issues artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sonar-issues
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Sync findings to GitHub Issues
+        run: claude --print --dangerously-skip-permissions "$(cat .github/prompts/track-issues.md)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+
+      - name: Upload new-issues artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-issues
+          path: new-issues.json
+
+  fix-issues:
+    name: Fix Issues via Worktrees
+    runs-on: ubuntu-latest
+    needs: track-issues
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download new-issues artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: new-issues
+
+      - name: Check for new issues
+        id: check
+        run: |
+          if [ "$(cat new-issues.json)" = "[]" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure git
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Limit to 1 issue (testing)
+        if: steps.check.outputs.skip == 'false'
+        run: jq '.[0:1]' new-issues.json > tmp.json && mv tmp.json new-issues.json
+
+      - name: Install Claude Code CLI
+        if: steps.check.outputs.skip == 'false'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Fix issues and create Draft PRs
+        if: steps.check.outputs.skip == 'false'
+        run: claude --print --dangerously-skip-permissions "$(cat .github/prompts/fix-issues.md)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
