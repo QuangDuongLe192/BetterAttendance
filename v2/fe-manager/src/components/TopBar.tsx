@@ -129,7 +129,7 @@ export function TopBar() {
               }}
             >
               {showAvatar ? (
-                <img src={user.avatarUrl} onError={() => setImgError(true)} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                <img src={user.avatarUrl} alt={user.name} onError={() => setImgError(true)} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
               ) : (
                 <span style={{ width: 32, height: 32, borderRadius: 999, background: '#2B7EC4', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 12, flexShrink: 0 }}>
                   {getInitials(user.name)}
