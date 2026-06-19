@@ -1,6 +1,8 @@
 import { createPortal } from 'react-dom';
 import { Icons } from './Icons';
 
+const Alert = Icons.alert;
+
 interface Props {
   open: boolean;
   title: string;
@@ -28,7 +30,7 @@ export function ConfirmLeaveDialog({ open, title, body, confirmLabel, cancelLabe
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(220,38,38,0.09)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icons.alert size={18} stroke="#DC2626" />
+            <Alert size={18} stroke="#DC2626" />
           </div>
           <span style={{ fontSize: 15, fontWeight: 700, color: '#1E2D3D', fontFamily: 'var(--font-display)' }}>
             {title}
