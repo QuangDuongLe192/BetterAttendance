@@ -77,9 +77,13 @@ export function Card({ children, style, hoverable, onClick, pad = true }: Readon
   }
   return (
     <div
-      onMouseEnter={() => { if (hoverable) setH(true); }}
-      onMouseLeave={() => { if (hoverable) setH(false); }}
-      style={baseStyle}>
+      onClick={onClick}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onMouseEnter={() => hoverable ? setH(true) : undefined}
+      onMouseLeave={() => hoverable ? setH(false) : undefined}
+      style={{ background: '#fff', border: `1px solid ${h ? '#1E2D3D' : '#C8D4DC'}`, borderRadius: 8, padding, cursor: onClick ? 'pointer' : 'default', transition: 'border-color 180ms', ...style }}>
       {children}
     </div>
   );
