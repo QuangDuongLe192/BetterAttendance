@@ -13,7 +13,7 @@ interface Props {
   onCancel: () => void;
 }
 
-export function ConfirmLeaveDialog({ open, title, body, confirmLabel, cancelLabel, onConfirm, onCancel }: Props) {
+export function ConfirmLeaveDialog({ open, title, body, confirmLabel, cancelLabel, onConfirm, onCancel }: Readonly<Props>) {
   if (!open) return null;
   return createPortal(
     <div

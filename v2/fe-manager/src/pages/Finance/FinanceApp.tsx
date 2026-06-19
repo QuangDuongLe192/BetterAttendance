@@ -67,8 +67,10 @@ export function FinanceApp() {
     approve:   <FinApprove   summary={summary} byLoc={byLoc} period={FIN_PERIOD} isLoading={isLoading} error={error}/>,
   };
 
+  const themeValue = useMemo(() => ({ density: 'spacious' as const, accent: '#00B4A0' }), []);
+
   return (
-    <ThemeCtx.Provider value={{ density: 'spacious', accent: '#00B4A0' }}>
+    <ThemeCtx.Provider value={themeValue}>
       <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F9FA' }}>
         {/* Sidebar */}
         <aside style={{ width: 260, background: '#1E2D3D', color: '#fff', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>

@@ -1,8 +1,8 @@
 import type { SetupStats, ProgressItem, TodaySummary } from '../services/Metadata/metadata';
 import type { MgrMe, StoreToday } from '../services/Manager/mgr';
-import { NOW_TS, calcStoreToday, calcStoreMonth } from './shift';
+import { calcStoreToday, calcStoreMonth } from './shift';
 
-export { NOW_TS };
+export { NOW_TS } from './shift';
 export { NOW } from './shift';
 
 export const MGR_ME: MgrMe = {
