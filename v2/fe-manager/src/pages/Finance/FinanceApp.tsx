@@ -16,6 +16,9 @@ import { FinAnalytics } from './Analystics/FinAnalytics';
 import { FinHistory } from './History/FinHistory';
 import { FinApprove } from './Approve/FinApprove';
 
+const ChevR = Icons.chevR;
+const Check = Icons.check;
+
 type SectionId = 'overview' | 'payroll' | 'analytics' | 'history' | 'approve';
 type PayrollLayout = 'split' | 'table' | 'cards';
 
@@ -77,7 +80,7 @@ export function FinanceApp() {
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(200,212,220,0.5)')}
               style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none', cursor: 'pointer', color: 'rgba(200,212,220,0.5)', fontSize: 11.5, fontWeight: 600, padding: '0 0 14px', fontFamily: 'var(--font-display)', transition: 'color 150ms' }}
             >
-              <Icons.chevR size={12} stroke="currentColor" style={{ transform: 'scaleX(-1)' }} />
+              <ChevR size={12} stroke="currentColor" style={{ transform: 'scaleX(-1)' }} />
               {t('finance.sidebar.workspaceHub')}
             </button>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 10}}>
@@ -100,7 +103,7 @@ export function FinanceApp() {
             <div style={{ fontSize: 11, color: summary.pending > 0 ? '#F4B26E' : '#7BE4D6', marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
               {summary.pending > 0
                 ? <><span style={{ width: 6, height: 6, borderRadius: 999, background: '#B45309', display: 'inline-block' }}/>{t('finance.sidebar.pendingCount', { count: summary.pending })}</>
-                : <><Icons.check size={11} stroke="#00B4A0"/> {t('finance.sidebar.readyToApprove')}</>}
+                : <><Check size={11} stroke="#00B4A0"/> {t('finance.sidebar.readyToApprove')}</>}
             </div>
           </div>
 
@@ -146,7 +149,7 @@ export function FinanceApp() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '0 48px', height: 68 }}>
               <div style={{ fontSize: 13, color: '#6B7E8E', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span>{t('finance.topbar.breadcrumbRoot')}</span>
-                <Icons.chevR size={12} stroke="#C8D4DC"/>
+                <ChevR size={12} stroke="#C8D4DC"/>
                 <span style={{ color: '#1E2D3D', fontWeight: 600 }}>{curNavLabel}</span>
               </div>
               <div style={{ flex: 1 }}/>
@@ -162,7 +165,7 @@ export function FinanceApp() {
               <button onClick={() => onNav('approve')} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 16px', background: '#00B4A0', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, transition: 'background 150ms' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#008C7C'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#00B4A0'; }}>
-                <Icons.check size={13} stroke="#fff"/>{t('finance.topbar.approvePayroll')}
+                <Check size={13} stroke="#fff"/>{t('finance.topbar.approvePayroll')}
               </button>
             </div>
           </header>
