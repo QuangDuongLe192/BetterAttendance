@@ -77,6 +77,7 @@ export function LanguageToggle({ flyoutDir = 'right' }: Readonly<Props>) {
 
       {open && createPortal(
         <div
+          role="menu"
           onMouseEnter={show}
           onMouseLeave={hide}
           onMouseDown={e => e.nativeEvent.stopImmediatePropagation()}
