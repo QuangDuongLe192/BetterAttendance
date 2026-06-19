@@ -14,7 +14,7 @@ const LANGS = [
 
 const FLYOUT_W = 152;
 
-export function LanguageToggle({ flyoutDir = 'right' }: Props) {
+export function LanguageToggle({ flyoutDir = 'right' }: Readonly<Props>) {
   const { t, i18n } = useTranslation('common');
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
