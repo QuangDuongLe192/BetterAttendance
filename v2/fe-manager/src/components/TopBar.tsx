@@ -40,7 +40,7 @@ const TYPE_CFG: Record<Notif['type'], { color: string; bg: string; icon: keyof t
   system:   { color: '#3B82F6', bg: 'rgba(59,130,246,0.1)',   icon: 'settings', label: 'Hệ thống'  },
 };
 
-function CandylioMark({ size }: { size?: number }) {
+function CandylioMark({ size }: Readonly<{ size?: number }>) {
   return <img src="./src/public/candylio-logo-full.svg" style={{ height: size }} alt="Candylio Logo" />;
 }
 
