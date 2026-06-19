@@ -326,7 +326,10 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
           return (
             <div
               key={n.id}
+              role="button"
+              tabIndex={0}
               onClick={() => onRead(n.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onRead(n.id); }}
               style={{
                 display: 'flex', gap: 12, padding: '13px 18px',
                 borderTop: i > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none',
