@@ -153,7 +153,7 @@ export function TopBar() {
               <div style={{ position: 'absolute', right: 0, top: 'calc(100% + 6px)', zIndex: 50, background: '#fff', border: '1px solid #E8ECEF', borderRadius: 10, boxShadow: '0 8px 24px rgba(30,45,61,0.12)', minWidth: 240, overflow: 'hidden' }}>
                 <div style={{ padding: '14px 16px', borderBottom: '1px solid #E8ECEF', display: 'flex', alignItems: 'center', gap: 10 }}>
                   {showAvatar ? (
-                    <img src={user.avatarUrl} onError={() => setImgError(true)} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                    <img src={user.avatarUrl} alt={user.name} onError={() => setImgError(true)} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                   ) : (
                     <span style={{ width: 40, height: 40, borderRadius: 999, background: '#2B7EC4', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
                       {getInitials(user.name)}
@@ -326,14 +326,14 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
           const iconBorderColor = n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}28`;
           const tagBorderColor = n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}30`;
           return (
-            <div
+            <button
               key={n.id}
-              role="button"
-              tabIndex={0}
+              type="button"
               onClick={() => onRead(n.id)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onRead(n.id); }}
               style={{
-                display: 'flex', gap: 12, padding: '13px 18px',
+                display: 'flex', gap: 12, padding: '13px 18px', width: '100%', textAlign: 'left', fontFamily: 'inherit',
+                border: 'none',
                 borderTop: i > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none',
                 borderLeft: `3px solid ${n.read ? 'transparent' : cfg.color}`,
                 background: n.read ? 'transparent' : `${cfg.bg}`,
@@ -377,7 +377,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
                   </span>
                 </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
