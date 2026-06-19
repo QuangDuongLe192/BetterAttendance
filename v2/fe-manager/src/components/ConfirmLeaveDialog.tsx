@@ -1,6 +1,8 @@
 import { createPortal } from 'react-dom';
 import { Icons } from './Icons';
 
+const Alert = Icons.alert;
+
 interface Props {
   open: boolean;
   title: string;
@@ -18,15 +20,17 @@ export function ConfirmLeaveDialog({ open, title, body, confirmLabel, cancelLabe
       style={{ position: 'fixed', inset: 0, zIndex: 9000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(30,45,61,0.45)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
       onClick={onCancel}
       onKeyDown={(e) => { if (e.key === 'Escape') onCancel(); }}
-      role="presentation"
     >
       <div
+        role="dialog"
+        aria-modal={true}
         style={{ background: '#fff', borderRadius: 14, padding: '28px 28px 24px', maxWidth: 400, width: '90%', boxShadow: '0 16px 48px rgba(30,45,61,0.22)', display: 'flex', flexDirection: 'column', gap: 12 }}
         onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(220,38,38,0.09)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icons.alert size={18} stroke="#DC2626" />
+            <Alert size={18} stroke="#DC2626" />
           </div>
           <span style={{ fontSize: 15, fontWeight: 700, color: '#1E2D3D', fontFamily: 'var(--font-display)' }}>
             {title}

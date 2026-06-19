@@ -6,11 +6,16 @@ import { Avatar } from './UI';
 import { useAuth } from '../stores/AuthContext';
 import { LanguageToggle } from './LanguageToggle';
 
+const ChevD = Icons.chevD;
+const Settings = Icons.settings;
+const Alert = Icons.alert;
+const Lock = Icons.lock;
+
 interface Props {
   avatarColor?: string;
 }
 
-export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Props) {
+export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Readonly<Props>) {
   const { t } = useTranslation('common');
   const { user, logout } = useAuth();
   const nav = useNavigate();
@@ -47,7 +52,7 @@ export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Props) {
           <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</div>
           <div style={{ fontSize: 11, color: '#6AB3E8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.title}</div>
         </div>
-        <Icons.chevD
+        <ChevD
           size={13} stroke="#C8D4DC"
           style={{ flexShrink: 0, transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 180ms' }}
         />
@@ -72,8 +77,8 @@ export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Props) {
           {/* Menu items */}
           <div style={{ padding: '4px 0' }}>
             {[
-              { icon: <Icons.settings size={14} stroke="#6B7E8E" />, label: t('userMenu.settings') },
-              { icon: <Icons.alert size={14} stroke="#6B7E8E" />, label: t('userMenu.support') },
+              { icon: <Settings size={14} stroke="#6B7E8E" />, label: t('userMenu.settings') },
+              { icon: <Alert size={14} stroke="#6B7E8E" />, label: t('userMenu.support') },
             ].map(({ icon, label }) => (
               <button
                 key={label}
@@ -99,7 +104,7 @@ export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Props) {
               onMouseEnter={e => (e.currentTarget.style.background = '#FFF5F5')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
-              <Icons.lock size={14} stroke="#C0392B" /> {t('userMenu.logout')}
+              <Lock size={14} stroke="#C0392B" /> {t('userMenu.logout')}
             </button>
           </div>
         </div>

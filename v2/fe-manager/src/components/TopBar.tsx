@@ -5,6 +5,13 @@ import { LanguageToggle } from './LanguageToggle';
 import { Icons } from './Icons';
 import { useAuth, getInitials } from '../stores/AuthContext';
 
+const ChevD = Icons.chevD;
+const Settings = Icons.settings;
+const Alert = Icons.alert;
+const Lock = Icons.lock;
+const Bell = Icons.bell;
+const Check = Icons.check;
+
 // ─── Mock notifications ───────────────────────────────────────────────────────
 interface Notif {
   id: string;
@@ -40,7 +47,7 @@ const TYPE_CFG: Record<Notif['type'], { color: string; bg: string; icon: keyof t
   system:   { color: '#3B82F6', bg: 'rgba(59,130,246,0.1)',   icon: 'settings', label: 'Hệ thống'  },
 };
 
-function CandylioMark({ size }: { size?: number }) {
+function CandylioMark({ size }: Readonly<{ size?: number }>) {
   return <img src="./src/public/candylio-logo-full.svg" style={{ height: size }} alt="Candylio Logo" />;
 }
 
@@ -129,7 +136,7 @@ export function TopBar() {
               }}
             >
               {showAvatar ? (
-                <img src={user.avatarUrl} onError={() => setImgError(true)} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                <img src={user.avatarUrl} alt={user.name} onError={() => setImgError(true)} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
               ) : (
                 <span style={{ width: 32, height: 32, borderRadius: 999, background: '#2B7EC4', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 12, flexShrink: 0 }}>
                   {getInitials(user.name)}
@@ -139,7 +146,7 @@ export function TopBar() {
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1E2D3D' }}>{shortName}</span>
                 <span style={{ fontSize: 10.5, color: '#6B7E8E' }}>{user.org}</span>
               </div>
-              <Icons.chevD size={13} stroke="#6B7E8E" />
+              <ChevD size={13} stroke="#6B7E8E" />
             </button>
 
             {menuOpen && (
@@ -159,8 +166,8 @@ export function TopBar() {
                 </div>
                 <div style={{ padding: '4px 0' }}>
                   {[
-                    { icon: <Icons.settings size={14} stroke="#6B7E8E" />, label: t('userMenu.settings') },
-                    { icon: <Icons.alert size={14} stroke="#6B7E8E" />, label: t('userMenu.support') },
+                    { icon: <Settings size={14} stroke="#6B7E8E" />, label: t('userMenu.settings') },
+                    { icon: <Alert size={14} stroke="#6B7E8E" />, label: t('userMenu.support') },
                   ].map(({ icon, label }) => (
                     <button key={label} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 13, color: '#1E2D3D' }}>
                       {icon} {label}
@@ -172,7 +179,7 @@ export function TopBar() {
                 </div>
                 <div style={{ borderTop: '1px solid #E8ECEF', padding: '6px 0 8px' }}>
                   <button onClick={() => { logout(); nav('/login', { replace: true }); setMenuOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 13, color: '#C0392B' }}>
-                    <Icons.lock size={14} stroke="#C0392B" /> {t('userMenu.logout')}
+                    <Lock size={14} stroke="#C0392B" /> {t('userMenu.logout')}
                   </button>
                 </div>
               </div>
@@ -186,7 +193,7 @@ export function TopBar() {
 
 // ─── Bell button ──────────────────────────────────────────────────────────────
 
-function BellButton({ open, unread, onClick }: { open: boolean; unread: number; onClick: () => void }) {
+function BellButton({ open, unread, onClick }: Readonly<{ open: boolean; unread: number; onClick: () => void }>) {
   return (
     <button
       onClick={onClick}
@@ -200,7 +207,7 @@ function BellButton({ open, unread, onClick }: { open: boolean; unread: number; 
       onMouseEnter={e => { if (!open) { (e.currentTarget as HTMLElement).style.background = '#F7F9FA'; (e.currentTarget as HTMLElement).style.borderColor = '#E8ECEF'; } }}
       onMouseLeave={e => { if (!open) { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.borderColor = 'transparent'; } }}
     >
-      <Icons.bell size={17} stroke={open ? '#00B4A0' : '#3A4F63'} />
+      <Bell size={17} stroke={open ? '#00B4A0' : '#3A4F63'} />
       {unread > 0 && (
         <span style={{
           position: 'absolute', top: 4, right: 4,
@@ -221,11 +228,11 @@ function BellButton({ open, unread, onClick }: { open: boolean; unread: number; 
 
 const PAGE_SIZE = 6;
 
-function NotifPanel({ notifs, onMarkAll, onRead }: {
+function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
   notifs: Notif[];
   onMarkAll: () => void;
   onRead: (id: string) => void;
-}) {
+}>) {
   const { t } = useTranslation('common');
   const [tab, setTab] = useState<'all' | 'unread'>('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -276,7 +283,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
               onClick={onMarkAll}
               style={{ fontSize: 12, color: '#00B4A0', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
             >
-              <Icons.check size={11} stroke="#00B4A0" />
+              <Check size={11} stroke="#00B4A0" />
               {t('notif.markAllRead')}
             </button>
           )}
@@ -285,7 +292,8 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 2, borderBottom: '1px solid rgba(200,212,220,0.3)' }}>
           {(['all', 'unread'] as const).map(tabKey => {
-            const labels = { all: t('notif.tab.all'), unread: `${t('notif.tab.unread')}${unread > 0 ? ` (${unread})` : ''}` };
+            const unreadSuffix = unread > 0 ? ` (${unread})` : '';
+            const labels = { all: t('notif.tab.all'), unread: `${t('notif.tab.unread')}${unreadSuffix}` };
             const active = tab === tabKey;
             return (
               <button key={tabKey} onClick={() => setTab(tabKey)} style={{
@@ -307,7 +315,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
         {displayed.length === 0 ? (
           <div style={{ padding: '48px 18px', textAlign: 'center' }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(0,180,160,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-              <Icons.bell size={20} stroke="#00B4A0" />
+              <Bell size={20} stroke="#00B4A0" />
             </div>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D', marginBottom: 4 }}>{t('notif.empty.heading')}</div>
             <div style={{ fontSize: 12, color: '#9BAAB5' }}>{tab === 'unread' ? t('notif.empty.allRead') : t('notif.empty.noActivity')}</div>
@@ -315,10 +323,15 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
         ) : displayed.map((n, i) => {
           const cfg = TYPE_CFG[n.type];
           const IconComp = Icons[cfg.icon];
+          const iconBorderColor = n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}28`;
+          const tagBorderColor = n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}30`;
           return (
             <div
               key={n.id}
+              role="button"
+              tabIndex={0}
               onClick={() => onRead(n.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onRead(n.id); }}
               style={{
                 display: 'flex', gap: 12, padding: '13px 18px',
                 borderTop: i > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none',
@@ -335,7 +348,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
                 <div style={{
                   width: 34, height: 34, borderRadius: 9,
                   background: n.read ? 'rgba(200,212,220,0.18)' : cfg.bg,
-                  border: `1px solid ${n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}28`}`,
+                  border: `1px solid ${iconBorderColor}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   <IconComp size={15} stroke={n.read ? '#9BAAB5' : cfg.color} />
@@ -358,7 +371,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
                     fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 999,
                     background: n.read ? 'rgba(200,212,220,0.2)' : cfg.bg,
                     color: n.read ? '#9BAAB5' : cfg.color,
-                    border: `1px solid ${n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}30`}`,
+                    border: `1px solid ${tagBorderColor}`,
                   }}>
                     {t(`notif.type.${n.type}`)}
                   </span>
@@ -407,7 +420,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
               ) : (
                 <>
                   {t('notif.footer.loadMore')}
-                  <Icons.chevD size={13} stroke="currentColor" />
+                  <ChevD size={13} stroke="currentColor" />
                 </>
               )}
             </button>
