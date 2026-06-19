@@ -14,6 +14,16 @@ function generateKey(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+function holdBtnClass(pending: boolean): string {
+  return `cd-hold-btn${pending ? ' cd-hold-btn--disabled' : ''}`;
+}
+
+function getClockInLabel(pending: boolean, disabled: boolean, t: (k: string, opts?: Record<string, unknown>) => string): string {
+  if (pending) return '…';
+  if (disabled) return t('validation.outOfRange');
+  return t('attendance.today.holdToCheckIn');
+}
+
 interface ShiftCtaProps {
   isMissed: boolean;
   isClockedOut: boolean;
@@ -33,7 +43,7 @@ function ShiftCta({
   isMissed, isClockedOut, isOverdue, isClockedIn,
   needsGpsPage, canClock, clockInPending, clockOutPending,
   endLabel, onClockIn, onClockOut, t,
-}: ShiftCtaProps) {
+}: Readonly<ShiftCtaProps>) {
   if (isMissed) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, padding: '10px 14px', borderRadius: 10, background: 'rgba(255,80,80,0.12)' }}>
@@ -54,7 +64,7 @@ function ShiftCta({
           {t('attendance.today.shiftEndedPrompt', { time: endLabel })}
         </span>
         <button
-          className={`cd-hold-btn${clockOutPending ? ' cd-hold-btn--disabled' : ''}`}
+          className={holdBtnClass(clockOutPending)}
           disabled={clockOutPending}
           style={{ background: 'rgba(30,45,61,0.3)' }}
           onClick={onClockOut}
@@ -69,7 +79,7 @@ function ShiftCta({
   if (isClockedIn) {
     return (
       <button
-        className={`cd-hold-btn${clockOutPending ? ' cd-hold-btn--disabled' : ''}`}
+        className={holdBtnClass(clockOutPending)}
         disabled={clockOutPending}
         style={{ background: 'rgba(30,45,61,0.3)' }}
         onClick={onClockOut}
@@ -83,12 +93,12 @@ function ShiftCta({
   const clockInDisabled = !needsGpsPage && !canClock;
   return (
     <button
-      className={`cd-hold-btn${clockInDisabled ? ' cd-hold-btn--disabled' : ''}`}
+      className={holdBtnClass(clockInDisabled)}
       disabled={clockInDisabled}
       onClick={onClockIn}
     >
       <span className="cd-hold-btn__label">
-        {clockInPending ? '…' : clockInDisabled ? t('validation.outOfRange') : t('attendance.today.holdToCheckIn')}
+        {getClockInLabel(clockInPending, clockInDisabled, t)}
       </span>
     </button>
   );

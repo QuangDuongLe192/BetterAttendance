@@ -332,7 +332,7 @@ interface PayEditProps {
   t: (k: string) => string;
 }
 
-function PayEdit({ payType, rate, monthly, onChange, t }: PayEditProps) {
+function PayEdit({ payType, rate, monthly, onChange, t }: Readonly<PayEditProps>) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', gap: 4 }}>
