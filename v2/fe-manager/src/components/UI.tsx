@@ -5,7 +5,7 @@ interface Theme { density: 'spacious' | 'dense'; accent: string; }
 export const ThemeCtx = createContext<Theme>({ density: 'spacious', accent: '#00B4A0' });
 export const useTheme = () => useContext(ThemeCtx);
 
-export function Eyebrow({ children, color, style }: { children: ReactNode; color?: string; style?: CSSProperties }) {
+export function Eyebrow({ children, color, style }: Readonly<{ children: ReactNode; color?: string; style?: CSSProperties }>) {
   const { accent } = useTheme();
   return (
     <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: color || accent, ...style }}>
@@ -38,11 +38,15 @@ interface BtnProps {
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
 }
-export function Btn({ children, variant = 'primary', onClick, icon, style, size = 'sm', disabled }: BtnProps) {
+export function Btn({ children, variant = 'primary', onClick, icon, style, size = 'sm', disabled }: Readonly<BtnProps>) {
   const { accent } = useTheme();
   const [h, setH] = useState(false);
-  const pad = size === 'sm' ? '8px 14px' : size === 'lg' ? '14px 28px' : '10px 18px';
-  const fs = size === 'sm' ? 13 : size === 'lg' ? 15 : 14;
+  let pad = '10px 18px';
+  if (size === 'sm') pad = '8px 14px';
+  else if (size === 'lg') pad = '14px 28px';
+  let fs = 14;
+  if (size === 'sm') fs = 13;
+  else if (size === 'lg') fs = 15;
   let s: CSSProperties = getVariantStyle(variant, h, accent);
   if (disabled) s = { ...s, opacity: 0.4, cursor: 'not-allowed' };
   return (
@@ -55,22 +59,34 @@ export function Btn({ children, variant = 'primary', onClick, icon, style, size 
 }
 
 interface CardProps { children: ReactNode; style?: CSSProperties; hoverable?: boolean; onClick?: () => void; pad?: boolean; }
-export function Card({ children, style, hoverable, onClick, pad = true }: CardProps) {
+export function Card({ children, style, hoverable, onClick, pad = true }: Readonly<CardProps>) {
   const { density } = useTheme();
   const [h, setH] = useState(false);
-  const padding = pad ? (density === 'dense' ? 20 : 28) : 0;
+  let padding = 0;
+  if (pad) padding = density === 'dense' ? 20 : 28;
+  const baseStyle: CSSProperties = { background: '#fff', border: `1px solid ${h ? '#1E2D3D' : '#C8D4DC'}`, borderRadius: 8, padding, cursor: onClick ? 'pointer' : 'default', transition: 'border-color 180ms', ...style };
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick}
+        onMouseEnter={() => { if (hoverable) setH(true); }}
+        onMouseLeave={() => { if (hoverable) setH(false); }}
+        style={{ ...baseStyle, display: 'block', width: '100%', textAlign: 'left', fontFamily: 'inherit' }}>
+        {children}
+      </button>
+    );
+  }
   return (
-    <div onClick={onClick}
-      onMouseEnter={() => hoverable ? setH(true) : undefined}
-      onMouseLeave={() => hoverable ? setH(false) : undefined}
-      style={{ background: '#fff', border: `1px solid ${h ? '#1E2D3D' : '#C8D4DC'}`, borderRadius: 8, padding, cursor: onClick ? 'pointer' : 'default', transition: 'border-color 180ms', ...style }}>
+    <div
+      onMouseEnter={() => { if (hoverable) setH(true); }}
+      onMouseLeave={() => { if (hoverable) setH(false); }}
+      style={baseStyle}>
       {children}
     </div>
   );
 }
 
 type TagTone = 'teal' | 'blue' | 'success' | 'danger' | 'warning' | 'neutral' | 'slate';
-export function Tag({ children, tone = 'neutral', icon, style }: { children: ReactNode; tone?: TagTone; icon?: ReactNode; style?: CSSProperties }) {
+export function Tag({ children, tone = 'neutral', icon, style }: Readonly<{ children: ReactNode; tone?: TagTone; icon?: ReactNode; style?: CSSProperties }>) {
   const tones: Record<TagTone, { bg: string; fg: string }> = {
     teal:    { bg: '#E6F8F6', fg: '#008C7C' },
     blue:    { bg: '#E8F2FB', fg: '#2B7EC4' },
@@ -88,7 +104,7 @@ export function Tag({ children, tone = 'neutral', icon, style }: { children: Rea
   );
 }
 
-export function Switch({ checked, onChange, label, sub }: { checked: boolean; onChange?: (v: boolean) => void; label?: string; sub?: string }) {
+export function Switch({ checked, onChange, label, sub }: Readonly<{ checked: boolean; onChange?: (v: boolean) => void; label?: string; sub?: string }>) {
   return (
     <label style={{ display: 'inline-flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
       <span style={{ width: 38, height: 22, borderRadius: 999, background: checked ? '#00B4A0' : '#C8D4DC', position: 'relative', transition: 'background 150ms', flexShrink: 0 }}>
@@ -105,7 +121,7 @@ export function Switch({ checked, onChange, label, sub }: { checked: boolean; on
   );
 }
 
-export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({ label, hint, children }: Readonly<{ label: string; hint?: string; children: ReactNode }>) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
@@ -118,7 +134,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 interface InputProps { value?: string; onChange?: (v: string) => void; placeholder?: string; type?: string; mono?: boolean; suffix?: ReactNode; prefix?: ReactNode; readOnly?: boolean; defaultValue?: string; step?: string; style?: CSSProperties; }
-export function Input({ value, onChange, placeholder, type = 'text', mono, suffix, prefix, readOnly, defaultValue, step, style }: InputProps) {
+export function Input({ value, onChange, placeholder, type = 'text', mono, suffix, prefix, readOnly, defaultValue, step, style }: Readonly<InputProps>) {
   const [f, setF] = useState(false);
   return (
     <div style={{ display: 'flex', alignItems: 'center', background: readOnly ? '#F7F9FA' : '#fff', border: `1px solid ${f ? '#00B4A0' : '#C8D4DC'}`, borderRadius: 6, boxShadow: f ? '0 0 0 3px rgba(0,180,160,0.15)' : 'none', transition: 'border-color 120ms, box-shadow 120ms', ...style }}>
@@ -132,7 +148,7 @@ export function Input({ value, onChange, placeholder, type = 'text', mono, suffi
   );
 }
 
-export function SectionHeader({ eyebrow, title, en, sub, right, style }: { eyebrow?: string; title: string; en?: string; sub?: string; right?: ReactNode; style?: CSSProperties }) {
+export function SectionHeader({ eyebrow, title, en, sub, right, style }: Readonly<{ eyebrow?: string; title: string; en?: string; sub?: string; right?: ReactNode; style?: CSSProperties }>) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 28, flexWrap: 'wrap', ...style }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 720 }}>
@@ -148,7 +164,7 @@ export function SectionHeader({ eyebrow, title, en, sub, right, style }: { eyebr
   );
 }
 
-export function Avatar({ name, size = 32, bg, src }: { name: string; size?: number; bg?: string; src?: string }) {
+export function Avatar({ name, size = 32, bg, src }: Readonly<{ name: string; size?: number; bg?: string; src?: string }>) {
   const [imgError, setImgError] = useState(false);
   const showImg = !!src && src.trim() !== '' && !imgError;
   const initials = (name || '').split(' ').filter(Boolean).slice(-2).map(p => p[0]).join('').toUpperCase() || '?';
@@ -161,7 +177,7 @@ export function Avatar({ name, size = 32, bg, src }: { name: string; size?: numb
   );
 }
 
-export function EmptyState({ icon, title, sub, action }: { icon: ReactNode; title: string; sub?: string; action?: ReactNode }) {
+export function EmptyState({ icon, title, sub, action }: Readonly<{ icon: ReactNode; title: string; sub?: string; action?: ReactNode }>) {
   return (
     <div style={{ padding: 48, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, border: '1px dashed #C8D4DC', borderRadius: 12, background: '#FAFBFC' }}>
       <div style={{ color: '#6B7E8E' }}>{icon}</div>
@@ -174,7 +190,7 @@ export function EmptyState({ icon, title, sub, action }: { icon: ReactNode; titl
   );
 }
 
-export function Skeleton({ w, h = 16, radius = 6, style }: { w?: string | number; h?: string | number; radius?: number; style?: CSSProperties }) {
+export function Skeleton({ w, h = 16, radius = 6, style }: Readonly<{ w?: string | number; h?: string | number; radius?: number; style?: CSSProperties }>) {
   return (
     <div style={{
       width: w ?? '100%', height: h, borderRadius: radius, flexShrink: 0,
@@ -186,20 +202,20 @@ export function Skeleton({ w, h = 16, radius = 6, style }: { w?: string | number
   );
 }
 
-export function SkeletonCard({ lines = 3, style }: { lines?: number; style?: CSSProperties }) {
+export function SkeletonCard({ lines = 3, style }: Readonly<{ lines?: number; style?: CSSProperties }>) {
   return (
     <Card style={style}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <Skeleton h={20} w="55%" />
         {Array.from({ length: lines }).map((_, i) => (
-          <Skeleton key={i} h={14} w={i === lines - 1 ? '35%' : '100%'} />
+          <Skeleton key={'skel-' + i} h={14} w={i === lines - 1 ? '35%' : '100%'} />
         ))}
       </div>
     </Card>
   );
 }
 
-export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: () => void }) {
+export function ErrorBanner({ message, onRetry }: Readonly<{ message: string; onRetry?: () => void }>) {
   return (
     <div style={{
       padding: '12px 16px', background: '#FFF8F8', border: '1px solid #FED7D7',
@@ -232,14 +248,15 @@ interface FilterDropProps {
   label: string; en?: string; count?: string | number;
   options?: FilterDropOption[]; value?: string; onChange?: (v: string) => void;
 }
-export function FilterDrop({ label, en, count, options, value, onChange }: FilterDropProps) {
+export function FilterDrop({ label, en, count, options, value, onChange }: Readonly<FilterDropProps>) {
+  const ChevD = Icons.chevD;
   const [open, setOpen] = useState(false);
   if (!options) {
     return (
       <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: '#fff', border: '1px solid #C8D4DC', borderRadius: 6, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, color: '#1E2D3D', cursor: 'pointer' }}>
         <span>{label}</span>
         {count !== undefined && <span style={{ color: '#6B7E8E', fontWeight: 500, fontSize: 11 }}>· {count}</span>}
-        <Icons.chevD size={12} stroke="#6B7E8E"/>
+        <ChevD size={12} stroke="#6B7E8E"/>
       </button>
     );
   }
@@ -250,7 +267,7 @@ export function FilterDrop({ label, en, count, options, value, onChange }: Filte
         style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: '#fff', border: '1px solid #C8D4DC', borderRadius: 6, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, color: '#1E2D3D', cursor: 'pointer' }}
       >
         <span>{label}</span>
-        <Icons.chevD size={12} stroke="#6B7E8E"/>
+        <ChevD size={12} stroke="#6B7E8E"/>
       </button>
       {open && (
         <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 50, background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8, marginTop: 4, minWidth: 200, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
