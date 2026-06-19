@@ -20,8 +20,11 @@ export function ConfirmLeaveDialog({ open, title, body, confirmLabel, cancelLabe
       onKeyDown={(e) => { if (e.key === 'Escape') onCancel(); }}
     >
       <div
+        role="dialog"
+        aria-modal={true}
         style={{ background: '#fff', borderRadius: 14, padding: '28px 28px 24px', maxWidth: 400, width: '90%', boxShadow: '0 16px 48px rgba(30,45,61,0.22)', display: 'flex', flexDirection: 'column', gap: 12 }}
         onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(220,38,38,0.09)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
