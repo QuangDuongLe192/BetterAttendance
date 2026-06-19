@@ -10,7 +10,7 @@ interface Props {
   avatarColor?: string;
 }
 
-export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Props) {
+export function SidebarUserMenu({ avatarColor = '#00B4A0' }: Readonly<Props>) {
   const { t } = useTranslation('common');
   const { user, logout } = useAuth();
   const nav = useNavigate();
