@@ -1,140 +1,204 @@
-## Task: Fix SonarQube Issues via Git Worktrees
+## Task: Fix SonarQube Issues
 
-Read the file `new-issues.json` in the current directory. It is a JSON array.
+### Phase 1 — Download Issues File
 
-If the array is empty, do nothing and stop.
+**Step 1.1** — Check if `sonar-issues.json` exists in the project root:
+```bash
+if (Test-Path sonar-issues.json) { Remove-Item sonar-issues.json }
+```
 
-For **each issue** in the array, complete all 9 steps below **in full** before moving to the next issue.
+**Step 1.2** — Get the latest successful run ID of the Build workflow:
+```bash
+gh run list --workflow=build.yml --status=success --limit=1 --json databaseId --jq '.[0].databaseId'
+```
+Store as `{run_id}`.
+
+**Step 1.3** — Download the artifact:
+```bash
+gh run download {run_id} --name sonar-issues --dir .
+```
+
+**Step 1.4** — Read `sonar-issues.json`. Structure: `{ "issues": [...], "total": N }`
+
+If `total` is 0 or `issues` is empty: log `No issues found.` and stop.
 
 ---
 
-### Step 1 — Mark issue as In Progress
+### Phase 2 — Create Worktree
+
+Determine today's date in `YYYY-MM-DD` format. Store as `{date}`.
 
 ```bash
-gh issue edit {number} --add-label "in-progress"
-gh issue comment {number} --body "🔧 Fix in progress..."
+git worktree add ../worktrees/sonar-{date} -b refactor/sonar-{date}
 ```
 
-Then update the GitHub Project status to **In progress** via GraphQL:
+If branch `refactor/sonar-{date}` already exists: log `Branch already exists for today. Remove it first or use a different date.` and stop.
 
-```graphql
-# 1. Get the project item ID for this issue
-query {
-  repository(owner: "QuangDuongLe192", name: "BetterAttendance") {
-    issue(number: {number}) {
-      projectItems(first: 5) { nodes { id } }
-    }
-  }
-}
+---
 
-# 2. Update status field
-mutation {
-  updateProjectV2ItemFieldValue(input: {
-    projectId: "PVT_kwHODRzg-84Bayhv"
-    itemId: "{item_id}"
-    fieldId: "PVTSSF_lAHODRzg-84BayhvzhVnkWs"
-    value: { singleSelectOptionId: "47fc9ee4" }   # "In progress"
-  }) { projectV2Item { id } }
-}
+### Phase 3 — Fix Each Issue (Sequential)
+
+Process one issue at a time in the **same worktree** `../worktrees/sonar-{date}`. Complete Steps A–D for issue N before starting issue N+1.
+
+**Field reference:**
+- `key` — unique SonarQube issue key
+- `rule` — rule ID, e.g. `typescript:S4325`
+- `component` — `ProjectKey:path/to/file.ts` → strip everything up to and including the first `:` to get the file path
+- `line` — line number of the violation
+- `message` — violation description
+- `severity` — BLOCKER / CRITICAL / MAJOR / MINOR / INFO
+- `type` — BUG / VULNERABILITY / CODE_SMELL
+
+---
+
+#### Step A — Check skills file
+
+Read `.github/prompts/refactor-sonar-skills.md`. Search for `## Rule: {rule}`.
+
+- **Found** → Note the fix pattern for use in Step B.
+- **Not found** → Research the fix, then document it in Step C after fixing.
+
+---
+
+#### Step B — Fix the code
+
+Read `../worktrees/sonar-{date}/{file_path}` (strip `ProjectKey:` prefix from `component`).
+
+Focus on line `{line}`. Rule `{rule}` reports: `{message}`.
+
+Edit **only** `../worktrees/sonar-{date}/{file_path}`. Apply the minimal change that resolves the violation.
+- Do not modify unrelated code.
+- Do not add explanatory comments.
+
+**If you cannot confidently fix without risking a regression:**
+Log: `SKIPPED {key} ({rule}): {one-sentence reason}`
+Move to next issue.
+
+---
+
+#### Step C — Update skills file
+
+Open `.github/prompts/refactor-sonar-skills.md`.
+
+**If rule was NOT already in the file**, append a new section:
+
+```markdown
+## Rule: {rule}
+
+**What:** {one sentence — what does this rule check for?}
+**Why:** {one sentence — why is this a problem?}
+**Fix pattern:** {concise description of how to fix violations of this rule}
+
+**Before:**
+```{language}
+{minimal code snippet showing the violation}
 ```
 
-### Step 2 — Create a git worktree
+**After:**
+```{language}
+{minimal code snippet showing the fix}
+```
+```
+
+**If rule WAS already in the file** → only update if you found a nuance not previously captured.
+
+---
+
+#### Step D — Commit
 
 ```bash
-git worktree add ../worktrees/fix-{number} -b fix/sonar-{number}
+git -C ../worktrees/sonar-{date} add --all
+git -C ../worktrees/sonar-{date} commit -m "fix: [SonarQube] {rule} — {5-8 word description}"
 ```
 
-### Step 3 — Understand the problem
+One commit per issue. Move to the next issue.
 
-Read the file at `../worktrees/fix-{number}/{component}`.
-Focus on line `{line}`: the SonarQube rule `{rule}` reports: `{message}`.
+---
 
-### Step 4 — Fix the code
+### Phase 4 — Push, PR, and Project Task
 
-Edit only `../worktrees/fix-{number}/{component}`.
-Apply the minimal change that resolves the rule violation at line `{line}`.
-Do not modify unrelated code. Do not add comments explaining the change.
+After all issues are processed:
 
-**If you cannot confidently fix the issue without risking a regression:**
-- Log to stdout: `SKIPPED #{number}: {one-sentence reason}`
-- Run: `git worktree remove ../worktrees/fix-{number} --force`
-- Remove the `in-progress` label: `gh issue edit {number} --remove-label "in-progress"`
-- Move to the next issue
-
-### Step 5 — Commit
-
+**Step 4.1** — Push the branch:
 ```bash
-git -C ../worktrees/fix-{number} add --all
-git -C ../worktrees/fix-{number} commit -m "fix: [SonarQube] {short_description} (#{number})"
+git push origin refactor/sonar-{date}
 ```
 
-`{short_description}` = 5–8 words describing what you changed.
+**Step 4.2** — Build the PR body. List every fixed issue (skip SKIPPEDs):
 
-### Step 6 — Push
+```
+## SonarQube Fixes — {date}
 
-```bash
-git push origin fix/sonar-{number}
+| Rule | File | Line | Message |
+|------|------|------|---------|
+| {rule} | {file_path} | {line} | {message} |
+...
+
+## Skipped
+{list any skipped issues with reason, or "None"}
+
+---
+🤖 Fixed by Claude · fix patterns in `.github/prompts/refactor-sonar-skills.md`
 ```
 
-### Step 7 — Create Draft PR
-
+**Step 4.3** — Create Draft PR:
 ```bash
 gh pr create \
-  --title "fix: [SonarQube] {rule} (#{number})" \
-  --body $'## SonarQube Fix\n\nCloses #{number}\n\n**Rule:** {rule}\n**File:** {component}:{line}\n**Message:** {message}\n\n## Changes\n\n{2-3 sentence description of the fix}\n\n---\n🤖 Auto-fixed by Claude via SonarQube workflow' \
+  --title "refactor: [SonarQube] {N} fixes — {date}" \
+  --body "{body from Step 4.2}" \
   --draft \
-  --head "fix/sonar-{number}" \
-  --base main \
-  --json number --jq '.number'
+  --head "refactor/sonar-{date}" \
+  --base main
 ```
 
-Store the output as `{pr_number}` for use in Step 8.
-
-### Step 8 — Mark issue as In Review
-
-After the PR is created, capture the PR number from the output of Step 7, then run:
-
+Capture the PR's node ID:
 ```bash
-gh issue edit {number} --add-label "in-review" --remove-label "in-progress"
-gh issue comment {number} --body "🔍 Ready for review — PR #{pr_number}"
+gh pr view refactor/sonar-{date} --json id --jq '.id'
 ```
+Store as `{pr_node_id}`.
 
-Then update the GitHub Project status to **In review** via GraphQL (reuse `{item_id}` from Step 1):
+**Step 4.4** — Add PR to GitHub Project:
+```bash
+gh api graphql -f query='mutation {
+  addProjectV2ItemById(input: {
+    projectId: "PVT_kwHODRzg-84Bayhv"
+    contentId: "{pr_node_id}"
+  }) { item { id } }
+}'
+```
+Store `item.id` as `{item_id}`.
 
-```graphql
-mutation {
+**Step 4.5** — Set status to **In Review**:
+```bash
+gh api graphql -f query='mutation {
   updateProjectV2ItemFieldValue(input: {
     projectId: "PVT_kwHODRzg-84Bayhv"
     itemId: "{item_id}"
     fieldId: "PVTSSF_lAHODRzg-84BayhvzhVnkWs"
-    value: { singleSelectOptionId: "df73e18b" }   # "In review"
+    value: { singleSelectOptionId: "df73e18b" }
   }) { projectV2Item { id } }
-}
-```
-
-### Step 9 — Remove the worktree
-
-```bash
-git worktree remove ../worktrees/fix-{number}
+}'
 ```
 
 ---
 
-**Rules:**
-- Complete all 9 steps for one issue before starting the next
-- Never commit files outside `../worktrees/fix-{number}/`
-- `{rule}` = the SonarQube rule identifier (e.g., `squid:S3776`)
-- `{pr_number}` = PR number returned by `gh pr create` in Step 7 (capture with `--json number --jq '.number'`)
-- `{item_id}` = project item node ID fetched in Step 1; reuse it in Step 8
+### Phase 5 — Cleanup
 
-**GitHub Project field reference (Project #1 — QuangDuongLe192):**
+```bash
+git worktree remove ../worktrees/sonar-{date}
+```
+
+---
+
+### Reference — GitHub Project Fields
 
 | Field | ID |
 |-------|----|
-| Status | `PVTSSF_lAHODRzg-84BayhvzhVnkWs` |
+| Project | `PVT_kwHODRzg-84Bayhv` |
+| Status field | `PVTSSF_lAHODRzg-84BayhvzhVnkWs` |
 
-| Status option | ID |
-|---------------|----|
+| Status | Option ID |
+|--------|-----------|
 | Backlog | `f75ad846` |
 | Ready | `61e4505c` |
 | In progress | `47fc9ee4` |

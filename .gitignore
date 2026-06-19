@@ -95,3 +95,9 @@ TestResults/
 *.coveragexml
 coverage/
 .ast-graph/
+
+# ==============================================================================
+# 7. CLAUDE / AI TOOLS
+# ==============================================================================
+.github/prompts/refactor-sonar-skills.md
+sonar-issues.json
