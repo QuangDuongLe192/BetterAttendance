@@ -5,6 +5,13 @@ import { LanguageToggle } from './LanguageToggle';
 import { Icons } from './Icons';
 import { useAuth, getInitials } from '../stores/AuthContext';
 
+const ChevD = Icons.chevD;
+const Settings = Icons.settings;
+const Alert = Icons.alert;
+const Lock = Icons.lock;
+const Bell = Icons.bell;
+const Check = Icons.check;
+
 // ─── Mock notifications ───────────────────────────────────────────────────────
 interface Notif {
   id: string;
@@ -139,7 +146,7 @@ export function TopBar() {
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1E2D3D' }}>{shortName}</span>
                 <span style={{ fontSize: 10.5, color: '#6B7E8E' }}>{user.org}</span>
               </div>
-              <Icons.chevD size={13} stroke="#6B7E8E" />
+              <ChevD size={13} stroke="#6B7E8E" />
             </button>
 
             {menuOpen && (
@@ -159,8 +166,8 @@ export function TopBar() {
                 </div>
                 <div style={{ padding: '4px 0' }}>
                   {[
-                    { icon: <Icons.settings size={14} stroke="#6B7E8E" />, label: t('userMenu.settings') },
-                    { icon: <Icons.alert size={14} stroke="#6B7E8E" />, label: t('userMenu.support') },
+                    { icon: <Settings size={14} stroke="#6B7E8E" />, label: t('userMenu.settings') },
+                    { icon: <Alert size={14} stroke="#6B7E8E" />, label: t('userMenu.support') },
                   ].map(({ icon, label }) => (
                     <button key={label} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 13, color: '#1E2D3D' }}>
                       {icon} {label}
@@ -172,7 +179,7 @@ export function TopBar() {
                 </div>
                 <div style={{ borderTop: '1px solid #E8ECEF', padding: '6px 0 8px' }}>
                   <button onClick={() => { logout(); nav('/login', { replace: true }); setMenuOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 13, color: '#C0392B' }}>
-                    <Icons.lock size={14} stroke="#C0392B" /> {t('userMenu.logout')}
+                    <Lock size={14} stroke="#C0392B" /> {t('userMenu.logout')}
                   </button>
                 </div>
               </div>
@@ -200,7 +207,7 @@ function BellButton({ open, unread, onClick }: { open: boolean; unread: number; 
       onMouseEnter={e => { if (!open) { (e.currentTarget as HTMLElement).style.background = '#F7F9FA'; (e.currentTarget as HTMLElement).style.borderColor = '#E8ECEF'; } }}
       onMouseLeave={e => { if (!open) { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.borderColor = 'transparent'; } }}
     >
-      <Icons.bell size={17} stroke={open ? '#00B4A0' : '#3A4F63'} />
+      <Bell size={17} stroke={open ? '#00B4A0' : '#3A4F63'} />
       {unread > 0 && (
         <span style={{
           position: 'absolute', top: 4, right: 4,
@@ -276,7 +283,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
               onClick={onMarkAll}
               style={{ fontSize: 12, color: '#00B4A0', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
             >
-              <Icons.check size={11} stroke="#00B4A0" />
+              <Check size={11} stroke="#00B4A0" />
               {t('notif.markAllRead')}
             </button>
           )}
@@ -307,7 +314,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
         {displayed.length === 0 ? (
           <div style={{ padding: '48px 18px', textAlign: 'center' }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(0,180,160,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-              <Icons.bell size={20} stroke="#00B4A0" />
+              <Bell size={20} stroke="#00B4A0" />
             </div>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D', marginBottom: 4 }}>{t('notif.empty.heading')}</div>
             <div style={{ fontSize: 12, color: '#9BAAB5' }}>{tab === 'unread' ? t('notif.empty.allRead') : t('notif.empty.noActivity')}</div>
@@ -407,7 +414,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: {
               ) : (
                 <>
                   {t('notif.footer.loadMore')}
-                  <Icons.chevD size={13} stroke="currentColor" />
+                  <ChevD size={13} stroke="currentColor" />
                 </>
               )}
             </button>
