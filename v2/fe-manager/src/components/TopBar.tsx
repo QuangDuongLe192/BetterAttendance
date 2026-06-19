@@ -323,6 +323,8 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
         ) : displayed.map((n, i) => {
           const cfg = TYPE_CFG[n.type];
           const IconComp = Icons[cfg.icon];
+          const iconBorderColor = n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}28`;
+          const tagBorderColor = n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}30`;
           return (
             <div
               key={n.id}
@@ -346,7 +348,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
                 <div style={{
                   width: 34, height: 34, borderRadius: 9,
                   background: n.read ? 'rgba(200,212,220,0.18)' : cfg.bg,
-                  border: `1px solid ${n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}28`}`,
+                  border: `1px solid ${iconBorderColor}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   <IconComp size={15} stroke={n.read ? '#9BAAB5' : cfg.color} />
@@ -369,7 +371,7 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
                     fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 999,
                     background: n.read ? 'rgba(200,212,220,0.2)' : cfg.bg,
                     color: n.read ? '#9BAAB5' : cfg.color,
-                    border: `1px solid ${n.read ? 'rgba(200,212,220,0.3)' : `${cfg.color}30`}`,
+                    border: `1px solid ${tagBorderColor}`,
                   }}>
                     {t(`notif.type.${n.type}`)}
                   </span>
