@@ -292,7 +292,8 @@ function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 2, borderBottom: '1px solid rgba(200,212,220,0.3)' }}>
           {(['all', 'unread'] as const).map(tabKey => {
-            const labels = { all: t('notif.tab.all'), unread: `${t('notif.tab.unread')}${unread > 0 ? ` (${unread})` : ''}` };
+            const unreadSuffix = unread > 0 ? ` (${unread})` : '';
+            const labels = { all: t('notif.tab.all'), unread: `${t('notif.tab.unread')}${unreadSuffix}` };
             const active = tab === tabKey;
             return (
               <button key={tabKey} onClick={() => setTab(tabKey)} style={{
