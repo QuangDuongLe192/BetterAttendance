@@ -193,7 +193,7 @@ export function TopBar() {
 
 // ─── Bell button ──────────────────────────────────────────────────────────────
 
-function BellButton({ open, unread, onClick }: { open: boolean; unread: number; onClick: () => void }) {
+function BellButton({ open, unread, onClick }: Readonly<{ open: boolean; unread: number; onClick: () => void }>) {
   return (
     <button
       onClick={onClick}
