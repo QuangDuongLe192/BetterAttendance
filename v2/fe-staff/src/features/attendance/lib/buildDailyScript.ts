@@ -82,9 +82,10 @@ function buildUpcomingScript(
 }
 
 function buildDoneScript(doneCount: number, isVi: boolean): string {
+  const plural = doneCount > 1 ? 's' : '';
   return isVi
     ? `${doneCount} ca hôm nay đã xong. Nghỉ ngơi đi.`
-    : `${doneCount} shift${doneCount > 1 ? 's' : ''} done today. Rest up.`;
+    : `${doneCount} shift${plural} done today. Rest up.`;
 }
 
 function buildEmptyScript(dow: number, lang: string, isVi: boolean): string {
