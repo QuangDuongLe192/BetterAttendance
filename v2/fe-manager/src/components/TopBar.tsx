@@ -228,11 +228,11 @@ function BellButton({ open, unread, onClick }: Readonly<{ open: boolean; unread:
 
 const PAGE_SIZE = 6;
 
-function NotifPanel({ notifs, onMarkAll, onRead }: {
+function NotifPanel({ notifs, onMarkAll, onRead }: Readonly<{
   notifs: Notif[];
   onMarkAll: () => void;
   onRead: (id: string) => void;
-}) {
+}>) {
   const { t } = useTranslation('common');
   const [tab, setTab] = useState<'all' | 'unread'>('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
