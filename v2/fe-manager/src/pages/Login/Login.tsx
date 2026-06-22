@@ -118,9 +118,9 @@ function LeftPanel() {
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12, color: '#9AABBC' }}>
         <span>{t('login.left.footer.copyright')}</span>
         <span style={{ display: 'flex', gap: 18 }}>
-          <a href="#" style={{ color: '#9AABBC', textDecoration: 'none' }}>{t('login.left.footer.privacy')}</a>
-          <a href="#" style={{ color: '#9AABBC', textDecoration: 'none' }}>{t('login.left.footer.terms')}</a>
-          <a href="#" style={{ color: '#9AABBC', textDecoration: 'none' }}>{t('login.left.footer.lang')}</a>
+          <button type="button" style={{ color: '#9AABBC', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.left.footer.privacy')}</button>
+          <button type="button" style={{ color: '#9AABBC', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.left.footer.terms')}</button>
+          <button type="button" style={{ color: '#9AABBC', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.left.footer.lang')}</button>
         </span>
       </div>
     </aside>
