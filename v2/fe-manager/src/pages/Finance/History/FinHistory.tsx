@@ -342,7 +342,7 @@ function FinHistorySkeleton() {
       <Skeleton h={32} w={240} style={{ marginBottom: 32 }} />
       <SkeletonCard lines={4} style={{ height: 240, marginBottom: 24 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+        {(['a', 'b', 'c', 'd'] as const).map((k) => <SkeletonCard key={k} lines={2} />)}
       </div>
     </div>
   );
