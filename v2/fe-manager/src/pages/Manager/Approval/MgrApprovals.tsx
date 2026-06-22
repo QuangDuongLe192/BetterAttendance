@@ -189,7 +189,7 @@ export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approv
           const isHov = !isDone && hovered === a.id;
           const showBtns = !isDone && quickMode;
           return (
-            <div key={a.id} onClick={() => openDetail(a.id)}
+            <div key={a.id} role="button" tabIndex={0} onClick={() => openDetail(a.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openDetail(a.id); }}
               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px 12px 23px', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.18)' : 'none', background: isHov ? 'rgba(0,180,160,0.025)' : 'transparent', transition: 'background 80ms', position: 'relative', opacity: isDone ? 0.45 : 1, cursor: 'pointer' }}
               onMouseEnter={() => !isDone && setHovered(a.id)}
               onMouseLeave={() => setHovered(null)}>
