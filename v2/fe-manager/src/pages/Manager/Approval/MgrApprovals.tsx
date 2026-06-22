@@ -68,7 +68,7 @@ interface Props {
 export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approve, openDetail }: Readonly<Props>) {
   const { t } = useTranslation('manager');
   const [kindFilter, setKindFilter] = useState<'all' | Approval['kind']>('all');
-  const [statusFilter, setStatus] = useState<StatusFilter>('pending');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
   const [hovered, setHovered] = useState<string | null>(null);
   const [quickMode, setQuickMode] = useState(false);
 
@@ -148,7 +148,7 @@ export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approv
           {statusTabs.map(({ k, label }) => {
             const active = statusFilter === k;
             return (
-              <button key={k} onClick={() => setStatus(k)}
+              <button key={k} onClick={() => setStatusFilter(k)}
                 style={{ padding: '5px 14px', borderRadius: 16, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: active ? 700 : 500, background: active ? '#1E2D3D' : 'transparent', color: active ? '#fff' : '#6B7E8E', transition: 'all 150ms' }}>
                 {label}
               </button>
