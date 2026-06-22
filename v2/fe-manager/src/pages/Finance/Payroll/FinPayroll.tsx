@@ -115,8 +115,8 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
           { labelKey: 'finance.payroll.detail.comp.reg',     val: s.totalReg, show: s.totalReg > 0, bg: '#F0FAF7', border: '#A8E4DC', fg: '#008C7C' },
           { labelKey: 'finance.payroll.detail.comp.ot',      val: s.totalOT,  show: true,            bg: s.totalOT > 0 ? '#FFF9F0' : '#F7F9FA', border: s.totalOT > 0 ? '#F5E2A8' : '#E8ECEF', fg: s.totalOT > 0 ? '#B45309' : '#C8D4DC' },
           { labelKey: 'finance.payroll.detail.comp.monthly', val: s.totalMonthly, show: s.totalMonthly > 0, bg: '#F1E9FB', border: '#D9C3F5', fg: '#7C4FBF' },
-        ].map((c, i) => (
-          <div key={i} style={{ padding: '12px 14px', background: c.bg, borderRadius: 8, border: `1px solid ${c.border}` }}>
+        ].map((c) => (
+          <div key={c.labelKey} style={{ padding: '12px 14px', background: c.bg, borderRadius: 8, border: `1px solid ${c.border}` }}>
             <div style={{ fontSize: 10, color: '#6B7E8E', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>{t(c.labelKey)}</div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: c.fg, marginTop: 4 }}>{c.show && c.val > 0 ? fmtVND(c.val) : '—'}</div>
           </div>
