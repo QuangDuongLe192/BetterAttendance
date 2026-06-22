@@ -255,7 +255,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
                       else if (isMax) barColor = '#B45309';
                       else if (isMin) barColor = '#2B7EC4';
                       return (
-                        <div key={i} style={{ flex: '1', height: `${h}%`, background: barColor, borderRadius: '4px 4px 0 0', transition: 'height 300ms', position: 'relative', minHeight: 28, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 7 }}>
+                        <div key={p.period} style={{ flex: '1', height: `${h}%`, background: barColor, borderRadius: '4px 4px 0 0', transition: 'height 300ms', position: 'relative', minHeight: 28, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 7 }}>
                           <span style={{ fontSize: 10, fontFamily: 'var(--font-display)', fontWeight: 700, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>{fmtM(p.total)}</span>
                           {isCurrent && <div style={{ position: 'absolute', top: -5, right: -5, width: 10, height: 10, borderRadius: '50%', background: '#00B4A0', border: '2px solid #fff' }}/>}
                         </div>
