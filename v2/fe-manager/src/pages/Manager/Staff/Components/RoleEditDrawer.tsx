@@ -12,7 +12,7 @@ export function RoleEditDrawer({ staff, onClose, onSave }: {
 }) {
   const { t } = useTranslation('manager');
   const [roleIds, setRoleIds] = useState<string[]>(staff.roleIds);
-  const hasChanges = JSON.stringify([...roleIds].sort()) !== JSON.stringify([...staff.roleIds].sort());
+  const hasChanges = JSON.stringify([...roleIds].sort((a, b) => a.localeCompare(b))) !== JSON.stringify([...staff.roleIds].sort((a, b) => a.localeCompare(b)));
 
   const available = ROLES.filter(r => !roleIds.includes(r.id));
   const removeRole = (id: string) => setRoleIds(prev => prev.filter(r => r !== id));
