@@ -357,7 +357,7 @@ function HeroStat({ label, value }: { label: string; value: string }) {
 function ModeOption({ icon, title, sub, selected, onClick }: { icon: string; title: string; sub: string; selected: boolean; onClick?: () => void }) {
   const IconComp = Icons[icon as keyof typeof Icons];
   return (
-    <div onClick={onClick} style={{
+    <div role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined} onClick={onClick} onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined} style={{
       padding: '16px 18px', borderRadius: 10,
       border: `1.5px solid ${selected ? '#00B4A0' : 'rgba(200,212,220,0.5)'}`,
       background: selected ? 'rgba(0,180,160,0.08)' : 'rgba(255,255,255,0.5)',
