@@ -126,7 +126,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
       {/* actions */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
         {s.status === 'pending'
-          ? <Btn variant="primary" size="sm" icon={<Icons.check size={13}/>} onClick={() => onReview(s.id)}>{t('finance.payroll.detail.reviewBtn')}</Btn>
+          ? <Btn variant="primary" size="sm" icon={<Check size={13}/>} onClick={() => onReview(s.id)}>{t('finance.payroll.detail.reviewBtn')}</Btn>
           : <>
               <Btn variant="ghost" size="sm" icon={<Icons.edit size={13}/>} onClick={() => onUnreview(s.id)}>{t('finance.payroll.detail.adjustBtn')}</Btn>
               <span style={{ fontSize: 12, color: '#1A6B55', display: 'flex', alignItems: 'center', gap: 5 }}>
