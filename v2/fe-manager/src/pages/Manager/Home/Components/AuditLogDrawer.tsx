@@ -17,7 +17,7 @@ const TODAY_YEAR  = _now.getFullYear();
 const TODAY_MONTH = _now.getMonth(); // 0-indexed
 
 // Default selected date = most recent date that has data
-const _sortedDates    = Object.keys(AUDIT_LOG).sort();
+const _sortedDates    = Object.keys(AUDIT_LOG).sort((a, b) => a.localeCompare(b));
 const LAST_DATA_DATE  = _sortedDates[_sortedDates.length - 1] ?? TODAY_STR;
 const [_ldy, _ldm]    = LAST_DATA_DATE.split('-').map(Number);
 const LAST_DATA_YEAR  = _ldy;
@@ -91,7 +91,7 @@ export function AuditLogDrawer({ open, onClose, activeStore }: Props) {
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 200 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 200 }} />
       <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 400, background: '#fff', zIndex: 201, display: 'flex', flexDirection: 'column', boxShadow: '-4px 0 32px rgba(0,0,0,0.12)' }}>
 
         {/* Header */}

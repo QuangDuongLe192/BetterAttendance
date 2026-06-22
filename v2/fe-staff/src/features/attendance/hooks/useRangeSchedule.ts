@@ -21,7 +21,7 @@ export function useRangeSchedule(rangeStart: string, numDays: number) {
   }
   const lastMonday = getMondayOf(addDays(rangeStart, numDays - 1));
   weekStartSet.add(lastMonday);
-  const weekStarts = Array.from(weekStartSet).sort();
+  const weekStarts = Array.from(weekStartSet).sort((a, b) => a.localeCompare(b));
 
   const results = useQueries({
     queries: weekStarts.map(ws => ({

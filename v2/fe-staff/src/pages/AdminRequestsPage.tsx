@@ -250,6 +250,7 @@ function BottomSheet({ open, onClose, children, footer }: BottomSheetProps) {
       <div
         className={`cd-sheet-overlay${closing ? ' cd-sheet-overlay--closing' : ''}`}
         onClick={handleClose}
+        onKeyDown={(e) => { if (e.key === 'Escape') handleClose(); }}
       />
       <div className={`cd-sheet${closing ? ' cd-sheet--closing' : ''}`}>
         <div className="cd-sheet__handle" />

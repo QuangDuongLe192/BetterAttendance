@@ -43,7 +43,7 @@ export function WeeklyScheduleView({ days, onPrevWeek, onNextWeek, onGoToToday, 
                   <span className="cd-week__empty">{t('attendance.weekly.noShift')}</span>
                 ) : (
                   day.shifts.map((shift, i) => (
-                    <div key={i} className="cd-week__shift" onClick={() => onShiftClick?.(day.date, i)}>
+                    <div key={i} className="cd-week__shift" role="button" tabIndex={0} onClick={() => onShiftClick?.(day.date, i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onShiftClick?.(day.date, i); }}>
                       <div className="cd-week__time">
                         {formatClockTime(shift.start, lang)}<span> — </span>{formatClockTime(shift.end, lang)}
                       </div>

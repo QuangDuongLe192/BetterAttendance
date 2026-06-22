@@ -193,7 +193,10 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                   }}>
                     {/* Card header row */}
                     <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setExpandedLoc(isExpanded ? null : cfg.locId)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedLoc(isExpanded ? null : cfg.locId); }}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px',
                         cursor: 'pointer',
@@ -248,7 +251,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                       </div>
 
                       {/* Toggle */}
-                      <div onClick={e => e.stopPropagation()}>
+                      <div onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
                         <Switch checked={cfg.enabled} onChange={v => update(cfg.locId, { enabled: v })} />
                       </div>
 

@@ -303,10 +303,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
           const pct = (maxP > 0 ? p.total / maxP * 100 : 0).toFixed(0);
           const periodBarColor = p.total === totals.max ? '#B45309' : p.total === totals.min ? '#2B7EC4' : '#00B4A0';
           return (
-            <div key={p.period}
-              role="button"
-              tabIndex={0}
-              style={{ display: 'grid', gridTemplateColumns: '180px 1fr 90px 90px 140px 110px 80px', padding: '16px 24px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff', cursor: 'pointer', transition: 'background 150ms' }}
+            <div key={i} role="button" tabIndex={0} style={{ display: 'grid', gridTemplateColumns: '180px 1fr 90px 90px 140px 110px 80px', padding: '16px 24px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff', cursor: 'pointer', transition: 'background 150ms' }}
               onClick={() => setSel(p)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSel(p); }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#F7FCFB'; }}

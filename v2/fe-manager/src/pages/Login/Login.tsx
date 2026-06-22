@@ -211,8 +211,6 @@ export function Login() {
   const { user, loginWithToken } = useAuth();
   usePageTitle(t('login.page_title'));
 
-  if (user) return <Navigate to="/" replace />;
-
   const redirectUri = useMemo(() => window.location.origin + window.location.pathname, []);
 
   const handleCode = useCallback(async (code: string) => {
@@ -256,6 +254,8 @@ export function Login() {
     toast.success(t('login.toast.success_user', { name: demoUser.name }));
     navigate('/', { replace: true });
   }, [loginWithToken, navigate, t]);
+
+  if (user) return <Navigate to="/" replace />;
 
   const cardStyle: CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px', background: '#F7F9FA', minHeight: '100vh' };
 

@@ -146,7 +146,7 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
       `}</style>
 
       {/* Backdrop */}
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 400, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 400, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
 
       {/* Drawer */}
       <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 440, zIndex: 401, display: 'flex', flexDirection: 'column', animation: 'drawerSlideIn 240ms cubic-bezier(0.32,0,0.2,1)', background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: '16px 0 0 16px', boxShadow: '-12px 0 48px rgba(0,0,0,0.16)' }}>

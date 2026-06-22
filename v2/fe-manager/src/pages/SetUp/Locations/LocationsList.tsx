@@ -121,7 +121,10 @@ function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number
   return (
     <div
       className="loc-row"
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{

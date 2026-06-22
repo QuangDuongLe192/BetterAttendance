@@ -210,12 +210,7 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: 
         const isExp = exp === s.id;
         return (
           <div key={s.id}>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => setExp(isExp ? null : s.id)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExp(isExp ? null : s.id); }}
-              style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
+            <div role="button" tabIndex={0} onClick={() => setExp(isExp ? null : s.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExp(isExp ? null : s.id); }} style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
               <span style={{ color: '#6B7E8E', display: 'inline-block', transition: 'transform 150ms', transform: isExp ? 'rotate(90deg)' : 'none' }}><Icons.chevR size={13}/></span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Avatar name={s.name} size={28} bg={s.isManager ? '#00B4A0' : '#1E2D3D'}/>
@@ -290,7 +285,7 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
         const hr = s.total > 0 ? (s.totalReg  / s.total) * 100 : 0;
         const ot = s.total > 0 ? (s.totalOT   / s.total) * 100 : 0;
         return (
-          <div key={s.id} onClick={() => setSel(s)}
+          <div key={s.id} role="button" tabIndex={0} onClick={() => setSel(s)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSel(s); }}
             style={{ background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8, padding: 20, cursor: 'pointer', transition: 'all 150ms' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1E2D3D'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(30,45,61,0.08)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#C8D4DC'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>

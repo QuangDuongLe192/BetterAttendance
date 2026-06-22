@@ -189,7 +189,7 @@ export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approv
           const isHov = !isDone && hovered === a.id;
           const showBtns = !isDone && quickMode;
           return (
-            <div key={a.id} onClick={() => openDetail(a.id)}
+            <div key={a.id} role="button" tabIndex={0} onClick={() => openDetail(a.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openDetail(a.id); }}
               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px 12px 23px', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.18)' : 'none', background: isHov ? 'rgba(0,180,160,0.025)' : 'transparent', transition: 'background 80ms', position: 'relative', opacity: isDone ? 0.45 : 1, cursor: 'pointer' }}
               onMouseEnter={() => !isDone && setHovered(a.id)}
               onMouseLeave={() => setHovered(null)}>
@@ -222,7 +222,7 @@ export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approv
                   </div>
                 )}
                 {showBtns && (
-                  <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
+                  <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
                     <button onClick={() => approve(a.id)}
                       style={{ padding: '6px 16px', borderRadius: 8, border: 'none', background: '#00B4A0', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,180,160,0.28)' }}
                       onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
@@ -275,7 +275,7 @@ export function ApprovalDetailDrawer({ approval: a, ctx, handled, handledBy, rej
         @keyframes detailIn  { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes detailBg  { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'detailBg 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'detailBg 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
 
       <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 480, zIndex: 901, animation: 'detailIn 240ms cubic-bezier(0.32,0.72,0,1)', borderRadius: '16px 0 0 16px', boxShadow: '-12px 0 48px rgba(0,0,0,0.16)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
