@@ -119,7 +119,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                  {s.items.map((it, ii) => <span key={ii} style={{ fontSize: 9, padding: '2px 5px', borderRadius: 999, background: it.color + '18', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>{it.name}</span>)}
+                  {s.items.map((it) => <span key={it.name} style={{ fontSize: 9, padding: '2px 5px', borderRadius: 999, background: it.color + '18', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>{it.name}</span>)}
                 </div>
                 <div style={{ textAlign: 'right', fontSize: 12, color: s.totalMonthly > 0 ? '#7C4FBF' : '#C8D4DC' }}>{s.totalMonthly > 0 ? fmtM(s.totalMonthly) : '—'}</div>
                 <div style={{ textAlign: 'right', fontSize: 12, color: s.totalReg > 0 ? '#008C7C' : '#C8D4DC' }}>{s.totalReg > 0 ? fmtM(s.totalReg) : '—'}</div>
