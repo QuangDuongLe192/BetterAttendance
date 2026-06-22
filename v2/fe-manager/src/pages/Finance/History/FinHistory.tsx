@@ -49,7 +49,6 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
   if (error) return <ErrorBanner message={error} />;
 
   if (sel) {
-    const periodTotal = payroll.reduce((s, p) => s + Math.round(p.total * (0.92 + Math.random() * 0.16)), 0);
     const staff = payroll.map(s => ({ ...s, total: Math.round(s.total * (0.92 + Math.random() * 0.16)), status: 'reviewed' as const }));
     const periodMonthly = staff.reduce((s, p) => s + p.totalMonthly, 0);
     const periodHourly  = staff.reduce((s, p) => s + p.totalReg, 0);
