@@ -205,7 +205,7 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
         const isExp = exp === s.id;
         return (
           <div key={s.id}>
-            <div onClick={() => setExp(isExp ? null : s.id)} style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
+            <div role="button" tabIndex={0} onClick={() => setExp(isExp ? null : s.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExp(isExp ? null : s.id); }} style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
               <span style={{ color: '#6B7E8E', display: 'inline-block', transition: 'transform 150ms', transform: isExp ? 'rotate(90deg)' : 'none' }}><Icons.chevR size={13}/></span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Avatar name={s.name} size={28} bg={s.isManager ? '#00B4A0' : '#1E2D3D'}/>
