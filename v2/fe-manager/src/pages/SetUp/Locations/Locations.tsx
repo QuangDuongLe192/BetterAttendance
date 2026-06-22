@@ -26,10 +26,10 @@ export function Locations({ openId, isLoading, error, onEditingChange }: Locatio
   const scrollTo = (routerLoc.state as { scrollTo?: string } | null)?.scrollTo;
   const locationsList = LOCATIONS ?? [];
   const selected = locationsList.find(l => l.locationId === openId);
+  const { t } = useTranslation('setup');
 
   if (isLoading) return <SetupLocationsSkeleton />;
   if (error) return <ErrorBanner message={error} />;
-  const { t } = useTranslation('setup');
   if (!selected) return (
     <div style={{ padding: '56px 40px', textAlign: 'center', color: '#9BAAB5', fontSize: 13 }}>
       {t('setup.locations.notFound')}
