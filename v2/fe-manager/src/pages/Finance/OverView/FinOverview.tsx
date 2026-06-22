@@ -102,8 +102,8 @@ export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }:
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {donutPcts.map((d, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              {donutPcts.map((d) => (
+                <div key={d.labelKey} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                   <span style={{ width: 12, height: 12, borderRadius: 3, background: d.color, flexShrink: 0, marginTop: 2 }}/>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D' }}>{t(d.labelKey)}</div>
