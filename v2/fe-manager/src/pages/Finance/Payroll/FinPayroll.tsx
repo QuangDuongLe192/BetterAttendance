@@ -21,7 +21,7 @@ interface PayrollProps {
 
 // ─── Employee detail panel ──────────────────────────────────────────────────
 
-function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: PayrollEntry | null; finLocs: FinLoc[]; compact?: boolean; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<{ s: PayrollEntry | null; finLocs: FinLoc[]; compact?: boolean; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
 
   if (!s) return (
