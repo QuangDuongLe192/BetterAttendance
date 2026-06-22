@@ -147,7 +147,7 @@ function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: (
   );
 }
 
-function LoginCard({ state, onLogin }: { state: LoginState; onLogin: () => void }) {
+function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: () => void }>) {
   const { t } = useTranslation('common');
   const [whyOpen, setWhyOpen] = useState(false);
   return (
