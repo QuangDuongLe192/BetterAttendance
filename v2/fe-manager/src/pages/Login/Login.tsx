@@ -249,7 +249,6 @@ export function Login() {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) { handleCode(code); }
-    // TODO: restore Lark auto-login when backend is ready
     // else if (isLarkEnvironment()) { loginByLark(); }
   }, []);
 
