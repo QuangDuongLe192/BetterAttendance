@@ -183,7 +183,7 @@ export function ManagerApp() {
 
                 {storeOpen && (
                   <>
-                    <div onClick={() => setStoreOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />
+                    <div onClick={() => setStoreOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setStoreOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />
                     <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, background: '#2A3B4D', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, marginTop: 4, overflow: 'hidden' }}>
                       <button
                         onClick={() => { navigate(`/manager/${active}/all`); setStoreOpen(false); }}
