@@ -4,6 +4,8 @@ import { Icons } from '../../../components/Icons';
 import { Card, Tag, Btn, Avatar, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { type PayrollEntry, type FinHistory as FinHistoryItem, type FinLoc, fmtVND, fmtM } from '../../../services/finance';
 
+const ChevR = Icons.chevR;
+
 interface Props {
   history: FinHistoryItem[];
   payroll: PayrollEntry[];
@@ -59,7 +61,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
         <button onClick={() => setSel(null)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 20, padding: '8px 14px', background: 'transparent', border: '1px solid #C8D4DC', borderRadius: 6, cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, color: '#1E2D3D' }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#F0F3F5'; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-          <Icons.chevR size={14} stroke="#1E2D3D" style={{ transform: 'rotate(180deg)' }}/>{t('finance.history.detail.backBtn')}
+          <ChevR size={14} stroke="#1E2D3D" style={{ transform: 'rotate(180deg)' }}/>{t('finance.history.detail.backBtn')}
         </button>
 
         <div style={{ marginBottom: 32 }}>
