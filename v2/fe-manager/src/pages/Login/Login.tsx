@@ -77,7 +77,7 @@ function DevDemoPanel({ onLogin }: Readonly<{ onLogin: (user: CurrentUser) => vo
   );
 }
 
-function Chip({ children, icon }: { children: React.ReactNode; icon: React.ReactNode }) {
+function Chip({ children, icon }: Readonly<{ children: React.ReactNode; icon: React.ReactNode }>) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 12px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.10)', color: '#E8ECEF', fontSize: 12.5, fontWeight: 600, fontFamily: 'var(--font-display)' }}>
       {icon}{children}
