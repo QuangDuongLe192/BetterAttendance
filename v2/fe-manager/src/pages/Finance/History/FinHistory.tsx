@@ -300,6 +300,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
         </div>
         {displayHistory.map((p, i) => {
           const pct = (maxP > 0 ? p.total / maxP * 100 : 0).toFixed(0);
+          const periodBarColor = p.total === totals.max ? '#B45309' : p.total === totals.min ? '#2B7EC4' : '#00B4A0';
           return (
             <div key={p.period}
               role="button"
@@ -315,7 +316,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ flex: 1, height: 8, background: '#F0F3F5', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${pct}%`, background: p.total === totals.max ? '#B45309' : p.total === totals.min ? '#2B7EC4' : '#00B4A0', borderRadius: 999, transition: 'width 600ms cubic-bezier(0.2,0.7,0.2,1)' }}/>
+                  <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${pct}%`, background: periodBarColor, borderRadius: 999, transition: 'width 600ms cubic-bezier(0.2,0.7,0.2,1)' }}/>
                 </div>
                 <span style={{ fontSize: 11, color: '#6B7E8E', minWidth: 32, textAlign: 'right' }}>{pct}%</span>
               </div>
