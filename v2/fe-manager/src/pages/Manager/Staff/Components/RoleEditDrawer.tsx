@@ -25,7 +25,7 @@ export function RoleEditDrawer({ staff, onClose, onSave }: {
         @keyframes roleBackdropIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
 
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'roleBackdropIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'roleBackdropIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
 
       <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 400, zIndex: 901, animation: 'roleDrawerIn 240ms cubic-bezier(0.32,0.72,0,1)', borderRadius: '16px 0 0 16px', boxShadow: '-12px 0 48px rgba(0,0,0,0.16)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
