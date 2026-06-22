@@ -318,7 +318,10 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: { ic
   const IconComp = Icons[icon as keyof typeof Icons];
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="anim-card"
