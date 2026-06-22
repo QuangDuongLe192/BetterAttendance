@@ -146,8 +146,8 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
             {[
               { format: t('finance.history.detail.exports.csvFormat'),  date: sel.locked, size: '124 KB', by: sel.lockedBy },
               { format: t('finance.history.detail.exports.misaFormat'), date: sel.locked, size: '186 KB', by: sel.lockedBy },
-            ].map((f, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: '#F7F9FA', borderRadius: 8, border: '1px solid #E8ECEF' }}>
+            ].map((f) => (
+              <div key={f.format} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: '#F7F9FA', borderRadius: 8, border: '1px solid #E8ECEF' }}>
                 <span style={{ width: 36, height: 36, borderRadius: 6, background: '#E6F8F6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Icons.scroll size={16} stroke="#00B4A0"/>
                 </span>
