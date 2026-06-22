@@ -332,7 +332,8 @@ export function Landing() {
   });
   const showCards = allCards.filter(c => c.kind === 'open');
   const n = showCards.length;
-  const gridCols = n === 1 ? '460px' : n === 2 ? '1fr 1fr' : '1fr 1fr 1fr';
+  const innerCols = n === 2 ? '1fr 1fr' : '1fr 1fr 1fr';
+  const gridCols = n === 1 ? '460px' : innerCols;
 
   const openWorkspace = (id: string) => {
     const routes: Record<string, string> = { setup: '/setup', manager: '/manager', finance: '/finance' };
