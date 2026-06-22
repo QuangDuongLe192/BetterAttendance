@@ -222,8 +222,8 @@ export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approv
                   </div>
                 )}
                 {showBtns && (
-                  <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approve(a.id)}
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={e => { e.stopPropagation(); approve(a.id); }}
                       style={{ padding: '6px 16px', borderRadius: 8, border: 'none', background: '#00B4A0', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,180,160,0.28)' }}
                       onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
                       onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
