@@ -5,6 +5,7 @@ import { Card, Tag, Btn, Avatar, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } 
 import { type PayrollEntry, type FinHistory as FinHistoryItem, type FinLoc, fmtVND, fmtM } from '../../../services/finance';
 
 const ChevR = Icons.chevR;
+const Lock = Icons.lock;
 
 interface Props {
   history: FinHistoryItem[];
@@ -69,7 +70,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, flexWrap: 'wrap' }}>
             <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.02em', color: '#1E2D3D', margin: 0 }}>{sel.period}</h1>
             <span style={{ fontSize: 15, color: '#6B7E8E', fontWeight: 500 }}>{sel.start} — {sel.end}</span>
-            <Tag tone="success" icon={<Icons.lock size={10}/>}>{t('finance.history.detail.locked', { date: sel.locked.slice(0, 10) })}</Tag>
+            <Tag tone="success" icon={<Lock size={10}/>}>{t('finance.history.detail.locked', { date: sel.locked.slice(0, 10) })}</Tag>
           </div>
         </div>
 
