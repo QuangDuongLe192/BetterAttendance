@@ -394,7 +394,7 @@ function WeekPicker({ weekOffset, onChange, onClose }: {
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
       <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, zIndex: 50, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(200,212,220,0.35)', borderRadius: 14, boxShadow: '0 12px 32px rgba(30,45,61,0.14)', padding: 16, minWidth: 268 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <button onClick={prevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 6px', borderRadius: 6, color: '#6B7E8E', display: 'flex' }}>
