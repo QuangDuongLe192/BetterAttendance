@@ -76,12 +76,12 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 32 }}>
           {[
-            { label: t('finance.history.detail.card.total'),   val: fmtVND(sel.total), sub: t('finance.history.detail.card.staffCount', { count: sel.staff }), accent: true },
-            { label: t('finance.history.detail.card.monthly'), val: fmtM(periodMonthly), sub: t('finance.history.detail.card.pct', { pct: Math.round(periodMonthly / sel.total * 100) }), color: '#7C4FBF' },
-            { label: t('finance.history.detail.card.hourly'),  val: fmtM(periodHourly),  sub: t('finance.history.detail.card.pct', { pct: Math.round(periodHourly  / sel.total * 100) }), color: '#00B4A0' },
-            { label: t('finance.history.detail.card.ot'),      val: fmtM(periodOT),       sub: t('finance.history.detail.card.otStaff', { count: staff.filter(s => s.totalOT > 0).length }), color: '#B45309' },
-          ].map((c, i) => (
-            <Card key={i} style={{ padding: 22, background: c.accent ? '#1E2D3D' : '#fff', borderColor: c.accent ? '#1E2D3D' : '#C8D4DC' }}>
+            { id: 'total',   label: t('finance.history.detail.card.total'),   val: fmtVND(sel.total), sub: t('finance.history.detail.card.staffCount', { count: sel.staff }), accent: true },
+            { id: 'monthly', label: t('finance.history.detail.card.monthly'), val: fmtM(periodMonthly), sub: t('finance.history.detail.card.pct', { pct: Math.round(periodMonthly / sel.total * 100) }), color: '#7C4FBF' },
+            { id: 'hourly',  label: t('finance.history.detail.card.hourly'),  val: fmtM(periodHourly),  sub: t('finance.history.detail.card.pct', { pct: Math.round(periodHourly  / sel.total * 100) }), color: '#00B4A0' },
+            { id: 'ot',      label: t('finance.history.detail.card.ot'),      val: fmtM(periodOT),       sub: t('finance.history.detail.card.otStaff', { count: staff.filter(s => s.totalOT > 0).length }), color: '#B45309' },
+          ].map((c) => (
+            <Card key={c.id} style={{ padding: 22, background: c.accent ? '#1E2D3D' : '#fff', borderColor: c.accent ? '#1E2D3D' : '#C8D4DC' }}>
               <div style={{ fontSize: 11, color: c.accent ? '#6AB3E8' : '#6B7E8E', fontFamily: 'var(--font-display)', fontWeight: 600, marginBottom: 10 }}>{c.label}</div>
               <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: c.accent ? 22 : 26, letterSpacing: '-0.02em', color: c.accent ? '#fff' : (c.color || '#1E2D3D') }}>{c.val}</div>
               <div style={{ fontSize: 12, color: c.accent ? '#C8D4DC' : '#6B7E8E', marginTop: 6 }}>{c.sub}</div>
