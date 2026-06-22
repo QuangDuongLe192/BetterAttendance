@@ -5,8 +5,7 @@ import { useNavigate, useSearchParams, Navigate } from 'react-router';
 import { toast } from 'sonner';
 import { Icons } from '../../components/Icons';
 import { useAuth, type CurrentUser, type AccessRow } from '../../stores/AuthContext';
-import { STAFF, STAFF_ROLE_SCOPES } from '../../services/setup';
-import { LOCATIONS } from '../../services/setup';
+import { STAFF, STAFF_ROLE_SCOPES, LOCATIONS } from '../../services/setup';
 
 function scopeToAccess(larkUserId: string): AccessRow[] {
   const scope = STAFF_ROLE_SCOPES.find(s => s.larkUserId === larkUserId);
