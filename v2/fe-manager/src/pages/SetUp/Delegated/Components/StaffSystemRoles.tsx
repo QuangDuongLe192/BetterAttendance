@@ -259,7 +259,7 @@ function FinanceDrawer({ staff, currentRoles, onClose, onSave }: {
         @keyframes drawerSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes backdropFadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.45)', zIndex: 900, animation: 'backdropFadeIn 200ms ease' }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.45)', zIndex: 900, animation: 'backdropFadeIn 200ms ease' }} />
       <div style={{
         position: 'fixed', top: 0, right: 0, bottom: 0, width: 400,
         zIndex: 901, display: 'flex', flexDirection: 'column',
