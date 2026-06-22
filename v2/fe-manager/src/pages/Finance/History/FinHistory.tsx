@@ -198,12 +198,12 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
       {/* Summary stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
         {[
-          { label: t('finance.history.stat.total'),   val: fmtM(totals.all), sub: viewMode === 'recent' ? t('finance.history.stat.recentSub') : t('finance.history.stat.periodsSub', { count: displayHistory.length }), color: '#1E2D3D' },
-          { label: t('finance.history.stat.avg'),     val: fmtM(totals.avg), sub: t('finance.history.stat.avgSub', { count: displayHistory.length }), color: '#00B4A0' },
-          { label: t('finance.history.stat.max'),     val: fmtM(totals.max), sub: displayHistory.find(p => p.total === totals.max)?.period ?? '', color: '#B45309' },
-          { label: t('finance.history.stat.min'),     val: fmtM(totals.min), sub: displayHistory.find(p => p.total === totals.min)?.period ?? '', color: '#2B7EC4' },
-        ].map((c, i) => (
-          <Card key={i} style={{ padding: '20px 24px' }}>
+          { id: 'total', label: t('finance.history.stat.total'),   val: fmtM(totals.all), sub: viewMode === 'recent' ? t('finance.history.stat.recentSub') : t('finance.history.stat.periodsSub', { count: displayHistory.length }), color: '#1E2D3D' },
+          { id: 'avg',   label: t('finance.history.stat.avg'),     val: fmtM(totals.avg), sub: t('finance.history.stat.avgSub', { count: displayHistory.length }), color: '#00B4A0' },
+          { id: 'max',   label: t('finance.history.stat.max'),     val: fmtM(totals.max), sub: displayHistory.find(p => p.total === totals.max)?.period ?? '', color: '#B45309' },
+          { id: 'min',   label: t('finance.history.stat.min'),     val: fmtM(totals.min), sub: displayHistory.find(p => p.total === totals.min)?.period ?? '', color: '#2B7EC4' },
+        ].map((c) => (
+          <Card key={c.id} style={{ padding: '20px 24px' }}>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: c.color, marginBottom: 8 }}>{c.label}</div>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: '#1E2D3D', marginBottom: 4 }}>{c.val}</div>
             <div style={{ fontSize: 12, color: '#6B7E8E' }}>{c.sub}</div>
