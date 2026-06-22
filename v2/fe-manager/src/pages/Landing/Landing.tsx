@@ -192,6 +192,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
   const [hover, setHover] = useState(false);
   const live = WS_LIVE_KEYS[ws.id];
   const Icon = Icons[ws.icon];
+  const Grid = Icons.grid;
 
   return (
     <div
@@ -254,7 +255,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
         {/* Scope content */}
         {ws.scope === 'global' ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, background: '#EAF3FB', border: '1px solid rgba(43,126,196,0.15)' }}>
-            <Icons.grid size={13} stroke="#2B7EC4" />
+            <Grid size={13} stroke="#2B7EC4" />
             <span style={{ fontSize: 12.5, fontWeight: 600, color: '#2B7EC4', fontFamily: 'var(--font-display)' }}>{t('landing.workspace.scope.admin_badge')}</span>
           </div>
         ) : (
