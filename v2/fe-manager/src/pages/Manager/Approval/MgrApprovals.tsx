@@ -65,7 +65,7 @@ interface Props {
   openDetail: (id: string, rejectMode?: boolean) => void;
 }
 
-export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approve, openDetail }: Props) {
+export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approve, openDetail }: Readonly<Props>) {
   const { t } = useTranslation('manager');
   const [kindFilter, setKindFilter] = useState<'all' | Approval['kind']>('all');
   const [statusFilter, setStatus] = useState<StatusFilter>('pending');
