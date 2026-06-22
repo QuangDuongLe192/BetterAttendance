@@ -141,7 +141,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
 
 // ─── Variant A: Split/Master-detail ─────────────────────────────────────────
 
-function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: { list: PayrollEntry[]; finLocs: FinLoc[]; summary: FinSummary; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: Readonly<{ list: PayrollEntry[]; finLocs: FinLoc[]; summary: FinSummary; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
   const [sel, setSel] = useState<PayrollEntry | null>(null);
 
