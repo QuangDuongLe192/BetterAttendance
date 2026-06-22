@@ -156,7 +156,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
                   <div style={{ fontWeight: 600, fontSize: 13, color: '#1E2D3D' }}>{f.format}</div>
                   <div style={{ fontSize: 11, color: '#6B7E8E', marginTop: 2 }}>{t('finance.history.detail.exports.exportedAt', { date: f.date, size: f.size, by: f.by.split(' ').slice(-2).join(' ') })}</div>
                 </div>
-                <Btn variant="ghost" size="sm" icon={<Icons.download size={12}/>}>{t('finance.history.detail.exports.downloadBtn')}</Btn>
+                <Btn variant="ghost" size="sm" icon={<Download size={12}/>}>{t('finance.history.detail.exports.downloadBtn')}</Btn>
               </div>
             ))}
           </div>
