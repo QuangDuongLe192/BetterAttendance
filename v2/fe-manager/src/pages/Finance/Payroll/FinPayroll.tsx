@@ -192,7 +192,7 @@ function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: Readonly
 
 // ─── Variant B: Expandable table ─────────────────────────────────────────────
 
-function PayrollTable({ list, finLocs, onReview, onUnreview }: { list: PayrollEntry[]; finLocs: FinLoc[]; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: PayrollEntry[]; finLocs: FinLoc[]; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
   const [exp, setExp] = useState<string | null>(null);
   const cols = '32px 1.6fr 1fr 80px 72px 110px 110px 100px 72px';
