@@ -182,7 +182,7 @@ function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: ()
         )}
       </div>
       <div style={{ marginTop: 20, paddingTop: 18, borderTop: '1px solid #E8ECEF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12, color: '#6B7E8E' }}>
-        <span>{t('login.card.support')} <a href="#" style={{ color: '#00B4A0', fontWeight: 600, textDecoration: 'none' }}>{t('login.card.support.link')}</a></span>
+        <span>{t('login.card.support')} <button type="button" style={{ color: '#00B4A0', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.card.support.link')}</button></span>
         <span style={{ fontSize: 11, color: '#9EAFBD' }}>v2.4</span>
       </div>
     </div>
