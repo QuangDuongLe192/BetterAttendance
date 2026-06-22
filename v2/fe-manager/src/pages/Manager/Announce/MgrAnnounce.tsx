@@ -163,7 +163,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
   );
 }
 
-function AnnouncementCard({ announcement: a }: { announcement: Announcement }) {
+function AnnouncementCard({ announcement: a }: Readonly<{ announcement: Announcement }>) {
   const { t } = useTranslation('manager');
   const readPct = Math.round(a.read / a.total * 100);
   const scopes = a.scope.split(',');
