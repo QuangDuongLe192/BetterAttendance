@@ -216,7 +216,7 @@ export function Login() {
 
   if (user) return <Navigate to="/" replace />;
 
-  const redirectUri = useMemo(() => window.location.origin + window.location.pathname, []);
+  const redirectUri = useMemo(() => globalThis.location.origin + globalThis.location.pathname, []);
 
   const handleCode = useCallback(async (code: string) => {
     setIsProcessing(true);
