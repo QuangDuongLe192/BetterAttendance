@@ -172,7 +172,7 @@ function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: ()
           <Shield size={13} stroke="#00B4A0" />
           <span style={{ flex: 1 }}>{t('login.card.why.label')}</span>
           <span style={{ transition: 'transform 200ms', transform: whyOpen ? 'rotate(180deg)' : 'rotate(0deg)', display: 'flex' }}>
-            <Icons.chevD size={13} stroke="#6B7E8E" />
+            <ChevD size={13} stroke="#6B7E8E" />
           </span>
         </button>
         {whyOpen && (
