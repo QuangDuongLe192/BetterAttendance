@@ -4,6 +4,8 @@ import { Icons } from '../../../components/Icons';
 import { Btn, Tag, Avatar, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { type PayrollEntry, type FinSummary, type FinByLoc, type FinLoc, fmtVND, fmtM } from '../../../services/finance';
 
+const Users = Icons.users;
+
 type Layout = 'split' | 'table' | 'cards';
 
 interface PayrollProps {
@@ -26,7 +28,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
 
   if (!s) return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#6B7E8E' }}>
-      <Icons.users size={32} stroke="#C8D4DC"/>
+      <Users size={32} stroke="#C8D4DC"/>
       <span style={{ fontFamily: 'var(--font-body)', fontSize: 14 }}>{t('finance.payroll.detail.selectHint')}</span>
     </div>
   );
