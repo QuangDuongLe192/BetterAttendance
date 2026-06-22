@@ -41,7 +41,7 @@ const DEMO_USERS: { label: string; sublabel: string; badge: string; color: strin
   { label: 'Nhân viên',    sublabel: 'Nguyễn Văn An',       badge: 'STAFF',    color: '#6B7E8E', user: staffToUser('lark_user_001', 'Nhân viên pha chế') },
 ];
 
-function DevDemoPanel({ onLogin }: { onLogin: (user: CurrentUser) => void }) {
+function DevDemoPanel({ onLogin }: Readonly<{ onLogin: (user: CurrentUser) => void }>) {
   const { t } = useTranslation('common');
   const [hovered, setHovered] = useState<number | null>(null);
   return (
