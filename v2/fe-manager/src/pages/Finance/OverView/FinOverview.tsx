@@ -12,7 +12,7 @@ interface Props {
   error?: string | null;
 }
 
-export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }: Props) {
+export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('finance');
 
   if (isLoading) return <FinOverviewSkeleton />;
