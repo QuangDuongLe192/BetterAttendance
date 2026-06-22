@@ -9,6 +9,7 @@ const Lock = Icons.lock;
 const Download = Icons.download;
 const Scroll = Icons.scroll;
 const ChevD = Icons.chevD;
+const Check = Icons.check;
 
 interface Props {
   history: FinHistoryItem[];
@@ -325,7 +326,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
               <div style={{ textAlign: 'right', fontSize: 11, color: '#6B7E8E' }}>{p.locked.slice(0, 10)}<br/><span style={{ fontSize: 10 }}>{p.locked.slice(11)}</span></div>
               <div style={{ textAlign: 'right', fontSize: 11, color: '#6B7E8E' }}>{p.lockedBy.split(' ').slice(-2).join(' ')}</div>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                {p.exported ? <Tag tone="success" icon={<Icons.check size={9}/>}>{t('finance.history.timeline.exported')}</Tag> : <Tag tone="neutral">{t('finance.history.timeline.pendingExport')}</Tag>}
+                {p.exported ? <Tag tone="success" icon={<Check size={9}/>}>{t('finance.history.timeline.exported')}</Tag> : <Tag tone="neutral">{t('finance.history.timeline.pendingExport')}</Tag>}
               </div>
             </div>
           );
