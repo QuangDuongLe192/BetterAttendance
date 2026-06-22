@@ -251,7 +251,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                       </div>
 
                       {/* Toggle */}
-                      <div onClick={e => e.stopPropagation()}>
+                      <div onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
                         <Switch checked={cfg.enabled} onChange={v => update(cfg.locId, { enabled: v })} />
                       </div>
 
