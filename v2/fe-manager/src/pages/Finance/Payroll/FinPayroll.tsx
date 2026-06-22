@@ -70,6 +70,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
           const lineReg = it.type === 'hourly' ? (it.regH ?? 0) * (it.rate ?? 0) : 0;
           const lineOT  = it.type === 'hourly' ? (it.otH  ?? 0) * (it.rate ?? 0) * 1.5 : 0;
           const lineMo  = it.type === 'monthly' ? (it.monthly ?? 0) : 0;
+          const otDisplay = it.type === 'monthly' ? '—' : ((it.otH ?? 0) > 0 ? `${it.otH}h` : '—');
           return (
             <>
               <div key={it.name} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '13px 18px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff' }}>
@@ -83,7 +84,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
                   </span>
                 </div>
                 <div style={{ textAlign: 'right', fontSize: 12, color: it.type === 'monthly' ? '#C8D4DC' : '#1E2D3D' }}>{it.type === 'monthly' ? '—' : `${it.regH}h`}</div>
-                <div style={{ textAlign: 'right', fontSize: 12, color: (it.otH ?? 0) > 0 ? '#B45309' : '#C8D4DC' }}>{it.type === 'monthly' ? '—' : ((it.otH ?? 0) > 0 ? `${it.otH}h` : '—')}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, color: (it.otH ?? 0) > 0 ? '#B45309' : '#C8D4DC' }}>{otDisplay}</div>
                 <div style={{ textAlign: 'right', fontSize: 12, color: '#6B7E8E' }}>{it.type === 'monthly' ? '—' : fmtVND(it.rate ?? 0)}</div>
                 <div style={{ textAlign: 'right', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{fmtVND(lineReg + lineOT + lineMo)}</div>
               </div>
