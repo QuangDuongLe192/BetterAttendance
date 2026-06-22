@@ -165,6 +165,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
 
 function AnnouncementCard({ announcement: a }: Readonly<{ announcement: Announcement }>) {
   const { t } = useTranslation('manager');
+  const Send = Icons.send;
   const readPct = Math.round(a.read / a.total * 100);
   const scopes = a.scope.split(',');
   const allRead = a.read === a.total;
@@ -174,7 +175,7 @@ function AnnouncementCard({ announcement: a }: Readonly<{ announcement: Announce
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         <span style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(0,180,160,0.08)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <Icons.send size={15} stroke="#00B4A0" />
+          <Send size={15} stroke="#00B4A0" />
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D', marginBottom: 4 }}>{a.title}</div>
