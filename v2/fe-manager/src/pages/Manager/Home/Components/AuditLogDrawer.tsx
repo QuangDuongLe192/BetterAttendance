@@ -17,7 +17,7 @@ const TODAY_YEAR  = _now.getFullYear();
 const TODAY_MONTH = _now.getMonth(); // 0-indexed
 
 // Default selected date = most recent date that has data
-const _sortedDates    = Object.keys(AUDIT_LOG).sort();
+const _sortedDates    = Object.keys(AUDIT_LOG).sort((a, b) => a.localeCompare(b));
 const LAST_DATA_DATE  = _sortedDates[_sortedDates.length - 1] ?? TODAY_STR;
 const [_ldy, _ldm]    = LAST_DATA_DATE.split('-').map(Number);
 const LAST_DATA_YEAR  = _ldy;
