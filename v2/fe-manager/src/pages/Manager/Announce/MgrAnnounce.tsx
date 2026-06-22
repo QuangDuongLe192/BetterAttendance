@@ -67,21 +67,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
       </div>
 
       {/* Compose trigger / form */}
-      {!compose ? (
-        <button onClick={() => setCompose(true)}
-          style={{ ...glass, width: '100%', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px', borderRadius: 14, cursor: 'pointer', textAlign: 'left', border: '1.5px dashed rgba(0,180,160,0.35)', transition: 'all 150ms' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.6)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = glass.background as string; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.35)'; }}>
-          <span style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(0,180,160,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icons.send size={17} stroke="#00B4A0" />
-          </span>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{t('manager.announce.compose.trigger.title')}</div>
-            <div style={{ fontSize: 12, color: '#9BAAB5', marginTop: 1 }}>{t('manager.announce.compose.trigger.sub')}</div>
-          </div>
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#00B4A0', background: 'rgba(0,180,160,0.1)', padding: '6px 16px', borderRadius: 20 }}>{t('manager.announce.compose.trigger.btn')}</span>
-        </button>
-      ) : (
+      {compose ? (
         <div style={{ ...glass, borderRadius: 14, marginBottom: 24, overflow: 'hidden' }}>
           {/* Form header */}
           <div style={{ background: 'linear-gradient(145deg, rgba(30,45,61,0.88) 0%, rgba(0,90,78,0.84) 100%)', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
@@ -145,6 +131,20 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
             </button>
           </div>
         </div>
+      ) : (
+        <button onClick={() => setCompose(true)}
+          style={{ ...glass, width: '100%', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px', borderRadius: 14, cursor: 'pointer', textAlign: 'left', border: '1.5px dashed rgba(0,180,160,0.35)', transition: 'all 150ms' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.6)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = glass.background as string; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.35)'; }}>
+          <span style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(0,180,160,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Icons.send size={17} stroke="#00B4A0" />
+          </span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{t('manager.announce.compose.trigger.title')}</div>
+            <div style={{ fontSize: 12, color: '#9BAAB5', marginTop: 1 }}>{t('manager.announce.compose.trigger.sub')}</div>
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#00B4A0', background: 'rgba(0,180,160,0.1)', padding: '6px 16px', borderRadius: 20 }}>{t('manager.announce.compose.trigger.btn')}</span>
+        </button>
       )}
 
       {/* Sent history */}
