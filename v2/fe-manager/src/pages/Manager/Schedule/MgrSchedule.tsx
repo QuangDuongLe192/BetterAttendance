@@ -151,7 +151,7 @@ export function MgrSchedule({ activeStore, isLoading, error }: Props) {
   const staffWithShifts = staffInStore.filter(s =>
     shifts.some(sh => sh.larkUserId === s.larkUserId && weekDayStrs.has(dateStrFromVN(sh.scheduleInTime)))
   );
-  const legendStores = [...new Set(shifts.map(s => s.locationId))].sort();
+  const legendStores = [...new Set(shifts.map(s => s.locationId))].sort((a, b) => a.localeCompare(b));
 
   return (
     <>
