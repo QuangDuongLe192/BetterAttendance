@@ -131,7 +131,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
           : <>
               <Btn variant="ghost" size="sm" icon={<Edit size={13}/>} onClick={() => onUnreview(s.id)}>{t('finance.payroll.detail.adjustBtn')}</Btn>
               <span style={{ fontSize: 12, color: '#1A6B55', display: 'flex', alignItems: 'center', gap: 5 }}>
-                <Icons.check size={12} stroke="#1A6B55"/>{t('finance.payroll.detail.reviewedAt')}
+                <Check size={12} stroke="#1A6B55"/>{t('finance.payroll.detail.reviewedAt')}
               </span>
             </>}
       </div>
