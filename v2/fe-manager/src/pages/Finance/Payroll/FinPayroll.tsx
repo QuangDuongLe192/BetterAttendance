@@ -5,6 +5,7 @@ import { Btn, Tag, Avatar, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '
 import { type PayrollEntry, type FinSummary, type FinByLoc, type FinLoc, fmtVND, fmtM } from '../../../services/finance';
 
 const Users = Icons.users;
+const Check = Icons.check;
 
 type Layout = 'split' | 'table' | 'cards';
 
@@ -54,7 +55,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
           </div>
         </div>
         {s.status === 'reviewed'
-          ? <Tag tone="success" icon={<Icons.check size={10}/>}>{t('finance.payroll.detail.reviewed')}</Tag>
+          ? <Tag tone="success" icon={<Check size={10}/>}>{t('finance.payroll.detail.reviewed')}</Tag>
           : <Tag tone="warning">{t('finance.payroll.detail.pending')}</Tag>}
       </div>
 
