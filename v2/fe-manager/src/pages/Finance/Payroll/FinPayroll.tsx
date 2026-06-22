@@ -176,7 +176,7 @@ function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: Readonly
                   : <span style={{ width: 7, height: 7, borderRadius: 999, background: '#B45309', flexShrink: 0, display: 'inline-block' }}/>}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', gap: 3 }}>{s.items.map((it, ii) => <span key={ii} style={{ width: 6, height: 6, borderRadius: 2, background: it.color }}/>)}</div>
+                <div style={{ display: 'flex', gap: 3 }}>{s.items.map((it) => <span key={it.name} style={{ width: 6, height: 6, borderRadius: 2, background: it.color }}/>)}</div>
                 <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: '#1E2D3D' }}>{fmtM(s.total)}</span>
               </div>
             </button>
