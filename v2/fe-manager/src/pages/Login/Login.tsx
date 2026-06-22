@@ -127,7 +127,7 @@ function LeftPanel() {
   );
 }
 
-function LarkButton({ state, onClick }: { state: LoginState; onClick: () => void }) {
+function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: () => void }>) {
   const { t } = useTranslation('common');
   const [hover, setHover] = useState(false);
   const loading = state === 'loading';
