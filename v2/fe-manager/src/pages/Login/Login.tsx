@@ -131,6 +131,7 @@ function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: (
   const { t } = useTranslation('common');
   const [hover, setHover] = useState(false);
   const loading = state === 'loading';
+  const ArrowR = Icons.arrowR;
   return (
     <button onClick={onClick} disabled={loading} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', borderRadius: 10, background: hover && !loading ? '#13202F' : '#1E2D3D', color: '#fff', border: 'none', cursor: loading ? 'progress' : 'pointer', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, transition: 'background 150ms, transform 150ms, box-shadow 150ms', transform: hover && !loading ? 'translateY(-1px)' : 'translateY(0)', boxShadow: hover && !loading ? '0 8px 24px rgba(30,45,61,0.18)' : '0 1px 2px rgba(30,45,61,0.06)' }}>
       <span style={{ width: 34, height: 34, borderRadius: 8, background: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -140,7 +141,7 @@ function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: (
       {loading ? (
         <span style={{ width: 16, height: 16, borderRadius: 999, border: '2px solid rgba(255,255,255,0.25)', borderTopColor: '#fff', animation: 'spin 700ms linear infinite', display: 'inline-block', flexShrink: 0 }} />
       ) : (
-        <Icons.arrowR size={16} stroke="#fff" />
+        <ArrowR size={16} stroke="#fff" />
       )}
     </button>
   );
