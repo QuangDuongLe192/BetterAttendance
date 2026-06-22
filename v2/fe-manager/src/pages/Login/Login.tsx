@@ -26,8 +26,6 @@ function staffToUser(larkUserId: string, title: string): CurrentUser {
 import candylioLogoDark from '../../public/candylio-logo-full-dark.svg';
 import larkLogo from '../../public/lark-logo-mark.png';
 
-// const APP_ID = 'cli_a95f6f0b59795eed'; // TODO: restore when backend is ready
-
 declare global {
   interface Window { tt: any; }
 }
