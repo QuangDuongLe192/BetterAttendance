@@ -293,6 +293,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
 // ─── Locked card ──────────────────────────────────────────────────────────────
 function LockedCard({ ws }: Readonly<{ ws: WorkspaceDef }>) {
   const { t } = useTranslation('common');
+  const Lock = Icons.lock;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', color: '#6B7E8E', borderRadius: 14, padding: '24px 26px', minHeight: 440, justifyContent: 'space-between', background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px dashed rgba(200,212,220,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)' }}>
       <div>
@@ -301,7 +302,7 @@ function LockedCard({ ws }: Readonly<{ ws: WorkspaceDef }>) {
           <span style={{ width: 1, height: 14, background: '#C8D4DC' }} />
           <RoleBadge role={ws.role} />
         </div>
-        <Icons.lock size={22} stroke="#9EAFBD" />
+        <Lock size={22} stroke="#9EAFBD" />
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: '#3A4F63', margin: '14px 0 4px', letterSpacing: '-0.01em' }}>{t(ws.full)}</h2>
         <p style={{ fontSize: 13, color: '#6B7E8E', margin: '8px 0 0', lineHeight: 1.55 }}>
           {t('landing.workspace.locked.no_access', { role: ws.role })}
