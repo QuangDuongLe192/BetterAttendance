@@ -172,7 +172,7 @@ function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: Readonly
                   </div>
                 </div>
                 {s.status === 'reviewed'
-                  ? <Icons.check size={13} stroke="#1A6B55"/>
+                  ? <Check size={13} stroke="#1A6B55"/>
                   : <span style={{ width: 7, height: 7, borderRadius: 999, background: '#B45309', flexShrink: 0, display: 'inline-block' }}/>}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
