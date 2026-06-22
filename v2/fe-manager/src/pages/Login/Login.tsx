@@ -241,7 +241,6 @@ export function Login() {
   const loginByLark = useCallback(() => {
     if (searchParams.get('code')) return;
     setLoginState('loading');
-    // TODO: remove mock bypass when backend /api/auth/lark/token is ready
     loginWithToken('mock_token_dev', Date.now() / 1000 + 86400);
     toast.success(t('login.toast.success'));
     navigate('/', { replace: true });
