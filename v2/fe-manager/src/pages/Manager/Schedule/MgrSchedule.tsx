@@ -418,7 +418,10 @@ function WeekPicker({ weekOffset, onChange, onClose }: {
           const isHover = rowOffset === hoverOff;
           return (
             <div key={ri}
+              role="button"
+              tabIndex={0}
               onClick={() => onChange(rowOffset)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onChange(rowOffset); }}
               onMouseEnter={() => setHoverOff(rowOffset)}
               onMouseLeave={() => setHoverOff(null)}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderRadius: 7, background: isSelected ? '#1E2D3D' : isHover ? 'rgba(0,180,160,0.07)' : 'transparent', cursor: 'pointer', marginBottom: 2 }}>
