@@ -8,6 +8,7 @@ const ChevR = Icons.chevR;
 const Lock = Icons.lock;
 const Download = Icons.download;
 const Scroll = Icons.scroll;
+const ChevD = Icons.chevD;
 
 interface Props {
   history: FinHistoryItem[];
@@ -188,7 +189,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
                 <option value="all">{t('finance.history.select.placeholder')}</option>
                 {safeHistory.map(p => <option key={p.period} value={p.period}>{p.period}</option>)}
               </select>
-              <Icons.chevD size={14} stroke="#6B7E8E" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}/>
+              <ChevD size={14} stroke="#6B7E8E" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}/>
             </div>
           </div>
         </div>
