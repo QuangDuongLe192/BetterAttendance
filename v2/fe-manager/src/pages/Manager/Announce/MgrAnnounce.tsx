@@ -47,6 +47,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
   if (isLoading) return <MgrAnnounceSkeleton />;
   if (error) return <ErrorBanner message={error} />;
 
+  const Send = Icons.send;
   const send = () => {
     setCompose(false);
     setTitle('');
@@ -74,7 +75,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
             <div style={{ position: 'absolute', top: -16, right: -16, width: 100, height: 100, borderRadius: '50%', background: 'rgba(0,180,160,0.15)', pointerEvents: 'none' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
               <span style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(0,180,160,0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icons.send size={15} stroke="rgba(255,255,255,0.9)" />
+                <Send size={15} stroke="rgba(255,255,255,0.9)" />
               </span>
               <span style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{t('manager.announce.compose.title')}</span>
             </div>
@@ -127,7 +128,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
             </button>
             <button disabled={!title.trim()} onClick={send}
               style={{ flex: 2, padding: '10px', borderRadius: 10, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, background: title.trim() ? '#00B4A0' : 'rgba(200,212,220,0.3)', cursor: title.trim() ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 700, color: title.trim() ? '#fff' : '#9BAAB5', boxShadow: title.trim() ? '0 2px 8px rgba(0,180,160,0.3)' : 'none', transition: 'all 150ms' }}>
-              <Icons.send size={14} stroke="currentColor" /> {t('manager.announce.compose.send')}
+              <Send size={14} stroke="currentColor" /> {t('manager.announce.compose.send')}
             </button>
           </div>
         </div>
@@ -137,7 +138,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.6)'; }}
           onMouseLeave={e => { e.currentTarget.style.background = glass.background as string; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.35)'; }}>
           <span style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(0,180,160,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icons.send size={17} stroke="#00B4A0" />
+            <Send size={17} stroke="#00B4A0" />
           </span>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{t('manager.announce.compose.trigger.title')}</div>
