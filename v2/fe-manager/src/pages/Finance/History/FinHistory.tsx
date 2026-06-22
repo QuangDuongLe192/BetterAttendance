@@ -36,7 +36,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
 
   useEffect(() => {
     const barEl = document.querySelector('.fin-chart-scroll') as HTMLElement | null;
-    const lblEl = document.getElementById('fin-chart-labels') as HTMLElement | null;
+    const lblEl = document.getElementById('fin-chart-labels');
     if (!barEl || !lblEl) return;
     const syncBar = () => { lblEl.scrollLeft = barEl.scrollLeft; };
     const syncLbl = () => { barEl.scrollLeft = lblEl.scrollLeft; };
