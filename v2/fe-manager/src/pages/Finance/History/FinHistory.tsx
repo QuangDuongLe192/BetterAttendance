@@ -301,8 +301,12 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
         {displayHistory.map((p, i) => {
           const pct = (maxP > 0 ? p.total / maxP * 100 : 0).toFixed(0);
           return (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '180px 1fr 90px 90px 140px 110px 80px', padding: '16px 24px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff', cursor: 'pointer', transition: 'background 150ms' }}
+            <div key={i}
+              role="button"
+              tabIndex={0}
+              style={{ display: 'grid', gridTemplateColumns: '180px 1fr 90px 90px 140px 110px 80px', padding: '16px 24px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff', cursor: 'pointer', transition: 'background 150ms' }}
               onClick={() => setSel(p)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSel(p); }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#F7FCFB'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = i % 2 ? '#FAFBFC' : '#fff'; }}>
               <div>
