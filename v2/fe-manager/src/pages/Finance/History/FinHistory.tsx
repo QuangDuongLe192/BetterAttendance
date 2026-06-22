@@ -7,6 +7,7 @@ import { type PayrollEntry, type FinHistory as FinHistoryItem, type FinLoc, fmtV
 const ChevR = Icons.chevR;
 const Lock = Icons.lock;
 const Download = Icons.download;
+const Scroll = Icons.scroll;
 
 interface Props {
   history: FinHistoryItem[];
@@ -149,7 +150,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
             ].map((f) => (
               <div key={f.format} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: '#F7F9FA', borderRadius: 8, border: '1px solid #E8ECEF' }}>
                 <span style={{ width: 36, height: 36, borderRadius: 6, background: '#E6F8F6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Icons.scroll size={16} stroke="#00B4A0"/>
+                  <Scroll size={16} stroke="#00B4A0"/>
                 </span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, fontSize: 13, color: '#1E2D3D' }}>{f.format}</div>
