@@ -89,7 +89,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
                 <div style={{ textAlign: 'right', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{fmtVND(lineReg + lineOT + lineMo)}</div>
               </div>
               {it.type === 'hourly' && (it.otH ?? 0) > 0 && (
-                <div key={`ot-${i}`} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '7px 18px 7px 40px', background: '#FFF9F0', borderTop: '1px dashed #F0E0C0' }}>
+                <div key={`ot-${it.name}`} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '7px 18px 7px 40px', background: '#FFF9F0', borderTop: '1px dashed #F0E0C0' }}>
                   <div style={{ fontSize: 11, color: '#B45309', fontStyle: 'italic' }}>{t('finance.payroll.detail.otRow')}</div>
                   <div/><div/>
                   <div style={{ textAlign: 'right', fontSize: 11, color: '#B45309' }}>{it.otH}h</div>
