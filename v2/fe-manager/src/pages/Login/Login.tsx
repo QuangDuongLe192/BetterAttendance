@@ -150,6 +150,8 @@ function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: (
 function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: () => void }>) {
   const { t } = useTranslation('common');
   const [whyOpen, setWhyOpen] = useState(false);
+  const Shield = Icons.shield;
+  const ChevD = Icons.chevD;
   return (
     <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 16, padding: '40px 40px 32px', border: '1px solid #E8ECEF', boxShadow: '0 1px 2px rgba(30,45,61,0.03)' }}>
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#00B4A0', marginBottom: 12 }}>{t('login.card.eyebrow')}</div>
@@ -158,7 +160,7 @@ function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: ()
       <LarkButton state={state} onClick={onLogin} />
       {state === 'error' && (
         <div style={{ marginTop: 14, padding: '10px 14px', borderRadius: 8, background: '#FFF8F8', border: '1px solid #F5C5C5', color: '#7C1D1D', fontSize: 12.5, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-          <Icons.shield size={14} stroke="#7C1D1D" style={{ marginTop: 1, flexShrink: 0 }} />
+          <Shield size={14} stroke="#7C1D1D" style={{ marginTop: 1, flexShrink: 0 }} />
           <div>
             <div style={{ fontWeight: 700, marginBottom: 2 }}>{t('login.card.error.title')}</div>
             <div>{t('login.card.error.body')}</div>
@@ -167,7 +169,7 @@ function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: ()
       )}
       <div style={{ marginTop: 24, borderRadius: 8, background: '#F7F9FA', border: '1px solid #E8ECEF', overflow: 'hidden' }}>
         <button onClick={() => setWhyOpen(v => !v)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '12px 14px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#1E2D3D', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12.5, textAlign: 'left' }}>
-          <Icons.shield size={13} stroke="#00B4A0" />
+          <Shield size={13} stroke="#00B4A0" />
           <span style={{ flex: 1 }}>{t('login.card.why.label')}</span>
           <span style={{ transition: 'transform 200ms', transform: whyOpen ? 'rotate(180deg)' : 'rotate(0deg)', display: 'flex' }}>
             <Icons.chevD size={13} stroke="#6B7E8E" />
