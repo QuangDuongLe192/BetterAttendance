@@ -87,6 +87,9 @@ function Chip({ children, icon }: Readonly<{ children: React.ReactNode; icon: Re
 
 function LeftPanel() {
   const { t } = useTranslation('common');
+  const Shield = Icons.shield;
+  const Users = Icons.users;
+  const Clock = Icons.clock;
   return (
     <aside style={{ background: '#1E2D3D', color: '#fff', padding: '56px 56px 40px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', inset: 0, opacity: 0.07, pointerEvents: 'none', backgroundImage: 'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(circle at 70% 30%, #000 0%, transparent 70%)', WebkitMaskImage: 'radial-gradient(circle at 70% 30%, #000 0%, transparent 70%)' }} />
@@ -106,9 +109,9 @@ function LeftPanel() {
           {t('login.left.subtitle')}
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 32, paddingTop: 28, borderTop: '1px solid rgba(255,255,255,0.10)' }}>
-          <Chip icon={<Icons.shield size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sso')}</Chip>
-          <Chip icon={<Icons.users size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sync')}</Chip>
-          <Chip icon={<Icons.clock size={13} stroke="#7BE4D6" />}>{t('login.left.chip.onetouch')}</Chip>
+          <Chip icon={<Shield size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sso')}</Chip>
+          <Chip icon={<Users size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sync')}</Chip>
+          <Chip icon={<Clock size={13} stroke="#7BE4D6" />}>{t('login.left.chip.onetouch')}</Chip>
         </div>
       </div>
       <div style={{ flex: 1 }} />
