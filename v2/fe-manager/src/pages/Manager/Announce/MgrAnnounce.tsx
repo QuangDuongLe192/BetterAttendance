@@ -220,7 +220,7 @@ function MgrAnnounceSkeleton() {
       <Skeleton h={32} w={240} style={{ marginBottom: 24 }} />
       <SkeletonCard lines={4} style={{ marginBottom: 24 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+        {(['a', 'b', 'c'] as const).map(k => <SkeletonCard key={k} lines={2} />)}
       </div>
     </div>
   );
