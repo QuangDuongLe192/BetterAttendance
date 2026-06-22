@@ -6,6 +6,7 @@ import { type PayrollEntry, type FinHistory as FinHistoryItem, type FinLoc, fmtV
 
 const ChevR = Icons.chevR;
 const Lock = Icons.lock;
+const Download = Icons.download;
 
 interface Props {
   history: FinHistoryItem[];
@@ -95,7 +96,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
               <Eyebrow style={{ marginBottom: 4 }}>{t('finance.history.detail.table.eyebrow')}</Eyebrow>
               <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1E2D3D', margin: 0 }}>{t('finance.history.detail.table.title', { count: staff.length })}</h3>
             </div>
-            <Btn variant="secondary" size="sm" icon={<Icons.download size={13}/>}>{t('finance.history.detail.table.downloadBtn')}</Btn>
+            <Btn variant="secondary" size="sm" icon={<Download size={13}/>}>{t('finance.history.detail.table.downloadBtn')}</Btn>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 90px 100px 100px 90px 110px', padding: '12px 24px', background: '#F7F9FA', borderBottom: '1px solid #E8ECEF', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: '#6B7E8E' }}>
             <span>{t('finance.history.detail.table.col.employee')}</span><span>{t('finance.history.detail.table.col.role')}</span>
