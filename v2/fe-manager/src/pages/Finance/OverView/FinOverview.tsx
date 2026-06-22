@@ -55,8 +55,8 @@ export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }:
           { labelKey: 'finance.overview.card.fixedMonthly',   val: fmtM(summary.monthly), sub: t('finance.overview.card.pctOfFund', { pct: Math.round(summary.monthly / summary.total * 100) }), color: '#7C4FBF' },
           { labelKey: 'finance.overview.card.regularHourly',  val: fmtM(summary.hourly),  sub: t('finance.overview.card.pctOfFund', { pct: Math.round(summary.hourly  / summary.total * 100) }), color: '#00B4A0' },
           { labelKey: 'finance.overview.card.overtimeCost',   val: fmtM(summary.ot),      sub: t('finance.overview.card.otCount', { count: summary.otCount }),                                    color: '#B45309' },
-        ].map((c, i) => (
-          <Card key={i} style={{ padding: 22 }}>
+        ].map((c) => (
+          <Card key={c.labelKey} style={{ padding: 22 }}>
             <div style={{ fontSize: 11, color: '#6B7E8E', fontFamily: 'var(--font-display)', fontWeight: 600, marginBottom: 12 }}>{t(c.labelKey)}</div>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, letterSpacing: '-0.02em', color: c.color }}>{c.val}</div>
             <div style={{ fontSize: 12, color: '#6B7E8E', marginTop: 8 }}>{c.sub}</div>
