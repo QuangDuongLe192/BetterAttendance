@@ -484,7 +484,7 @@ function ShiftDetailPopover({ shift, pos, onClose, onEdit }: {
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 500 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, zIndex: 500 }} />
       <div style={{ position: 'fixed', left: pos.x, top: pos.y, width: 268, zIndex: 501, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(200,212,220,0.35)', borderRadius: 12, boxShadow: '0 8px 32px rgba(30,45,61,0.14)', overflow: 'hidden', animation: 'popIn 150ms ease' }}>
         <style>{`@keyframes popIn { from { opacity:0; transform:scale(0.96) translateY(-4px); } to { opacity:1; transform:none; } }`}</style>
 
