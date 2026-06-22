@@ -382,7 +382,7 @@ export function Landing() {
               <span>{t('landing.footer.copyright')}</span>
               <span style={{ display: 'flex', gap: 18 }}>
                 <button type="button" style={{ color: '#4A6070', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('landing.footer.privacy')}</button>
-                <a href="#" style={{ color: '#4A6070', textDecoration: 'none' }}>{t('landing.footer.terms')}</a>
+                <button type="button" style={{ color: '#4A6070', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('landing.footer.terms')}</button>
                 <a href="#" onClick={e => { e.preventDefault(); logout(); nav('/login', { replace: true, state: { fromLogout: true } }); }} style={{ color: '#4A6070', textDecoration: 'none' }}>{t('landing.footer.logout')}</a>
               </span>
             </div>
