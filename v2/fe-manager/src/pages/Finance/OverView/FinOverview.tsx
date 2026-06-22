@@ -3,6 +3,8 @@ import { Icons } from '../../../components/Icons';
 import { Card, Tag, Btn, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { type FinSummary, type FinByLoc, type FinPeriod, fmtVND, fmtM } from '../../../services/finance';
 
+const Check = Icons.check;
+
 interface Props {
   summary: FinSummary;
   byLoc: FinByLoc[];
@@ -138,7 +140,7 @@ export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }:
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Btn variant="ghost" onClick={() => onNav('payroll')} style={{ background: 'rgba(255,255,255,0.07)', color: '#fff' }}>{t('finance.overview.cta.viewPayroll')}</Btn>
-            <Btn variant="primary" onClick={() => onNav('approve')} icon={<Icons.check size={14}/>}>{t('finance.overview.cta.doApprove')}</Btn>
+            <Btn variant="primary" onClick={() => onNav('approve')} icon={<Check size={14}/>}>{t('finance.overview.cta.doApprove')}</Btn>
           </div>
         </div>
       </Card>
