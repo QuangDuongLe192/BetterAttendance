@@ -266,7 +266,7 @@ export function MonthGrid({
               else if (isToday) cls += ' cd-month-cal__cell--today';
 
               return (
-                <div key={iso} className={cls} onClick={() => onSelectDate(iso)}>
+                <div key={iso} className={cls} role="button" tabIndex={0} onClick={() => onSelectDate(iso)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectDate(iso); }}>
                   <div className="cd-month-cal__num">{day}</div>
                   {visibleDots.length > 0 && (
                     <div className="cd-month-cal__dots">
