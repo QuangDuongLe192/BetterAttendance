@@ -267,7 +267,7 @@ export function FinHistory({ history, payroll, finLocs, isLoading, error }: Read
               <div id="fin-chart-labels" style={{ overflowX: 'auto', overflowY: 'hidden' }}>
                 <div style={{ display: 'flex', gap: 8, width: '100%', paddingTop: 6 }}>
                   {chartData.map((p, i) => (
-                    <div key={i} style={{ flex: 1, minWidth: 0, fontSize: 10, color: i === chartData.length - 1 ? '#00B4A0' : '#6B7E8E', textAlign: 'center', fontWeight: i === chartData.length - 1 ? 700 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div key={p.period} style={{ flex: 1, minWidth: 0, fontSize: 10, color: i === chartData.length - 1 ? '#00B4A0' : '#6B7E8E', textAlign: 'center', fontWeight: i === chartData.length - 1 ? 700 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {p.period.replace(t('finance.history.chart.stripPrefix'), '')}
                     </div>
                   ))}
