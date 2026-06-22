@@ -250,7 +250,7 @@ export function MgrApprovals({ isLoading, error, handled, handledBy = {}, approv
 
 // ─── Detail Drawer ────────────────────────────────────────────────────────────
 
-export function ApprovalDetailDrawer({ approval: a, ctx, handled, handledBy, rejectedReason, initialRejectMode, onClose, onApprove, onReject }: {
+export function ApprovalDetailDrawer({ approval: a, ctx, handled, handledBy, rejectedReason, initialRejectMode, onClose, onApprove, onReject }: Readonly<{
   approval: Approval;
   ctx?: ApprovalCtx;
   handled?: 'approved' | 'rejected';
@@ -260,7 +260,7 @@ export function ApprovalDetailDrawer({ approval: a, ctx, handled, handledBy, rej
   onClose: () => void;
   onApprove: (id: string) => void;
   onReject: (id: string, reason: string) => void;
-}) {
+}>) {
   const { t } = useTranslation('manager');
   const [rejectMode, setRejectMode] = useState(initialRejectMode);
   const [rejectReason, setRejectReason] = useState('');
