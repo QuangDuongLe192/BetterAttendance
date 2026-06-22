@@ -280,7 +280,7 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
         const hr = s.total > 0 ? (s.totalReg  / s.total) * 100 : 0;
         const ot = s.total > 0 ? (s.totalOT   / s.total) * 100 : 0;
         return (
-          <div key={s.id} onClick={() => setSel(s)}
+          <div key={s.id} role="button" tabIndex={0} onClick={() => setSel(s)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSel(s); }}
             style={{ background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8, padding: 20, cursor: 'pointer', transition: 'all 150ms' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1E2D3D'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(30,45,61,0.08)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#C8D4DC'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
