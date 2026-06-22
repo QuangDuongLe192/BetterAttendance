@@ -3,6 +3,8 @@ import { Icons } from '../../../components/Icons';
 import { Card, Tag, Btn, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { type FinSummary, type FinByLoc, type FinPeriod, fmtVND, fmtM } from '../../../services/finance';
 
+const Check = Icons.check;
+
 interface Props {
   summary: FinSummary;
   byLoc: FinByLoc[];
@@ -12,7 +14,7 @@ interface Props {
   error?: string | null;
 }
 
-export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }: Props) {
+export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('finance');
 
   if (isLoading) return <FinOverviewSkeleton />;
@@ -55,8 +57,8 @@ export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }:
           { labelKey: 'finance.overview.card.fixedMonthly',   val: fmtM(summary.monthly), sub: t('finance.overview.card.pctOfFund', { pct: Math.round(summary.monthly / summary.total * 100) }), color: '#7C4FBF' },
           { labelKey: 'finance.overview.card.regularHourly',  val: fmtM(summary.hourly),  sub: t('finance.overview.card.pctOfFund', { pct: Math.round(summary.hourly  / summary.total * 100) }), color: '#00B4A0' },
           { labelKey: 'finance.overview.card.overtimeCost',   val: fmtM(summary.ot),      sub: t('finance.overview.card.otCount', { count: summary.otCount }),                                    color: '#B45309' },
-        ].map((c, i) => (
-          <Card key={i} style={{ padding: 22 }}>
+        ].map((c) => (
+          <Card key={c.labelKey} style={{ padding: 22 }}>
             <div style={{ fontSize: 11, color: '#6B7E8E', fontFamily: 'var(--font-display)', fontWeight: 600, marginBottom: 12 }}>{t(c.labelKey)}</div>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, letterSpacing: '-0.02em', color: c.color }}>{c.val}</div>
             <div style={{ fontSize: 12, color: '#6B7E8E', marginTop: 8 }}>{c.sub}</div>
@@ -102,8 +104,8 @@ export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }:
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {donutPcts.map((d, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              {donutPcts.map((d) => (
+                <div key={d.labelKey} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                   <span style={{ width: 12, height: 12, borderRadius: 3, background: d.color, flexShrink: 0, marginTop: 2 }}/>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D' }}>{t(d.labelKey)}</div>
@@ -138,7 +140,7 @@ export function FinOverview({ summary, byLoc, period, onNav, isLoading, error }:
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Btn variant="ghost" onClick={() => onNav('payroll')} style={{ background: 'rgba(255,255,255,0.07)', color: '#fff' }}>{t('finance.overview.cta.viewPayroll')}</Btn>
-            <Btn variant="primary" onClick={() => onNav('approve')} icon={<Icons.check size={14}/>}>{t('finance.overview.cta.doApprove')}</Btn>
+            <Btn variant="primary" onClick={() => onNav('approve')} icon={<Check size={14}/>}>{t('finance.overview.cta.doApprove')}</Btn>
           </div>
         </div>
       </Card>
@@ -152,7 +154,7 @@ function FinOverviewSkeleton() {
       <Skeleton h={14} w={240} style={{ marginBottom: 12 }} />
       <Skeleton h={36} w={360} style={{ marginBottom: 32 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 32 }}>
-        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+        {(['a', 'b', 'c', 'd'] as const).map((k) => <SkeletonCard key={k} lines={2} />)}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 24, marginBottom: 32 }}>
         <SkeletonCard lines={6} />
