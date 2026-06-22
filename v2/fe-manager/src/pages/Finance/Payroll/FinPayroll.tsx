@@ -4,6 +4,10 @@ import { Icons } from '../../../components/Icons';
 import { Btn, Tag, Avatar, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { type PayrollEntry, type FinSummary, type FinByLoc, type FinLoc, fmtVND, fmtM } from '../../../services/finance';
 
+const Users = Icons.users;
+const Check = Icons.check;
+const Edit = Icons.edit;
+
 type Layout = 'split' | 'table' | 'cards';
 
 interface PayrollProps {
@@ -21,12 +25,12 @@ interface PayrollProps {
 
 // ─── Employee detail panel ──────────────────────────────────────────────────
 
-function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: PayrollEntry | null; finLocs: FinLoc[]; compact?: boolean; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<{ s: PayrollEntry | null; finLocs: FinLoc[]; compact?: boolean; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
 
   if (!s) return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#6B7E8E' }}>
-      <Icons.users size={32} stroke="#C8D4DC"/>
+      <Users size={32} stroke="#C8D4DC"/>
       <span style={{ fontFamily: 'var(--font-body)', fontSize: 14 }}>{t('finance.payroll.detail.selectHint')}</span>
     </div>
   );
@@ -52,7 +56,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: Payr
           </div>
         </div>
         {s.status === 'reviewed'
-          ? <Tag tone="success" icon={<Icons.check size={10}/>}>{t('finance.payroll.detail.reviewed')}</Tag>
+          ? <Tag tone="success" icon={<Check size={10}/>}>{t('finance.payroll.detail.reviewed')}</Tag>
           : <Tag tone="warning">{t('finance.payroll.detail.pending')}</Tag>}
       </div>
 
@@ -67,9 +71,10 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: Payr
           const lineReg = it.type === 'hourly' ? (it.regH ?? 0) * (it.rate ?? 0) : 0;
           const lineOT  = it.type === 'hourly' ? (it.otH  ?? 0) * (it.rate ?? 0) * 1.5 : 0;
           const lineMo  = it.type === 'monthly' ? (it.monthly ?? 0) : 0;
+          const otDisplay = it.type === 'monthly' ? '—' : ((it.otH ?? 0) > 0 ? `${it.otH}h` : '—');
           return (
             <>
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '13px 18px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff' }}>
+              <div key={it.name} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '13px 18px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 2, background: it.color }}/>
                   <span style={{ fontWeight: 600, fontSize: 13, color: '#1E2D3D' }}>{it.name}</span>
@@ -80,12 +85,12 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: Payr
                   </span>
                 </div>
                 <div style={{ textAlign: 'right', fontSize: 12, color: it.type === 'monthly' ? '#C8D4DC' : '#1E2D3D' }}>{it.type === 'monthly' ? '—' : `${it.regH}h`}</div>
-                <div style={{ textAlign: 'right', fontSize: 12, color: (it.otH ?? 0) > 0 ? '#B45309' : '#C8D4DC' }}>{it.type === 'monthly' ? '—' : ((it.otH ?? 0) > 0 ? `${it.otH}h` : '—')}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, color: (it.otH ?? 0) > 0 ? '#B45309' : '#C8D4DC' }}>{otDisplay}</div>
                 <div style={{ textAlign: 'right', fontSize: 12, color: '#6B7E8E' }}>{it.type === 'monthly' ? '—' : fmtVND(it.rate ?? 0)}</div>
                 <div style={{ textAlign: 'right', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{fmtVND(lineReg + lineOT + lineMo)}</div>
               </div>
               {it.type === 'hourly' && (it.otH ?? 0) > 0 && (
-                <div key={`ot-${i}`} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '7px 18px 7px 40px', background: '#FFF9F0', borderTop: '1px dashed #F0E0C0' }}>
+                <div key={`ot-${it.name}`} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '7px 18px 7px 40px', background: '#FFF9F0', borderTop: '1px dashed #F0E0C0' }}>
                   <div style={{ fontSize: 11, color: '#B45309', fontStyle: 'italic' }}>{t('finance.payroll.detail.otRow')}</div>
                   <div/><div/>
                   <div style={{ textAlign: 'right', fontSize: 11, color: '#B45309' }}>{it.otH}h</div>
@@ -111,8 +116,8 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: Payr
           { labelKey: 'finance.payroll.detail.comp.reg',     val: s.totalReg, show: s.totalReg > 0, bg: '#F0FAF7', border: '#A8E4DC', fg: '#008C7C' },
           { labelKey: 'finance.payroll.detail.comp.ot',      val: s.totalOT,  show: true,            bg: s.totalOT > 0 ? '#FFF9F0' : '#F7F9FA', border: s.totalOT > 0 ? '#F5E2A8' : '#E8ECEF', fg: s.totalOT > 0 ? '#B45309' : '#C8D4DC' },
           { labelKey: 'finance.payroll.detail.comp.monthly', val: s.totalMonthly, show: s.totalMonthly > 0, bg: '#F1E9FB', border: '#D9C3F5', fg: '#7C4FBF' },
-        ].map((c, i) => (
-          <div key={i} style={{ padding: '12px 14px', background: c.bg, borderRadius: 8, border: `1px solid ${c.border}` }}>
+        ].map((c) => (
+          <div key={c.labelKey} style={{ padding: '12px 14px', background: c.bg, borderRadius: 8, border: `1px solid ${c.border}` }}>
             <div style={{ fontSize: 10, color: '#6B7E8E', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>{t(c.labelKey)}</div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: c.fg, marginTop: 4 }}>{c.show && c.val > 0 ? fmtVND(c.val) : '—'}</div>
           </div>
@@ -122,11 +127,11 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: Payr
       {/* actions */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
         {s.status === 'pending'
-          ? <Btn variant="primary" size="sm" icon={<Icons.check size={13}/>} onClick={() => onReview(s.id)}>{t('finance.payroll.detail.reviewBtn')}</Btn>
+          ? <Btn variant="primary" size="sm" icon={<Check size={13}/>} onClick={() => onReview(s.id)}>{t('finance.payroll.detail.reviewBtn')}</Btn>
           : <>
-              <Btn variant="ghost" size="sm" icon={<Icons.edit size={13}/>} onClick={() => onUnreview(s.id)}>{t('finance.payroll.detail.adjustBtn')}</Btn>
+              <Btn variant="ghost" size="sm" icon={<Edit size={13}/>} onClick={() => onUnreview(s.id)}>{t('finance.payroll.detail.adjustBtn')}</Btn>
               <span style={{ fontSize: 12, color: '#1A6B55', display: 'flex', alignItems: 'center', gap: 5 }}>
-                <Icons.check size={12} stroke="#1A6B55"/>{t('finance.payroll.detail.reviewedAt')}
+                <Check size={12} stroke="#1A6B55"/>{t('finance.payroll.detail.reviewedAt')}
               </span>
             </>}
       </div>
@@ -136,7 +141,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: { s: Payr
 
 // ─── Variant A: Split/Master-detail ─────────────────────────────────────────
 
-function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: { list: PayrollEntry[]; finLocs: FinLoc[]; summary: FinSummary; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: Readonly<{ list: PayrollEntry[]; finLocs: FinLoc[]; summary: FinSummary; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
   const [sel, setSel] = useState<PayrollEntry | null>(null);
 
@@ -167,11 +172,11 @@ function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: { list: 
                   </div>
                 </div>
                 {s.status === 'reviewed'
-                  ? <Icons.check size={13} stroke="#1A6B55"/>
+                  ? <Check size={13} stroke="#1A6B55"/>
                   : <span style={{ width: 7, height: 7, borderRadius: 999, background: '#B45309', flexShrink: 0, display: 'inline-block' }}/>}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', gap: 3 }}>{s.items.map((it, ii) => <span key={ii} style={{ width: 6, height: 6, borderRadius: 2, background: it.color }}/>)}</div>
+                <div style={{ display: 'flex', gap: 3 }}>{s.items.map((it) => <span key={it.name} style={{ width: 6, height: 6, borderRadius: 2, background: it.color }}/>)}</div>
                 <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: '#1E2D3D' }}>{fmtM(s.total)}</span>
               </div>
             </button>
@@ -187,7 +192,7 @@ function PayrollSplit({ list, finLocs, summary, onReview, onUnreview }: { list: 
 
 // ─── Variant B: Expandable table ─────────────────────────────────────────────
 
-function PayrollTable({ list, finLocs, onReview, onUnreview }: { list: PayrollEntry[]; finLocs: FinLoc[]; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: PayrollEntry[]; finLocs: FinLoc[]; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
   const [exp, setExp] = useState<string | null>(null);
   const cols = '32px 1.6fr 1fr 80px 72px 110px 110px 100px 72px';
@@ -205,7 +210,12 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
         const isExp = exp === s.id;
         return (
           <div key={s.id}>
-            <div onClick={() => setExp(isExp ? null : s.id)} style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setExp(isExp ? null : s.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExp(isExp ? null : s.id); }}
+              style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
               <span style={{ color: '#6B7E8E', display: 'inline-block', transition: 'transform 150ms', transform: isExp ? 'rotate(90deg)' : 'none' }}><Icons.chevR size={13}/></span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Avatar name={s.name} size={28} bg={s.isManager ? '#00B4A0' : '#1E2D3D'}/>
