@@ -146,7 +146,10 @@ export function StaffSystemRoles({ scopes, setScopes }: {
           return (
             <div
               key={s.larkUserId}
+              role={isAdmin ? undefined : 'button'}
+              tabIndex={isAdmin ? undefined : 0}
               onClick={() => !isAdmin && setDrawerStaffId(s.larkUserId)}
+              onKeyDown={(e) => { if (!isAdmin && (e.key === 'Enter' || e.key === ' ')) setDrawerStaffId(s.larkUserId); }}
               style={{
                 display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.2fr) minmax(0,1.6fr) 36px',
                 alignItems: 'center', padding: '12px 20px',
