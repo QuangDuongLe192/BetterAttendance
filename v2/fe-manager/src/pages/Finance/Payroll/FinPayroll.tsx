@@ -72,7 +72,7 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
           const lineMo  = it.type === 'monthly' ? (it.monthly ?? 0) : 0;
           return (
             <>
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '13px 18px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff' }}>
+              <div key={it.name} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '13px 18px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 2, background: it.color }}/>
                   <span style={{ fontWeight: 600, fontSize: 13, color: '#1E2D3D' }}>{it.name}</span>
