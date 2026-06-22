@@ -154,7 +154,7 @@ function FinOverviewSkeleton() {
       <Skeleton h={14} w={240} style={{ marginBottom: 12 }} />
       <Skeleton h={36} w={360} style={{ marginBottom: 32 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 32 }}>
-        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+        {(['a', 'b', 'c', 'd'] as const).map((k) => <SkeletonCard key={k} lines={2} />)}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 24, marginBottom: 32 }}>
         <SkeletonCard lines={6} />
