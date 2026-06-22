@@ -12,7 +12,7 @@ interface Props {
   error?: string | null;
 }
 
-export function FinHistory({ history, payroll, finLocs, isLoading, error }: Props) {
+export function FinHistory({ history, payroll, finLocs, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('finance');
   const [sel, setSel] = useState<FinHistoryItem | null>(null);
   const [viewMode, setViewMode] = useState<'recent' | 'all'>('recent');
