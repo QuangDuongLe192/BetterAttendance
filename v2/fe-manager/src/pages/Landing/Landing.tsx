@@ -193,6 +193,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
   const live = WS_LIVE_KEYS[ws.id];
   const Icon = Icons[ws.icon];
   const Grid = Icons.grid;
+  const ArrowR = Icons.arrowR;
 
   return (
     <div
@@ -281,7 +282,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
         {/* Permissions row */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 14 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 8, background: hover ? '#008C7C' : '#1E2D3D', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13, transition: 'background 150ms' }}>
-            {t('landing.workspace.card.open')} <Icons.arrowR size={14} stroke="#fff" />
+            {t('landing.workspace.card.open')} <ArrowR size={14} stroke="#fff" />
           </span>
         </div>
       </div>
