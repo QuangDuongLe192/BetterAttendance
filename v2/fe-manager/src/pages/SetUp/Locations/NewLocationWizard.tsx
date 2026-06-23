@@ -314,7 +314,7 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
           const activeDotBg = step === i + 1 ? '#fff' : 'rgba(255,255,255,0.2)';
           const dotBg = i + 1 < step ? '#00B4A0' : activeDotBg;
           return (
-            <div key={i} style={{
+            <div key={`dot-${i}`} style={{
               height: 6, width: step === i + 1 ? 22 : 6, borderRadius: 999,
               background: dotBg,
               transition: 'all 280ms cubic-bezier(0.2,0.7,0.2,1)'
@@ -433,11 +433,11 @@ function StepMode({ draft, onSelect, t }: Readonly<{ draft: DraftLocation; onSel
                 <div style={{ display: 'flex', gap: 20 }}>
                   <div>
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#1A6B55', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 3 }}>{t('setup.wizard.mode.pros')}</div>
-                    {m.pros.map((p, i) => <div key={i} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{p}</div>)}
+                    {m.pros.map((p) => <div key={p} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{p}</div>)}
                   </div>
                   <div>
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#B45309', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 3 }}>{t('setup.wizard.mode.cons')}</div>
-                    {m.cons.map((c, i) => <div key={i} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{c}</div>)}
+                    {m.cons.map((c) => <div key={c} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{c}</div>)}
                   </div>
                 </div>
               </div>
@@ -485,7 +485,7 @@ function StepWifi({ draft, set, errors, t }: Readonly<{ draft: DraftLocation; se
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {draft.networks.map((net, i) => (
-                <div key={i} style={{ padding: '16px 20px', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.25)' : 'none' }}>
+                <div key={net.bssid || net.ssid || `net-${i}`} style={{ padding: '16px 20px', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.25)' : 'none' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                     <span style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1.5, textTransform: 'uppercase' }}>{t('setup.wizard.wifi.networkLabel', { n: i + 1 })}</span>
                     <button onClick={() => removeAt(i)} style={{
@@ -594,7 +594,7 @@ function StepAuto({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K ex
           const onActiveBg = !r.disabled && on ? 'rgba(0,180,160,0.06)' : 'rgba(255,255,255,0.72)';
           const rowBg = r.disabled ? 'rgba(247,249,250,0.5)' : onActiveBg;
           return (
-            <div key={idx} style={{
+            <div key={r.field ?? 'biometric'} style={{
               display: 'flex', alignItems: 'center', gap: 18, padding: '18px 20px', borderRadius: 12,
               border: `1.5px solid ${!r.disabled && on ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)'}`,
               background: rowBg,
@@ -725,7 +725,7 @@ function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: Readonly<{
         </button>
       </div>
       {rows.map((r, i) => (
-        <div key={i} style={{
+        <div key={r.label} style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 18px',
           borderTop: i > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none'
         }}>
