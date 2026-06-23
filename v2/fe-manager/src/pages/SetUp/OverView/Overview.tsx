@@ -15,7 +15,7 @@ import { useAuth } from '../../../stores/AuthContext';
 
 interface Props { onNav: (id: string) => void; isLoading?: boolean; error?: string | null; }
 
-export function Overview({ onNav, isLoading, error }: Props) {
+export function Overview({ onNav, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('setup');
   const { user } = useAuth();
   if (isLoading) return <SetupOverviewSkeleton />;
@@ -172,14 +172,14 @@ const glass = {
   boxShadow: '0 4px 16px rgba(30,45,61,0.07), inset 0 1px 0 rgba(255,255,255,0.7)',
 } satisfies React.CSSProperties;
 
-function CompletionCard({ pct, done, total, progress, progressLabels, progressCount, style, delay = 0, t }: {
+function CompletionCard({ pct, done, total, progress, progressLabels, progressCount, style, delay = 0, t }: Readonly<{
   pct: number; done: number; total: number;
   progress: typeof SETUP_PROGRESS;
   progressLabels: Record<ProgressKey, string>;
   progressCount: (key: ProgressKey, data: Record<string, unknown>) => string;
   style?: React.CSSProperties; delay?: number;
   t: (key: string, opts?: Record<string, unknown>) => string;
-}) {
+}>) {
   const r = 48, c = 2 * Math.PI * r;
   const offset = c - (pct / 100) * c;
   const today = new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
@@ -255,7 +255,7 @@ function CompletionCard({ pct, done, total, progress, progressLabels, progressCo
   );
 }
 
-function StatCard({ label, value, sub, icon, accent, delay = 0 }: { label: string; value: string; sub: string; icon: React.ReactNode; accent?: boolean; delay?: number }) {
+function StatCard({ label, value, sub, icon, accent, delay = 0 }: Readonly<{ label: string; value: string; sub: string; icon: React.ReactNode; accent?: boolean; delay?: number }>) {
   return (
     <div className="anim-card" style={{ animationDelay: `${delay}ms` }}>
     <Card style={{ padding: 20, height: '100%', ...glass,
@@ -274,7 +274,7 @@ function StatCard({ label, value, sub, icon, accent, delay = 0 }: { label: strin
 }
 
 
-function TodayPanel({ summary, t }: { summary: TodaySummary; t: (key: string, opts?: Record<string, unknown>) => string }) {
+function TodayPanel({ summary, t }: Readonly<{ summary: TodaySummary; t: (key: string, opts?: Record<string, unknown>) => string }>) {
   const d = new Date(summary.date);
   const dateLabel = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
   const weekday = new Intl.DateTimeFormat('vi-VN', { weekday: 'long' }).format(d);
@@ -304,7 +304,7 @@ function TodayPanel({ summary, t }: { summary: TodaySummary; t: (key: string, op
   );
 }
 
-function TodayStat({ label, value, tag }: { label: string; value: string; tag?: React.ReactNode }) {
+function TodayStat({ label, value, tag }: Readonly<{ label: string; value: string; tag?: React.ReactNode }>) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
       <div>
@@ -318,7 +318,7 @@ function TodayStat({ label, value, tag }: { label: string; value: string; tag?: 
   );
 }
 
-function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: { icon: string; title: string; desc: string; count: string; warn?: string; onClick: () => void; delay?: number }) {
+function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: Readonly<{ icon: string; title: string; desc: string; count: string; warn?: string; onClick: () => void; delay?: number }>) {
   const [hover, setHover] = useState(false);
   const IconComp = Icons[icon as keyof typeof Icons];
   return (
