@@ -116,12 +116,12 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
   };
 
   const handleSave = (data: Omit<ShiftEntity, 'jobId'>, editJobId?: string) => {
-    if (editJobId !== undefined) {
-      setLocalShifts(prev => prev.map(s => s.jobId === editJobId ? { ...data, jobId: editJobId } : s));
-      toast.success(t('manager.schedule.toast.updated'));
-    } else {
+    if (editJobId === undefined) {
       setLocalShifts(prev => [...prev, { ...data, jobId: `draft-${nextId.current++}` }]);
       toast.success(t('manager.schedule.toast.added', { name: STAFF.find(s => s.larkUserId === data.larkUserId)?.name ?? data.larkUserId }));
+    } else {
+      setLocalShifts(prev => prev.map(s => s.jobId === editJobId ? { ...data, jobId: editJobId } : s));
+      toast.success(t('manager.schedule.toast.updated'));
     }
     setPendingCount(n => n + 1);
   };
