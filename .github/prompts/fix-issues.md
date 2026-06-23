@@ -143,7 +143,29 @@ After all files/rules are processed:
 git push origin refactor/sonar-{date}
 ```
 
-**Step 4.2** — Build the PR body. Group changes by rule across all fixed files:
+**Step 4.2** — Wait for CI and verify fixes:
+
+```bash
+# Chờ build hoàn thành trên branch (timeout 10 phút)
+gh run watch $(gh run list --workflow=build.yml --branch=refactor/sonar-{date} --limit=1 --json databaseId --jq '.[0].databaseId')
+```
+
+Download sonar-issues từ build đó:
+```bash
+gh run download $(gh run list --workflow=build.yml --branch=refactor/sonar-{date} --limit=1 --json databaseId --jq '.[0].databaseId') --name sonar-issues --dir .sonar-verify
+```
+
+Kiểm tra: đọc `.sonar-verify/sonar-issues.json`, lọc theo các file đã fix trong Phase 3. Với mỗi issue đã fix, kiểm tra xem key đó còn tồn tại không.
+
+- **Không còn** → tiếp tục tạo PR
+- **Vẫn còn** → log `VERIFY FAILED {key} ({rule} L{line}): still present after fix`, quay lại Phase 3 để fix lại, rồi commit thêm và lặp lại Step 4.1–4.2
+
+Xóa thư mục tạm sau khi verify:
+```bash
+Remove-Item -Recurse -Force .sonar-verify
+```
+
+**Step 4.3** — Build the PR body. Group changes by rule across all fixed files:
 
 ```
 ## SonarQube Fixes — {date}
@@ -173,7 +195,7 @@ git push origin refactor/sonar-{date}
 🤖 Fixed by Claude · fix patterns in `.github/prompts/refactor-sonar-skills.md`
 ```
 
-**Step 4.3** — Create Draft PR:
+**Step 4.4** — Create Draft PR:
 ```bash
 gh pr create \
   --title "refactor: [SonarQube] {N} fixes — {date}" \
@@ -189,7 +211,7 @@ gh pr view refactor/sonar-{date} --json id --jq '.id'
 ```
 Store as `{pr_node_id}`.
 
-**Step 4.4** — Add PR to GitHub Project:
+**Step 4.5** — Add PR to GitHub Project:
 ```bash
 gh api graphql -f query='mutation {
   addProjectV2ItemById(input: {
@@ -200,7 +222,7 @@ gh api graphql -f query='mutation {
 ```
 Store `item.id` as `{item_id}`.
 
-**Step 4.5** — Set status to **In Review**:
+**Step 4.6** — Set status to **In Review**:
 ```bash
 gh api graphql -f query='mutation {
   updateProjectV2ItemFieldValue(input: {
@@ -229,9 +251,10 @@ Trước khi dừng, xác nhận từng mục:
 - [ ] Phase 2: working list đã in ra màn hình
 - [ ] Phase 3: tất cả file đã fix và commit
 - [ ] Phase 4.1: branch đã push lên remote
-- [ ] Phase 4.3: Draft PR đã tạo
-- [ ] Phase 4.4: PR đã add vào GitHub Project
-- [ ] Phase 4.5: Status đã set thành **In Review**
+- [ ] Phase 4.2: CI build trên branch đã pass, verify không còn issue nào trong danh sách đã fix
+- [ ] Phase 4.4: Draft PR đã tạo
+- [ ] Phase 4.5: PR đã add vào GitHub Project
+- [ ] Phase 4.6: Status đã set thành **In Review**
 - [ ] Phase 5: worktree đã remove
 
 ---
