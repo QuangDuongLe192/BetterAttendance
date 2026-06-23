@@ -74,7 +74,7 @@ const SEED_SHIFTS: ShiftEntity[] = makeSeed();
 
 interface Props { activeStore: string; isLoading?: boolean; error?: string | null; }
 
-export function MgrSchedule({ activeStore, isLoading, error }: Props) {
+export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('manager');
   const { user } = useAuth();
   const isAdmin = user?.access.some(a => a.type === 'ADMIN') ?? false;
@@ -377,11 +377,11 @@ const VI_MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', '
 const EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DOW_HDR = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
-function WeekPicker({ weekOffset, onChange, onClose }: {
+function WeekPicker({ weekOffset, onChange, onClose }: Readonly<{
   weekOffset: number;
   onChange: (offset: number) => void;
   onClose: () => void;
-}) {
+}>) {
   const { t, i18n } = useTranslation('manager');
   const MONTHS = i18n.language === 'en' ? EN_MONTHS : VI_MONTHS;
   const selMonday = getMondayOf((() => { const d = new Date(); d.setDate(d.getDate() + weekOffset * 7); return d; })());
@@ -451,12 +451,12 @@ function WeekPicker({ weekOffset, onChange, onClose }: {
   );
 }
 
-function ShiftDetailPopover({ shift, pos, onClose, onEdit }: {
+function ShiftDetailPopover({ shift, pos, onClose, onEdit }: Readonly<{
   shift: ShiftEntity;
   pos: { x: number; y: number };
   onClose: () => void;
   onEdit: () => void;
-}) {
+}>) {
   const { t } = useTranslation('manager');
   const STATUS_META: Record<ShiftEntity['status'], { label: string; color: string; bg: string }> = {
     in:        { label: t('manager.schedule.status.in'),        color: '#00897B', bg: 'rgba(0,180,160,0.10)' },
