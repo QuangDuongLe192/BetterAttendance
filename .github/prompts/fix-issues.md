@@ -1,44 +1,68 @@
 ## Task: Fix SonarQube Issues
 
+> **Quy tắc thực thi:**
+> - Hoàn thành từng Phase theo thứ tự. KHÔNG bỏ qua bất kỳ Phase nào.
+> - Sau mỗi Phase, log ra `✅ Phase {N} complete` trước khi tiếp tục.
+> - Nếu một bước thất bại, log lỗi và thử lại — KHÔNG nhảy sang Phase tiếp theo.
+> - KHÔNG dừng cho đến khi Done Checklist ở cuối được tick hết.
+
+This workflow supports three modes. Read the invocation to determine which mode to use:
+
+| Mode | When to use | Example invocation |
+|------|-------------|-------------------|
+| **batch** | Fix all issues in `sonar-issues.json`, one commit per file | "fix sonar issues" |
+| **file** | Fix all issues in one specific file | "fix sonar issues in Overview.tsx" |
+| **rule** | Fix all issues of one rule type across all files | "fix sonar S6770 issues" |
+
+---
+
 ### Phase 1 — Download Issues File
 
-**Step 1.1** — Check if `sonar-issues.json` exists in the project root:
+**Step 1.1** — Pull latest main to ensure worktree starts from up-to-date code:
+```bash
+git fetch origin && git reset --hard origin/main
+```
+
+**Step 1.2** — Remove stale file if present:
 ```bash
 if (Test-Path sonar-issues.json) { Remove-Item sonar-issues.json }
 ```
 
-**Step 1.2** — Get the latest successful run ID of the Build workflow:
+**Step 1.3** — Get the latest successful Build workflow run ID:
 ```bash
 gh run list --workflow=build.yml --status=success --limit=1 --json databaseId --jq '.[0].databaseId'
 ```
 Store as `{run_id}`.
 
-**Step 1.3** — Download the artifact:
+**Step 1.4** — Download the artifact:
 ```bash
 gh run download {run_id} --name sonar-issues --dir .
 ```
 
-**Step 1.4** — Read `sonar-issues.json`. Structure: `{ "issues": [...], "total": N }`
+**Step 1.5** — Read `sonar-issues.json`. Structure: `{ "issues": [...], "total": N }`
 
 If `total` is 0 or `issues` is empty: log `No issues found.` and stop.
 
 ---
 
-### Phase 2 — Create Worktree
+### Phase 2 — Build Working List
 
-Determine today's date in `YYYY-MM-DD` format. Store as `{date}`.
+Read all issues and group them. The grouping depends on mode:
 
-```bash
-git worktree add ../worktrees/sonar-{date} -b refactor/sonar-{date}
+**batch mode** — group all issues by file, then by rule within each file. Sort files by total issue count descending:
+
+```
+NewLocationWizard.tsx (45)   S6770×7  S6759×16  S3358×8  ...
+MgrSchedule.tsx      (25)   S6770×3  S6759×3   S7735×1  ...
+Overview.tsx         (21)   S6770×6  S6759×6   S4325×2  ...
+...
 ```
 
-If branch `refactor/sonar-{date}` already exists: log `Branch already exists for today. Remove it first or use a different date.` and stop.
+**file mode** — filter to only issues whose `component` matches the target filename. Group by rule within that file.
 
----
+**rule mode** — filter to only issues whose `rule` matches the target rule ID. Group by file within that rule.
 
-### Phase 3 — Fix Each Issue (Sequential)
-
-Process one issue at a time in the **same worktree** `../worktrees/sonar-{date}`. Complete Steps A–D for issue N before starting issue N+1.
+Print the working list before starting so the user can see the scope.
 
 **Field reference:**
 - `key` — unique SonarQube issue key
@@ -51,90 +75,98 @@ Process one issue at a time in the **same worktree** `../worktrees/sonar-{date}`
 
 ---
 
-#### Step A — Check skills file
+### Phase 3 — Fix Issues
 
-Read `.github/prompts/refactor-sonar-skills.md`. Search for `## Rule: {rule}`.
+#### batch / file mode — process one file at a time
 
-- **Found** → Note the fix pattern for use in Step B.
-- **Not found** → Research the fix, then document it in Step C after fixing.
+For each file in the working list, complete Steps A–C, then commit **once** for the whole file.
+
+**Step A — Check skills file**
+
+Read `.github/prompts/refactor-sonar-skills.md`. For each rule that will be fixed in this file, check for `## Rule: {rule}`.
+
+- **Found** → note the fix pattern.
+- **Not found** → research the fix; document it in Step B after fixing.
 
 ---
 
-#### Step B — Fix the code
+**Step B — Fix all issues in the file**
 
-Read `../worktrees/sonar-{date}/{file_path}` (strip `ProjectKey:` prefix from `component`).
+Read `../worktrees/sonar-{date}/{file_path}`.
 
-Focus on line `{line}`. Rule `{rule}` reports: `{message}`.
+Fix every flagged issue in the file, working rule by rule (complete one rule before moving to the next). Within each rule, fix issues in line-number order.
 
-Edit **only** `../worktrees/sonar-{date}/{file_path}`. Apply the minimal change that resolves the violation.
+- Apply the minimal change that resolves each violation.
 - Do not modify unrelated code.
 - Do not add explanatory comments.
 
-**If you cannot confidently fix without risking a regression:**
-Log: `SKIPPED {key} ({rule}): {one-sentence reason}`
-Move to next issue.
+**If a specific issue cannot be confidently fixed without risking a regression:**
+Log: `SKIPPED {key} ({rule} L{line}): {one-sentence reason}` and continue with the next issue.
+
+After fixing all issues in the file, update `.github/prompts/refactor-sonar-skills.md` for any rules not already documented.
 
 ---
 
-#### Step C — Update skills file
+**Step C — Commit (once per file)**
 
-Open `.github/prompts/refactor-sonar-skills.md`.
-
-**If rule was NOT already in the file**, append a new section:
-
-```markdown
-## Rule: {rule}
-
-**What:** {one sentence — what does this rule check for?}
-**Why:** {one sentence — why is this a problem?}
-**Fix pattern:** {concise description of how to fix violations of this rule}
-
-**Before:**
-```{language}
-{minimal code snippet showing the violation}
+```bash
+git -C ../worktrees/sonar-{date} add {file_path}
+git -C ../worktrees/sonar-{date} commit -m "fix: [SonarQube] {file_basename} — {rule1} {rule2} ... {rule_N}"
 ```
 
-**After:**
-```{language}
-{minimal code snippet showing the fix}
-```
-```
-
-**If rule WAS already in the file** → only update if you found a nuance not previously captured.
+The commit message lists every rule fixed in this file. Move to the next file.
 
 ---
 
-#### Step D — Commit
+#### rule mode — process one rule across all files
 
+**Step A** — Check `.github/prompts/refactor-sonar-skills.md` for `## Rule: {rule}` once before starting.
+
+**Step B** — Fix all violations of that rule in every affected file, one file at a time.
+
+**Step C** — Commit **once** for the entire rule (all files together):
 ```bash
 git -C ../worktrees/sonar-{date} add --all
 git -C ../worktrees/sonar-{date} commit -m "fix: [SonarQube] {rule} — {5-8 word description}"
 ```
 
-One commit per issue. Move to the next issue.
+Update the skills file if the rule was not already documented.
 
 ---
 
 ### Phase 4 — Push, PR, and Project Task
 
-After all issues are processed:
+After all files/rules are processed:
 
 **Step 4.1** — Push the branch:
 ```bash
 git push origin refactor/sonar-{date}
 ```
 
-**Step 4.2** — Build the PR body. List every fixed issue (skip SKIPPEDs):
+**Step 4.2** — Build the PR body. Group changes by rule across all fixed files:
 
 ```
 ## SonarQube Fixes — {date}
 
-| Rule | File | Line | Message |
-|------|------|------|---------|
-| {rule} | {file_path} | {line} | {message} |
-...
+### Summary
+{1-2 sentences describing the overall theme of fixes in this batch}
 
-## Skipped
+---
+
+### Changes
+
+#### {rule} — {human-readable rule name}
+> {one sentence: what this rule checks and why it matters}
+
+| File | Lines | What was changed |
+|------|-------|-----------------|
+| {file_path} | {L10, L34, L89} | {concise description} |
+
+---
+
+{repeat for each distinct rule}
+
+### Skipped
 {list any skipped issues with reason, or "None"}
 
 ---
@@ -187,6 +219,20 @@ gh api graphql -f query='mutation {
 ```bash
 git worktree remove ../worktrees/sonar-{date}
 ```
+
+---
+
+### Done Checklist
+
+Trước khi dừng, xác nhận từng mục:
+- [ ] Phase 1: `sonar-issues.json` đã download, có ít nhất 1 issue
+- [ ] Phase 2: working list đã in ra màn hình
+- [ ] Phase 3: tất cả file đã fix và commit
+- [ ] Phase 4.1: branch đã push lên remote
+- [ ] Phase 4.3: Draft PR đã tạo
+- [ ] Phase 4.4: PR đã add vào GitHub Project
+- [ ] Phase 4.5: Status đã set thành **In Review**
+- [ ] Phase 5: worktree đã remove
 
 ---
 
