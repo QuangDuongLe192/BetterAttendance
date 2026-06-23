@@ -1,8 +1,13 @@
 ﻿import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Tag, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
-import { Avatar } from '../../../components/UI';
+import { Card, Tag, Eyebrow, Skeleton, SkeletonCard, ErrorBanner, Avatar } from '../../../components/UI';
 import { Icons } from '../../../components/Icons';
+const Pin = Icons.pin;
+const Briefcase = Icons.briefcase;
+const Users = Icons.users;
+const Arrow = Icons.arrow;
+const Check = Icons.check;
+const Dot = Icons.dot;
 import { SETUP_STATS, SETUP_PROGRESS, TODAY_SUMMARY, AUDIT } from '../../../services/setup';
 import type { ProgressKey, TodaySummary } from '../../../services/setup';
 import { fmtMs } from '../../../lib/fmt';
@@ -96,9 +101,9 @@ export function Overview({ onNav, isLoading, error }: Props) {
         {/* Completion card: spans all 3 rows on left */}
         <CompletionCard pct={setupPct} done={progressDone} total={progressTotal} progress={progress} progressLabels={progressLabels} progressCount={progressCount} style={{ gridColumn: 1, gridRow: '1 / span 3' }} delay={80} t={t} />
         {/* 3 small stats stacked on right */}
-        <StatCard label={t('setup.overview.stat.locations')} value={locations?.total.toString() ?? '—'} sub={t('setup.overview.stat.locations.sub', { n: locations?.active ?? 0 })} icon={<Icons.pin size={18} stroke="#00B4A0" />} delay={160} />
-        <StatCard label={t('setup.overview.stat.roles')} value={roles?.total.toString() ?? '—'} sub={`Lương ${rateRange}`} icon={<Icons.briefcase size={18} stroke="#00B4A0" />} delay={220} />
-        <StatCard label={t('setup.overview.stat.staff')} value={staff?.total.toString() ?? '—'} sub={t('setup.overview.stat.staff.sub', { n: staff?.managers ?? 0 })} icon={<Icons.users size={18} stroke="#00B4A0" />} delay={280} />
+        <StatCard label={t('setup.overview.stat.locations')} value={locations?.total.toString() ?? '—'} sub={t('setup.overview.stat.locations.sub', { n: locations?.active ?? 0 })} icon={<Pin size={18} stroke="#00B4A0" />} delay={160} />
+        <StatCard label={t('setup.overview.stat.roles')} value={roles?.total.toString() ?? '—'} sub={`Lương ${rateRange}`} icon={<Briefcase size={18} stroke="#00B4A0" />} delay={220} />
+        <StatCard label={t('setup.overview.stat.staff')} value={staff?.total.toString() ?? '—'} sub={t('setup.overview.stat.staff.sub', { n: staff?.managers ?? 0 })} icon={<Users size={18} stroke="#00B4A0" />} delay={280} />
       </div>
 
       {/* ── Today panel ── */}
@@ -129,7 +134,7 @@ export function Overview({ onNav, isLoading, error }: Props) {
             <h3 style={{ fontSize: 20, fontWeight: 700, color: '#1E2D3D' }}>{t('setup.overview.recentChanges')}</h3>
           </div>
           <button onClick={() => onNav('audit')} style={{ background: 'transparent', border: 'none', color: '#00B4A0', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            {t('setup.overview.viewAllLog')} <Icons.arrow size={14} />
+            {t('setup.overview.viewAllLog')} <Arrow size={14} />
           </button>
         </div>
         <Card pad={false} style={glass}>
@@ -224,7 +229,7 @@ function CompletionCard({ pct, done, total, progress, progressLabels, progressCo
               background: p.done ? 'rgba(0,180,160,0.22)' : 'rgba(255,255,255,0.05)',
               border: `1.5px ${p.done ? 'solid #00B4A0' : 'dashed rgba(255,255,255,0.18)'}`,
             }}>
-              {p.done && <Icons.check size={10} stroke="#00B4A0" />}
+              {p.done && <Check size={10} stroke="#00B4A0" />}
             </span>
             <span style={{ flex: 1, fontSize: 12.5, fontWeight: 500, color: p.done ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.38)' }}>
               {progressLabels[p.key]}
@@ -292,7 +297,7 @@ function TodayPanel({ summary, t }: { summary: TodaySummary; t: (key: string, op
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '18px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontSize: 13, color: '#C8D4DC' }}>{t('setup.overview.today.realtime')}</span>
         <a href="/manager/home/all" style={{ color: '#00B4A0', fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-display)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          {t('setup.overview.today.viewLive')} <Icons.arrow size={13} />
+          {t('setup.overview.today.viewLive')} <Arrow size={13} />
         </a>
       </div>
     </Card>
@@ -349,7 +354,7 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: { ic
           transition: 'transform 200ms cubic-bezier(0.2,0.7,0.2,1)',
           display: 'flex',
         }}>
-          <Icons.arrow size={16} stroke={hover ? '#00B4A0' : '#6B7E8E'} />
+          <Arrow size={16} stroke={hover ? '#00B4A0' : '#6B7E8E'} />
         </span>
       </div>
       <div>
@@ -359,7 +364,7 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: { ic
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 'auto', flexWrap: 'wrap' }}>
         <Tag tone="neutral">{count}</Tag>
-        {warn && <Tag tone="warning" icon={<Icons.dot size={8} />}>{warn}</Tag>}
+        {warn && <Tag tone="warning" icon={<Dot size={8} />}>{warn}</Tag>}
       </div>
     </div>
   );
