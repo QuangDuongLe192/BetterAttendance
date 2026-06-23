@@ -89,8 +89,8 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
     toast.info(t('setup.roles.toast.deleted', { name }));
   };
 
-  const graceNum     = Math.max(0, Math.min(120, parseInt(grace) || 0));
-  const thresholdNum = Math.max(graceNum + 1, Math.min(480, parseInt(absenceThreshold) || 120));
+  const graceNum     = Math.max(0, Math.min(120, Number.parseInt(grace) || 0));
+  const thresholdNum = Math.max(graceNum + 1, Math.min(480, Number.parseInt(absenceThreshold) || 120));
 
   const fmtTime = (addMin: number) => {
     const total = 8 * 60 + addMin;
@@ -367,19 +367,19 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
               <Field label={t('setup.roles.grace.fieldGrace')}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 0, ...glass, borderRadius: 8, overflow: 'hidden' }}>
-                    <button onClick={() => setGrace(v => String(Math.max(0, parseInt(v) - 5 || 0)))}
+                    <button onClick={() => setGrace(v => String(Math.max(0, Number.parseInt(v) - 5 || 0)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>−</button>
                     <Input
                       value={grace}
                       onChange={v => {
-                        const n = Math.max(0, Math.min(120, parseInt(v) || 0));
+                        const n = Math.max(0, Math.min(120, Number.parseInt(v) || 0));
                         setGrace(n.toString());
                         if (n >= thresholdNum) setAbsenceThreshold((n + 1).toString());
                       }}
                       type="number"
                       style={{ width: 100, textAlign: 'center', border: 'none', borderLeft: '1px solid rgba(200,212,220,0.4)', borderRight: '1px solid rgba(200,212,220,0.4)', borderRadius: 0 }}
                     />
-                    <button onClick={() => setGrace(v => String(Math.min(120, parseInt(v) + 5 || 5)))}
+                    <button onClick={() => setGrace(v => String(Math.min(120, Number.parseInt(v) + 5 || 5)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>+</button>
                   </div>
                   <span style={{ fontSize: 12, color: '#9BAAB5' }}>{t('setup.roles.grace.graceUnit')}</span>
@@ -392,18 +392,18 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
               <Field label={t('setup.roles.grace.fieldAbsence')}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 0, ...glass, borderRadius: 8, overflow: 'hidden' }}>
-                    <button onClick={() => setAbsenceThreshold(v => String(Math.max(graceNum + 1, parseInt(v) - 15 || graceNum + 1)))}
+                    <button onClick={() => setAbsenceThreshold(v => String(Math.max(graceNum + 1, Number.parseInt(v) - 15 || graceNum + 1)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>−</button>
                     <Input
                       value={absenceThreshold}
                       onChange={v => {
-                        const n = Math.max(graceNum + 1, Math.min(480, parseInt(v) || graceNum + 1));
+                        const n = Math.max(graceNum + 1, Math.min(480, Number.parseInt(v) || graceNum + 1));
                         setAbsenceThreshold(n.toString());
                       }}
                       type="number"
                       style={{ width: 100, textAlign: 'center', border: 'none', borderLeft: '1px solid rgba(200,212,220,0.4)', borderRight: '1px solid rgba(200,212,220,0.4)', borderRadius: 0 }}
                     />
-                    <button onClick={() => setAbsenceThreshold(v => String(Math.min(480, parseInt(v) + 15 || graceNum + 16)))}
+                    <button onClick={() => setAbsenceThreshold(v => String(Math.min(480, Number.parseInt(v) + 15 || graceNum + 16)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>+</button>
                   </div>
                   <span style={{ fontSize: 12, color: '#9BAAB5' }}>{t('setup.roles.grace.absenceUnit', { n: graceNum + 1 })}</span>
