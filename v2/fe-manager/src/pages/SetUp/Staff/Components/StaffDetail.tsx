@@ -75,7 +75,12 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
       `}</style>
 
       {/* Backdrop */}
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
+      <div
+        onClick={onClose}
+        onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+        role="presentation"
+        style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
+      />
 
       {/* Drawer */}
       <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 460, zIndex: 901,
@@ -210,9 +215,14 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
 
           {/* Floater toggle */}
           <Section>
+            {(() => {
+              const floater = isEditing ? draft.floater : staff.floater;
+              const floaterBg = floater ? 'rgba(0,180,160,0.07)' : 'rgba(255,255,255,0.82)';
+              const floaterBorder = floater ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)';
+              return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 14px', borderRadius: 10,
-              background: (isEditing ? draft.floater : staff.floater) ? 'rgba(0,180,160,0.07)' : 'rgba(255,255,255,0.82)',
-              border: `1px solid ${(isEditing ? draft.floater : staff.floater) ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)'}`,
+              background: floaterBg,
+              border: `1px solid ${floaterBorder}`,
               transition: 'all 150ms' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D' }}>{t('setup.staff.detail.floater.label')}</div>
@@ -225,6 +235,8 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
                 onChange={isEditing ? v => setDraft(d => ({ ...d, floater: v })) : undefined}
               />
             </div>
+              );
+            })()}
           </Section>
 
           {/* Roles */}
@@ -258,19 +270,19 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
           {/* Pay */}
           <Section>
             <div style={sectionLabel}>{t('setup.staff.detail.pay.label')}</div>
-            {!isEditing ? (
-              <PayView
-                payType={staff.payType}
-                rate={staff.rate ?? 0}
-                monthly={staff.monthly ?? 0}
-                t={t}
-              />
-            ) : (
+            {isEditing ? (
               <PayEdit
                 payType={draft.payType}
                 rate={draft.rate}
                 monthly={draft.monthly}
                 onChange={updates => setDraft(d => ({ ...d, ...updates }))}
+                t={t}
+              />
+            ) : (
+              <PayView
+                payType={staff.payType}
+                rate={staff.rate ?? 0}
+                monthly={staff.monthly ?? 0}
                 t={t}
               />
             )}
