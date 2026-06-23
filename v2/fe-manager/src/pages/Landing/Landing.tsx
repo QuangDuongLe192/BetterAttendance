@@ -133,7 +133,7 @@ function useGreeting() {
 }
 
 // ─── Small atoms ──────────────────────────────────────────────────────────────
-function RoleBadge({ role }: { role: 'ADMIN' | 'MANAGER' | 'FINANCE' | 'STAFF' }) {
+function RoleBadge({ role }: Readonly<{ role: 'ADMIN' | 'MANAGER' | 'FINANCE' | 'STAFF' }>) {
   const palette = {
     ADMIN:   { bg: '#1E2D3D', fg: '#fff' },
     MANAGER: { bg: '#E6F8F6', fg: '#008C7C' },
@@ -149,7 +149,7 @@ function RoleBadge({ role }: { role: 'ADMIN' | 'MANAGER' | 'FINANCE' | 'STAFF' }
 }
 
 // ─── Hero section ─────────────────────────────────────────────────────────────
-function Hero({ user, derived }: { user: CurrentUser; derived: DerivedAccess }) {
+function Hero({ user, derived }: Readonly<{ user: CurrentUser; derived: DerivedAccess }>) {
   const { t } = useTranslation('common');
   const greeting = useGreeting();
   const dateStr = useFormattedDate();
@@ -187,11 +187,12 @@ function Hero({ user, derived }: { user: CurrentUser; derived: DerivedAccess }) 
 // ─── Workspace card ───────────────────────────────────────────────────────────
 type VisibleWorkspace = DerivedAccess['visible'][number];
 
-function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => void }) {
+function WorkspaceCard({ ws, onOpen }: Readonly<{ ws: VisibleWorkspace; onOpen: () => void }>) {
   const { t } = useTranslation('common');
   const [hover, setHover] = useState(false);
   const live = WS_LIVE_KEYS[ws.id];
   const Icon = Icons[ws.icon];
+  const Pin = Icons.pin;
   const Grid = Icons.grid;
   const ArrowR = Icons.arrowR;
 
@@ -236,7 +237,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
 
       <div style={{ padding: '18px 26px', borderTop: '1px solid #E8ECEF', display: 'grid', gridTemplateColumns: `repeat(${live.stats.length}, 1fr)`, gap: 12 }}>
         {live.stats.map((s, i) => (
-          <div key={i} style={{ minWidth: 0, paddingLeft: i > 0 ? 12 : 0, borderLeft: i > 0 ? '1px solid #E8ECEF' : 'none' }}>
+          <div key={s.k} style={{ minWidth: 0, paddingLeft: i > 0 ? 12 : 0, borderLeft: i > 0 ? '1px solid #E8ECEF' : 'none' }}>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 19, color: '#1E2D3D', letterSpacing: '-0.015em', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.v}</div>
             <div style={{ fontSize: 10.5, fontWeight: 700, color: '#00B4A0', marginTop: 5, textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'var(--font-display)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(s.k)}</div>
           </div>
@@ -248,7 +249,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
       <div style={{ padding: '16px 26px 22px', borderTop: '1px solid #E8ECEF' }}>
         {/* Scope header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-          <Icons.pin size={11} stroke="#6B7E8E" />
+          <Pin size={11} stroke="#6B7E8E" />
           <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 10, letterSpacing: 1.5, textTransform: 'uppercase', color: '#6B7E8E' }}>
             {ws.scope === 'global'
               ? t('landing.workspace.scope.global', { count: LOCATIONS.length })
