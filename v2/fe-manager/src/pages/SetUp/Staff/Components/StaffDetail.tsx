@@ -35,7 +35,7 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
   const [draft, setDraft] = useState({
     locationIds: [...staff.locationIds],
     floater: staff.floater ?? false,
-    payType: staff.payType as 'hourly' | 'monthly',
+    payType: staff.payType,
     rate: staff.rate ?? 0,
     monthly: staff.monthly ?? 0,
     roleIds: [...staff.roleIds],
@@ -63,7 +63,7 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
     toast.success(t('setup.staff.detail.toast.saved', { name: staff.name }));
   };
   const cancel = () => {
-    setDraft({ locationIds: [...staff.locationIds], floater: staff.floater ?? false, payType: staff.payType as 'hourly' | 'monthly', rate: staff.rate ?? 0, monthly: staff.monthly ?? 0, roleIds: [...staff.roleIds] });
+    setDraft({ locationIds: [...staff.locationIds], floater: staff.floater ?? false, payType: staff.payType, rate: staff.rate ?? 0, monthly: staff.monthly ?? 0, roleIds: [...staff.roleIds] });
     setIsEditing(false);
   };
 
@@ -161,7 +161,7 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
             <Section>
               <div style={sectionLabel}>{t('setup.staff.detail.systemRole.label')}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                {(rolesOf(staff.larkUserId) as string[]).length > 0
+                {(rolesOf(staff.larkUserId)).length > 0
                   ? <SystemRoleBadges roles={rolesOf(staff.larkUserId) as any} />
                   : <span style={{ fontSize: 12, color: '#777d81' }}>{t('setup.staff.detail.regularStaff')}</span>
                 }
