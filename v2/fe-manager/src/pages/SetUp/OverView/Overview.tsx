@@ -38,7 +38,7 @@ export function Overview({ onNav, isLoading, error }: Readonly<Props>) {
   }
 
   const stats = SETUP_STATS ?? {};
-  const { locations, roles, staff } = stats as typeof SETUP_STATS;
+  const { locations, roles, staff } = stats;
   const rateRange = roles ? `${new Intl.NumberFormat('vi-VN').format(roles.minRate)} – ${new Intl.NumberFormat('vi-VN').format(roles.maxRate)} /giờ` : '—';
 
   const progress = SETUP_PROGRESS ?? [];
@@ -90,9 +90,9 @@ export function Overview({ onNav, isLoading, error }: Readonly<Props>) {
         </h1>
         <p style={{ fontSize: 16, color: '#6B7E8E', marginTop: 10, lineHeight: 1.5 }}>
           <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: '#1E2D3D' }}>
-            {new Intl.DateTimeFormat('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
+            {new Intl.DateTimeFormat('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}{' '}
           </span>
-          {' '}{t('setup.overview.tagline')}
+          {t('setup.overview.tagline')}
         </p>
       </div>
 
