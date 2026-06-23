@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Btn, Tag, Field, Input, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { Icons } from '../../../components/Icons';
+const Plus = Icons.plus;
+const Check = Icons.check;
 import { ROLES, STAFF, SHIFT_TEMPLATES } from '../../../services/setup';
 import type { Role } from '../../../services/setup';
 import { RoleRow } from './Components/RoleRow';
@@ -223,7 +225,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                 <div style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D' }}>{t('setup.roles.list.title')}</div>
               </div>
               {!isAddingRole && (
-                <Btn variant="primary" icon={<Icons.plus size={14} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
+                <Btn variant="primary" icon={<Plus size={14} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
               )}
             </div>
 
@@ -269,7 +271,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                       <Icons.x size={15} />
                     </button>
                     <button onClick={confirmAddRole} disabled={!newRoleName.trim()} style={{ background: newRoleName.trim() ? '#00B4A0' : '#E8ECEF', border: 'none', cursor: newRoleName.trim() ? 'pointer' : 'default', padding: 6, borderRadius: 4, color: newRoleName.trim() ? '#fff' : '#9BAAB5', transition: 'background 150ms' }}>
-                      <Icons.check size={15} />
+                      <Check size={15} />
                     </button>
                   </div>
                 </div>
@@ -278,7 +280,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
               {/* Add button at bottom when adding */}
               {!isAddingRole && (
                 <div style={{ padding: '10px 20px', borderTop: roleList.length > 0 ? '1px solid rgba(200,212,220,0.35)' : 'none' }}>
-                  <Btn variant="ghost" size="sm" icon={<Icons.plus size={13} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
+                  <Btn variant="ghost" size="sm" icon={<Plus size={13} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
                 </div>
               )}
             </div>
@@ -343,7 +345,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                 <ShiftRow key={sh.id} shift={sh} borderTop={i > 0} onUpdate={updateShift} onRemove={removeShift} autoFocus={sh.id === newShiftId} />
               ))}
               <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(200,212,220,0.35)' }}>
-                <Btn variant="ghost" size="sm" icon={<Icons.plus size={13} />} onClick={addShift}>{t('setup.roles.shifts.addBtn')}</Btn>
+                <Btn variant="ghost" size="sm" icon={<Plus size={13} />} onClick={addShift}>{t('setup.roles.shifts.addBtn')}</Btn>
               </div>
             </div>
           </div>
@@ -506,13 +508,13 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
           {graceDirty && (
             <>
               <Btn variant="dark" size="sm" onClick={cancelGrace} style={{ color: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,255,255,0.15)' }}>{t('setup.roles.saveBar.cancelGrace')}</Btn>
-              <Btn variant="primary" size="sm" icon={<Icons.check size={13} />} onClick={saveGrace}>{t('setup.roles.saveBar.saveGrace')}</Btn>
+              <Btn variant="primary" size="sm" icon={<Check size={13} />} onClick={saveGrace}>{t('setup.roles.saveBar.saveGrace')}</Btn>
             </>
           )}
           {shiftsDirty && (
             <>
               <Btn variant="dark" size="sm" onClick={cancelShifts} style={{ color: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,255,255,0.15)' }}>{t('setup.roles.saveBar.cancelShifts')}</Btn>
-              <Btn variant="primary" size="sm" icon={<Icons.check size={13} />} onClick={saveShifts}>{t('setup.roles.saveBar.saveShifts')}</Btn>
+              <Btn variant="primary" size="sm" icon={<Check size={13} />} onClick={saveShifts}>{t('setup.roles.saveBar.saveShifts')}</Btn>
             </>
           )}
         </div>
