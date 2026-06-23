@@ -248,7 +248,6 @@ export function Login() {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) { handleCode(code); }
-    // else if (isLarkEnvironment()) { loginByLark(); }
   }, []);
 
   const loginAsDemo = useCallback((demoUser: CurrentUser) => {
