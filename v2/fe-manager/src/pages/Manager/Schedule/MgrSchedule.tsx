@@ -87,7 +87,7 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
   const [addOpen, setAddOpen] = useState(false);
   const [addCtx, setAddCtx] = useState<AddCtx>({ staffId: '', dateStr: '' });
   const [localShifts, setLocalShifts] = useState<ShiftEntity[]>(SEED_SHIFTS);
-  const [pendingCount, setPending] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
   const nextId = useRef(200);
   const [detailShift, setDetailShift] = useState<ShiftEntity | null>(null);
   const [detailPos, setDetailPos] = useState({ x: 0, y: 0 });
@@ -123,21 +123,21 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
       setLocalShifts(prev => [...prev, { ...data, jobId: `draft-${nextId.current++}` }]);
       toast.success(t('manager.schedule.toast.added', { name: STAFF.find(s => s.larkUserId === data.larkUserId)?.name ?? data.larkUserId }));
     }
-    setPending(n => n + 1);
+    setPendingCount(n => n + 1);
   };
 
   const handleDelete = (jobId: string) => {
     const sh = localShifts.find(s => s.jobId === jobId);
     const staffName = STAFF.find(s => s.larkUserId === sh?.larkUserId)?.name;
     setLocalShifts(prev => prev.filter(s => s.jobId !== jobId));
-    setPending(n => Math.max(0, n - 1));
+    setPendingCount(n => Math.max(0, n - 1));
     toast.info(t('manager.schedule.toast.deleted', { name: staffName ?? t('manager.staff.title') }));
   };
 
   const handlePublish = () => {
     const locationId = activeStore === 'all' ? null : activeStore;
     console.log('[Publish] POST /api/shifts/publish', { weekStart: BASE_WEEK[0].full, locationId });
-    setPending(0);
+    setPendingCount(0);
     toast.success(t('manager.schedule.toast.published', { week: weekLabel }));
   };
 
