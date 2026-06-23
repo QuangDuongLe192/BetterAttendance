@@ -4,6 +4,11 @@ import { usePageTitle } from '../../lib/usePageTitle';
 import { useNavigate, useSearchParams, Navigate } from 'react-router';
 import { toast } from 'sonner';
 import { Icons } from '../../components/Icons';
+const Shield = Icons.shield;
+const Users = Icons.users;
+const Clock = Icons.clock;
+const ArrowR = Icons.arrowR;
+const ChevD = Icons.chevD;
 import { useAuth, type CurrentUser, type AccessRow } from '../../stores/AuthContext';
 import { STAFF, STAFF_ROLE_SCOPES, LOCATIONS } from '../../services/setup';
 
@@ -87,9 +92,6 @@ function Chip({ children, icon }: Readonly<{ children: React.ReactNode; icon: Re
 
 function LeftPanel() {
   const { t } = useTranslation('common');
-  const Shield = Icons.shield;
-  const Users = Icons.users;
-  const Clock = Icons.clock;
   return (
     <aside style={{ background: '#1E2D3D', color: '#fff', padding: '56px 56px 40px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', inset: 0, opacity: 0.07, pointerEvents: 'none', backgroundImage: 'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(circle at 70% 30%, #000 0%, transparent 70%)', WebkitMaskImage: 'radial-gradient(circle at 70% 30%, #000 0%, transparent 70%)' }} />
@@ -131,7 +133,6 @@ function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: (
   const { t } = useTranslation('common');
   const [hover, setHover] = useState(false);
   const loading = state === 'loading';
-  const ArrowR = Icons.arrowR;
   return (
     <button onClick={onClick} disabled={loading} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', borderRadius: 10, background: hover && !loading ? '#13202F' : '#1E2D3D', color: '#fff', border: 'none', cursor: loading ? 'progress' : 'pointer', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, transition: 'background 150ms, transform 150ms, box-shadow 150ms', transform: hover && !loading ? 'translateY(-1px)' : 'translateY(0)', boxShadow: hover && !loading ? '0 8px 24px rgba(30,45,61,0.18)' : '0 1px 2px rgba(30,45,61,0.06)' }}>
       <span style={{ width: 34, height: 34, borderRadius: 8, background: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -150,8 +151,6 @@ function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: (
 function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: () => void }>) {
   const { t } = useTranslation('common');
   const [whyOpen, setWhyOpen] = useState(false);
-  const Shield = Icons.shield;
-  const ChevD = Icons.chevD;
   return (
     <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 16, padding: '40px 40px 32px', border: '1px solid #E8ECEF', boxShadow: '0 1px 2px rgba(30,45,61,0.03)' }}>
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#00B4A0', marginBottom: 12 }}>{t('login.card.eyebrow')}</div>
