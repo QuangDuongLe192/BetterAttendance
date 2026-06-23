@@ -76,10 +76,7 @@ export function Card({ children, style, hoverable, onClick, pad = true }: Readon
     );
   }
   return (
-    <div
-      onMouseEnter={() => hoverable ? setH(true) : undefined}
-      onMouseLeave={() => hoverable ? setH(false) : undefined}
-      style={{ background: '#fff', border: `1px solid ${h ? '#1E2D3D' : '#C8D4DC'}`, borderRadius: 8, padding, cursor: 'default', transition: 'border-color 180ms', ...style }}>
+    <div style={{ background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8, padding, cursor: 'default', transition: 'border-color 180ms', ...style }}>
       {children}
     </div>
   );
