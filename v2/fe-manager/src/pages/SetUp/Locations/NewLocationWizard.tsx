@@ -7,6 +7,14 @@ import { LOCATIONS } from '../../../services/setup';
 import type { Location, WifiNetwork } from '../../../services/setup';
 import { GeofencePicker } from './Components/GeofencePicker';
 
+const Check = Icons.check;
+const ChevR = Icons.chevR;
+const Plus = Icons.plus;
+const Edit = Icons.edit;
+const Pin = Icons.pin;
+const Users = Icons.users;
+const Alert = Icons.alert;
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface DraftLocation {
@@ -234,7 +242,7 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { step
                       transition: 'all 220ms',
                     }}>
                     {done
-                      ? <Icons.check size={13} stroke="#fff" sw={2.5} />
+                      ? <Check size={13} stroke="#fff" sw={2.5} />
                       : active
                         ? <IconComp size={13} stroke="#fff" />
                         : <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11 }}>{s.id}</span>
@@ -290,7 +298,7 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
           <button onClick={onBack} style={ghostBtn}
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}>
-            <Icons.chevR size={13} stroke="rgba(255,255,255,0.65)" style={{ transform: 'scaleX(-1)' }} />
+            <ChevR size={13} stroke="rgba(255,255,255,0.65)" style={{ transform: 'scaleX(-1)' }} />
             {backLabel}
           </button>
         )}
@@ -306,7 +314,7 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
       </div>
       <div style={{ width: 130, display: 'flex', justifyContent: 'flex-end' }}>
         {!isLast && (
-          <Btn variant="primary" size="sm" icon={<Icons.chevR size={14} stroke="#fff" />} onClick={onNext}>{nextLabel}</Btn>
+          <Btn variant="primary" size="sm" icon={<ChevR size={14} stroke="#fff" />} onClick={onNext}>{nextLabel}</Btn>
         )}
       </div>
     </div>
@@ -458,7 +466,7 @@ function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K ext
                 </span>
               </div>
             </div>
-            <Btn variant="ghost" size="sm" icon={<Icons.plus size={13} />} onClick={addBlank}>{t('setup.wizard.wifi.addBtn')}</Btn>
+            <Btn variant="ghost" size="sm" icon={<Plus size={13} />} onClick={addBlank}>{t('setup.wizard.wifi.addBtn')}</Btn>
           </div>
           {draft.networks.length === 0 ? (
             <div style={{ padding: '32px 24px', textAlign: 'center', color: '#C8D4DC', fontSize: 13 }}>
@@ -645,8 +653,8 @@ function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: 
         )}
         {draft.mode !== 'none' && (
           <ReviewBlock title={t('setup.wizard.review.block.auto')} stepKey="auto" onEdit={onEdit} editLabel={t('setup.wizard.review.editBtn')} rows={[
-            { label: t('setup.wizard.review.row.autoIn'),  value: draft.autoIn  ? <Tag tone="success" icon={<Icons.check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
-            { label: t('setup.wizard.review.row.autoOut'), value: draft.autoOut ? <Tag tone="success" icon={<Icons.check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
+            { label: t('setup.wizard.review.row.autoIn'),  value: draft.autoIn  ? <Tag tone="success" icon={<Check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
+            { label: t('setup.wizard.review.row.autoOut'), value: draft.autoOut ? <Tag tone="success" icon={<Check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
           ]} />
         )}
 
@@ -701,7 +709,7 @@ function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: {
           cursor: 'pointer', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: 5,
           padding: '3px 10px', borderRadius: 6
         }}>
-          <Icons.edit size={11} stroke="#00B4A0" /> {editLabel}
+          <Edit size={11} stroke="#00B4A0" /> {editLabel}
         </button>
       </div>
       {rows.map((r, i) => (
@@ -727,7 +735,7 @@ function SuccessState({ name, locId, onDone, t }: { name: string; locId: string;
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 0 0 12px rgba(0,180,160,0.1), 0 8px 32px rgba(0,180,160,0.25)'
         }}>
-          <Icons.check size={36} stroke="#fff" sw={2.5} />
+          <Check size={36} stroke="#fff" sw={2.5} />
         </div>
       </div>
       <h2 style={{ fontSize: 28, fontWeight: 800, color: '#1E2D3D', marginBottom: 12, letterSpacing: '-0.02em' }}>{t('setup.wizard.success.title')}</h2>
@@ -736,9 +744,9 @@ function SuccessState({ name, locId, onDone, t }: { name: string; locId: string;
         {t('setup.wizard.success.next')}
       </p>
       <div style={{ ...glass, borderRadius: 14, padding: '16px', display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Btn variant="ghost" icon={<Icons.chevR size={14} style={{ transform: 'scaleX(-1)' }} />} onClick={onDone}>{t('setup.wizard.success.backToList')}</Btn>
-        <Btn variant="secondary" icon={<Icons.pin size={14} />} onClick={() => navigate(`/setup/locations/${locId}`)}>{t('setup.wizard.success.viewLocation')}</Btn>
-        <Btn variant="primary" icon={<Icons.users size={14} />} onClick={() => navigate(`/setup/locations/${locId}`, { state: { scrollTo: 'staff' } })}>{t('setup.wizard.success.assignStaff')}</Btn>
+        <Btn variant="ghost" icon={<ChevR size={14} style={{ transform: 'scaleX(-1)' }} />} onClick={onDone}>{t('setup.wizard.success.backToList')}</Btn>
+        <Btn variant="secondary" icon={<Pin size={14} />} onClick={() => navigate(`/setup/locations/${locId}`)}>{t('setup.wizard.success.viewLocation')}</Btn>
+        <Btn variant="primary" icon={<Users size={14} />} onClick={() => navigate(`/setup/locations/${locId}`, { state: { scrollTo: 'staff' } })}>{t('setup.wizard.success.assignStaff')}</Btn>
       </div>
     </div>
   );
@@ -761,6 +769,6 @@ function WizColorPicker({ value, onChange }: { value: string; onChange: (c: stri
 
 function ErrMsg({ children }: { children: ReactNode }) {
   return <div style={{ fontSize: 12, color: '#DC2626', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-    <Icons.alert size={12} stroke="#DC2626" />{children}
+    <Alert size={12} stroke="#DC2626" />{children}
   </div>;
 }
