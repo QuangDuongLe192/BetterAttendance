@@ -3,6 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Avatar, Tag, Btn, Field, Input, Switch } from '../../../../components/UI';
 import { Icons } from '../../../../components/Icons';
+const Send = Icons.send;
+const Coins = Icons.coins;
+const Pin = Icons.pin;
+const Lock = Icons.lock;
+const Check = Icons.check;
+const Edit = Icons.edit;
+const Trash = Icons.trash;
 import { LOCATIONS, ROLES, locById, roleById, fmtVND, rolesOf } from '../../../../services/setup';
 import type { Staff as StaffType } from '../../../../services/setup';
 import { SystemRoleBadges } from './SystemRoles';
@@ -22,13 +29,13 @@ const sectionLabel: React.CSSProperties = {
   marginBottom: 8,
 };
 
-export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () => void }) {
+export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onClose: () => void }>) {
   const { t } = useTranslation('setup');
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState({
     locationIds: [...staff.locationIds],
     floater: staff.floater ?? false,
-    payType: staff.payType as 'hourly' | 'monthly',
+    payType: staff.payType,
     rate: staff.rate ?? 0,
     monthly: staff.monthly ?? 0,
     roleIds: [...staff.roleIds],
@@ -56,7 +63,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
     toast.success(t('setup.staff.detail.toast.saved', { name: staff.name }));
   };
   const cancel = () => {
-    setDraft({ locationIds: [...staff.locationIds], floater: staff.floater ?? false, payType: staff.payType as 'hourly' | 'monthly', rate: staff.rate ?? 0, monthly: staff.monthly ?? 0, roleIds: [...staff.roleIds] });
+    setDraft({ locationIds: [...staff.locationIds], floater: staff.floater ?? false, payType: staff.payType, rate: staff.rate ?? 0, monthly: staff.monthly ?? 0, roleIds: [...staff.roleIds] });
     setIsEditing(false);
   };
 
@@ -68,7 +75,12 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
       `}</style>
 
       {/* Backdrop */}
-      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }} />
+      <div
+        onClick={onClose}
+        onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+        role="presentation"
+        style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
+      />
 
       {/* Drawer */}
       <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 460, zIndex: 901,
@@ -109,7 +121,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
                 <SystemRoleBadges roles={rolesOf(staff.larkUserId) as any} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
-                <Icons.send size={11} stroke="rgba(255,255,255,0.45)" />
+                <Send size={11} stroke="rgba(255,255,255,0.45)" />
                 {staff.phone}
               </div>
               {staff.floater && (
@@ -130,7 +142,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
           <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
             <div style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
               display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Icons.coins size={13} stroke="rgba(255,255,255,0.5)" />
+              <Coins size={13} stroke="rgba(255,255,255,0.5)" />
               <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>
                 {fmtVND(staff.rate ?? staff.monthly ?? 0)}
                 <span style={{ color: 'rgba(255,255,255,0.45)', fontWeight: 400 }}>{staff.payType === 'hourly' ? t('setup.staff.detail.pay.perHour') : t('setup.staff.detail.pay.perMonth')}</span>
@@ -138,7 +150,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
             </div>
             <div style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
               display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Icons.pin size={13} stroke="rgba(255,255,255,0.5)" />
+              <Pin size={13} stroke="rgba(255,255,255,0.5)" />
               <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
                 {t('setup.locations.stat.staff')}: {staff.locationIds.length}
               </span>
@@ -154,13 +166,13 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
             <Section>
               <div style={sectionLabel}>{t('setup.staff.detail.systemRole.label')}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                {(rolesOf(staff.larkUserId) as string[]).length > 0
+                {(rolesOf(staff.larkUserId)).length > 0
                   ? <SystemRoleBadges roles={rolesOf(staff.larkUserId) as any} />
                   : <span style={{ fontSize: 12, color: '#777d81' }}>{t('setup.staff.detail.regularStaff')}</span>
                 }
               </div>
               <div style={{ fontSize: 11, color: '#777d81', marginTop: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Icons.lock size={11} stroke="#777d81" />
+                <Lock size={11} stroke="#777d81" />
                 {t('setup.staff.detail.systemRole.hint')}
               </div>
             </Section>
@@ -178,7 +190,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
                 return (
                   <div key={lid} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
                     background: 'rgba(255,255,255,0.88)', borderRadius: 8, border: '1px solid rgba(200,212,220,0.35)' }}>
-                    <Icons.pin size={14} stroke="#9BAAB5" />
+                    <Pin size={14} stroke="#9BAAB5" />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, color: '#1E2D3D', fontWeight: 600 }}>{loc?.name}</div>
                       <div style={{ fontSize: 11, color: '#9BAAB5', marginTop: 1 }}>{loc?.address}</div>
@@ -203,9 +215,14 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
 
           {/* Floater toggle */}
           <Section>
+            {(() => {
+              const floater = isEditing ? draft.floater : staff.floater;
+              const floaterBg = floater ? 'rgba(0,180,160,0.07)' : 'rgba(255,255,255,0.82)';
+              const floaterBorder = floater ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)';
+              return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 14px', borderRadius: 10,
-              background: (isEditing ? draft.floater : staff.floater) ? 'rgba(0,180,160,0.07)' : 'rgba(255,255,255,0.82)',
-              border: `1px solid ${(isEditing ? draft.floater : staff.floater) ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)'}`,
+              background: floaterBg,
+              border: `1px solid ${floaterBorder}`,
               transition: 'all 150ms' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D' }}>{t('setup.staff.detail.floater.label')}</div>
@@ -218,6 +235,8 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
                 onChange={isEditing ? v => setDraft(d => ({ ...d, floater: v })) : undefined}
               />
             </div>
+              );
+            })()}
           </Section>
 
           {/* Roles */}
@@ -251,19 +270,19 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
           {/* Pay */}
           <Section>
             <div style={sectionLabel}>{t('setup.staff.detail.pay.label')}</div>
-            {!isEditing ? (
-              <PayView
-                payType={staff.payType}
-                rate={staff.rate ?? 0}
-                monthly={staff.monthly ?? 0}
-                t={t}
-              />
-            ) : (
+            {isEditing ? (
               <PayEdit
                 payType={draft.payType}
                 rate={draft.rate}
                 monthly={draft.monthly}
                 onChange={updates => setDraft(d => ({ ...d, ...updates }))}
+                t={t}
+              />
+            ) : (
+              <PayView
+                payType={staff.payType}
+                rate={staff.rate ?? 0}
+                monthly={staff.monthly ?? 0}
                 t={t}
               />
             )}
@@ -277,12 +296,12 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
           {isEditing ? (
             <>
               <Btn variant="ghost" size="sm" style={{ flex: 1 }} onClick={cancel}>{t('setup.staff.detail.cancelBtn')}</Btn>
-              <Btn variant="primary" size="sm" style={{ flex: 2 }} icon={<Icons.check size={13} />} onClick={save}>{t('setup.staff.detail.saveBtn')}</Btn>
+              <Btn variant="primary" size="sm" style={{ flex: 2 }} icon={<Check size={13} />} onClick={save}>{t('setup.staff.detail.saveBtn')}</Btn>
             </>
           ) : (
             <>
-              <Btn variant="primary" size="sm" style={{ flex: 1 }} icon={<Icons.edit size={13} />} onClick={() => setIsEditing(true)}>{t('setup.staff.detail.editBtn')}</Btn>
-              <Btn variant="ghost" size="sm"><Icons.trash size={14} /></Btn>
+              <Btn variant="primary" size="sm" style={{ flex: 1 }} icon={<Edit size={13} />} onClick={() => setIsEditing(true)}>{t('setup.staff.detail.editBtn')}</Btn>
+              <Btn variant="ghost" size="sm"><Trash size={14} /></Btn>
             </>
           )}
         </div>
@@ -291,7 +310,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
   );
 }
 
-function Section({ children }: { children: React.ReactNode }) {
+function Section({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(200,212,220,0.2)' }}>
       {children}

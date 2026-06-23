@@ -7,6 +7,14 @@ import { LOCATIONS } from '../../../services/setup';
 import type { Location, WifiNetwork } from '../../../services/setup';
 import { GeofencePicker } from './Components/GeofencePicker';
 
+const Check = Icons.check;
+const ChevR = Icons.chevR;
+const Plus = Icons.plus;
+const Edit = Icons.edit;
+const Pin = Icons.pin;
+const Users = Icons.users;
+const Alert = Icons.alert;
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface DraftLocation {
@@ -44,7 +52,7 @@ function getSteps(mode: DraftLocation['mode'], t: (k: string) => string): StepDe
     { key: 'mode',   label: t('setup.wizard.step.mode'),   icon: 'shield' },
     ...(mode === 'wifi' || mode === 'wifi+geo' ? [{ key: 'wifi' as StepKey, label: t('setup.wizard.step.wifi'), icon: 'wifi' as const }] : []),
     ...(mode === 'geo' || mode === 'wifi+geo'  ? [{ key: 'geo' as StepKey,  label: t('setup.wizard.step.geo'),  icon: 'target' as const }] : []),
-    ...(mode !== 'none' ? [{ key: 'auto' as StepKey, label: t('setup.wizard.step.auto'), icon: 'clock' as const }] : []),
+    ...(mode === 'none' ? [] : [{ key: 'auto' as StepKey, label: t('setup.wizard.step.auto'), icon: 'clock' as const }]),
     { key: 'review', label: t('setup.wizard.step.review'), icon: 'check' },
   ];
   return defs.map((s, i) => ({ ...s, id: i + 1 }));
@@ -96,7 +104,7 @@ function validateWifi(draft: DraftLocation, t: (k: string) => string): Record<st
 
 // ─── Root Component ───────────────────────────────────────────────────────────
 
-export function NewLocationWizard({ onDone }: { onDone: () => void }) {
+export function NewLocationWizard({ onDone }: Readonly<{ onDone: () => void }>) {
   const { t } = useTranslation('setup');
   const [step, setStep] = useState(1);
   const [dir, setDir] = useState(1);
@@ -133,6 +141,8 @@ export function NewLocationWizard({ onDone }: { onDone: () => void }) {
 
   const create = () => {
     const newId = `L${LOCATIONS.length + 1}`;
+    const singleValidation = draft.mode === 'none' ? [] : [draft.mode];
+    const activeValidation = draft.mode === 'wifi+geo' ? ['wifi', 'geo'] : singleValidation;
     const newLoc: Location = {
       locationId: newId,
       name: draft.name,
@@ -143,7 +153,7 @@ export function NewLocationWizard({ onDone }: { onDone: () => void }) {
         radiusMeters: draft.radius,
         allowed_bssid: draft.networks.map(n => n.bssid).filter(Boolean),
       },
-      activeValidation: draft.mode === 'wifi+geo' ? ['wifi', 'geo'] : draft.mode === 'none' ? [] : [draft.mode],
+      activeValidation,
       style: { color: draft.color },
       status: 'Active',
       delegation: { enabled: false, canAssignRoles: false, canEditAttendance: false, canApproveOT: false },
@@ -201,7 +211,7 @@ export function NewLocationWizard({ onDone }: { onDone: () => void }) {
 
 // ─── Vertical Stepper ─────────────────────────────────────────────────────────
 
-function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { steps: StepDef[]; current: number; onGo: (n: number) => void; draft: DraftLocation; newLocationLabel: string }) {
+function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: Readonly<{ steps: StepDef[]; current: number; onGo: (n: number) => void; draft: DraftLocation; newLocationLabel: string }>) {
   return (
     <div style={{ width: 220, flexShrink: 0 }}>
       <div style={{ position: 'sticky', top: 84 }}>
@@ -219,6 +229,15 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { step
             const done = current > s.id;
             const active = current === s.id;
             const IconComp = Icons[s.icon];
+            const inactiveBg = active ? '#1E2D3D' : 'rgba(200,212,220,0.25)';
+            const stepBg = done ? '#00B4A0' : inactiveBg;
+            const doneShadow = done ? '0 2px 8px rgba(0,180,160,0.25)' : 'none';
+            const stepShadow = active ? '0 0 0 4px rgba(30,45,61,0.12)' : doneShadow;
+            const iconContent = active
+              ? <IconComp size={13} stroke="#fff" />
+              : <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11 }}>{s.id}</span>;
+            const doneLabelColor = done ? '#3A4F63' : '#C8D4DC';
+            const stepLabelColor = active ? '#1E2D3D' : doneLabelColor;
             return (
               <div key={s.key} style={{ display: 'flex', gap: 12 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 30, flexShrink: 0 }}>
@@ -226,19 +245,14 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { step
                     onClick={() => done ? onGo(s.id) : undefined}
                     style={{
                       width: 30, height: 30, borderRadius: 999, border: 'none',
-                      background: done ? '#00B4A0' : active ? '#1E2D3D' : 'rgba(200,212,220,0.25)',
+                      background: stepBg,
                       color: (done || active) ? '#fff' : '#9BAAB5',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       cursor: done ? 'pointer' : 'default', flexShrink: 0,
-                      boxShadow: active ? '0 0 0 4px rgba(30,45,61,0.12)' : done ? '0 2px 8px rgba(0,180,160,0.25)' : 'none',
+                      boxShadow: stepShadow,
                       transition: 'all 220ms',
                     }}>
-                    {done
-                      ? <Icons.check size={13} stroke="#fff" sw={2.5} />
-                      : active
-                        ? <IconComp size={13} stroke="#fff" />
-                        : <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11 }}>{s.id}</span>
-                    }
+                    {done ? <Check size={13} stroke="#fff" sw={2.5} /> : iconContent}
                   </button>
                   {i < steps.length - 1 && (
                     <div style={{
@@ -250,7 +264,7 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { step
                 <div style={{ paddingTop: 6, paddingBottom: i < steps.length - 1 ? 24 : 0, minWidth: 0 }}>
                   <div style={{
                     fontFamily: 'var(--font-display)', fontWeight: active ? 700 : 600, fontSize: 12.5,
-                    color: active ? '#1E2D3D' : done ? '#3A4F63' : '#C8D4DC', transition: 'color 220ms', lineHeight: 1.3
+                    color: stepLabelColor, transition: 'color 220ms', lineHeight: 1.3
                   }}>
                     {s.label}
                   </div>
@@ -266,7 +280,7 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { step
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
-function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLabel, backLabel, nextLabel }: { step: number; total: number; onBack: () => void; onNext: () => void; isLast: boolean; onCancel: () => void; cancelLabel: string; backLabel: string; nextLabel: string }) {
+function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLabel, backLabel, nextLabel }: Readonly<{ step: number; total: number; onBack: () => void; onNext: () => void; isLast: boolean; onCancel: () => void; cancelLabel: string; backLabel: string; nextLabel: string }>) {
   const ghostBtn: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8,
     background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
@@ -290,23 +304,27 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
           <button onClick={onBack} style={ghostBtn}
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}>
-            <Icons.chevR size={13} stroke="rgba(255,255,255,0.65)" style={{ transform: 'scaleX(-1)' }} />
+            <ChevR size={13} stroke="rgba(255,255,255,0.65)" style={{ transform: 'scaleX(-1)' }} />
             {backLabel}
           </button>
         )}
       </div>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-        {Array.from({ length: total }).map((_, i) => (
-          <div key={i} style={{
-            height: 6, width: step === i + 1 ? 22 : 6, borderRadius: 999,
-            background: i + 1 < step ? '#00B4A0' : step === i + 1 ? '#fff' : 'rgba(255,255,255,0.2)',
-            transition: 'all 280ms cubic-bezier(0.2,0.7,0.2,1)'
-          }} />
-        ))}
+        {Array.from({ length: total }).map((_, i) => {
+          const activeDotBg = step === i + 1 ? '#fff' : 'rgba(255,255,255,0.2)';
+          const dotBg = i + 1 < step ? '#00B4A0' : activeDotBg;
+          return (
+            <div key={`dot-${i}`} style={{
+              height: 6, width: step === i + 1 ? 22 : 6, borderRadius: 999,
+              background: dotBg,
+              transition: 'all 280ms cubic-bezier(0.2,0.7,0.2,1)'
+            }} />
+          );
+        })}
       </div>
       <div style={{ width: 130, display: 'flex', justifyContent: 'flex-end' }}>
         {!isLast && (
-          <Btn variant="primary" size="sm" icon={<Icons.chevR size={14} stroke="#fff" />} onClick={onNext}>{nextLabel}</Btn>
+          <Btn variant="primary" size="sm" icon={<ChevR size={14} stroke="#fff" />} onClick={onNext}>{nextLabel}</Btn>
         )}
       </div>
     </div>
@@ -315,7 +333,7 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
 
 // ─── Step Header ──────────────────────────────────────────────────────────────
 
-function StepHeader({ vi, sub, icon }: { vi: string; sub?: string; icon?: keyof typeof Icons }) {
+function StepHeader({ vi, sub, icon }: Readonly<{ vi: string; sub?: string; icon?: keyof typeof Icons }>) {
   const IconComp = icon ? Icons[icon] : null;
   return (
     <div style={{ marginBottom: 32, display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -337,7 +355,7 @@ function StepHeader({ vi, sub, icon }: { vi: string; sub?: string; icon?: keyof 
 
 // ─── Step 1: Basic Info ───────────────────────────────────────────────────────
 
-function Step1Basic({ draft, set, errors, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }) {
+function Step1Basic({ draft, set, errors, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }>) {
   return (
     <div>
       <StepHeader vi={t('setup.wizard.basic.title')} sub={t('setup.wizard.basic.sub')} icon="pin" />
@@ -360,7 +378,7 @@ function Step1Basic({ draft, set, errors, t }: { draft: DraftLocation; set: <K e
 
 // ─── Step 2: Validation Mode ──────────────────────────────────────────────────
 
-function StepMode({ draft, onSelect, t }: { draft: DraftLocation; onSelect: (m: DraftLocation['mode']) => void; t: (k: string) => string }) {
+function StepMode({ draft, onSelect, t }: Readonly<{ draft: DraftLocation; onSelect: (m: DraftLocation['mode']) => void; t: (k: string) => string }>) {
   const modes: { id: DraftLocation['mode']; icon: keyof typeof Icons; vi: string; sub: string; pros: string[]; cons: string[]; recommended?: boolean }[] = [
     { id: 'wifi',     icon: 'wifi',   vi: t('setup.wizard.mode.wifiOnly.title'),  sub: t('setup.wizard.mode.wifiOnly.sub'),  pros: [t('setup.wizard.mode.wifiOnly.pro1'), t('setup.wizard.mode.wifiOnly.pro2')], cons: [t('setup.wizard.mode.wifiOnly.con1')] },
     { id: 'geo',      icon: 'target', vi: t('setup.wizard.mode.gpsOnly.title'),   sub: t('setup.wizard.mode.gpsOnly.sub'),   pros: [t('setup.wizard.mode.gpsOnly.pro1'), t('setup.wizard.mode.gpsOnly.pro2')], cons: [t('setup.wizard.mode.gpsOnly.con1'), t('setup.wizard.mode.gpsOnly.con2')] },
@@ -415,11 +433,11 @@ function StepMode({ draft, onSelect, t }: { draft: DraftLocation; onSelect: (m: 
                 <div style={{ display: 'flex', gap: 20 }}>
                   <div>
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#1A6B55', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 3 }}>{t('setup.wizard.mode.pros')}</div>
-                    {m.pros.map((p, i) => <div key={i} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{p}</div>)}
+                    {m.pros.map((p) => <div key={p} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{p}</div>)}
                   </div>
                   <div>
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#B45309', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 3 }}>{t('setup.wizard.mode.cons')}</div>
-                    {m.cons.map((c, i) => <div key={i} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{c}</div>)}
+                    {m.cons.map((c) => <div key={c} style={{ fontSize: 12, color: '#3A4F63', lineHeight: 1.7 }}>{c}</div>)}
                   </div>
                 </div>
               </div>
@@ -433,7 +451,7 @@ function StepMode({ draft, onSelect, t }: { draft: DraftLocation; onSelect: (m: 
 
 // ─── Step: Wi-Fi ──────────────────────────────────────────────────────────────
 
-function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }) {
+function StepWifi({ draft, set, errors, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }>) {
   const addBlank = () => set('networks', [...draft.networks, { ssid: '', bssid: '' }]);
   const removeAt = (i: number) => set('networks', draft.networks.filter((_, idx) => idx !== i));
   const updateAt = (i: number, field: keyof WifiNetwork, val: string) =>
@@ -458,7 +476,7 @@ function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K ext
                 </span>
               </div>
             </div>
-            <Btn variant="ghost" size="sm" icon={<Icons.plus size={13} />} onClick={addBlank}>{t('setup.wizard.wifi.addBtn')}</Btn>
+            <Btn variant="ghost" size="sm" icon={<Plus size={13} />} onClick={addBlank}>{t('setup.wizard.wifi.addBtn')}</Btn>
           </div>
           {draft.networks.length === 0 ? (
             <div style={{ padding: '32px 24px', textAlign: 'center', color: '#C8D4DC', fontSize: 13 }}>
@@ -467,7 +485,7 @@ function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K ext
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {draft.networks.map((net, i) => (
-                <div key={i} style={{ padding: '16px 20px', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.25)' : 'none' }}>
+                <div key={net.bssid || net.ssid || `net-${i}`} style={{ padding: '16px 20px', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.25)' : 'none' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                     <span style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1.5, textTransform: 'uppercase' }}>{t('setup.wizard.wifi.networkLabel', { n: i + 1 })}</span>
                     <button onClick={() => removeAt(i)} style={{
@@ -502,10 +520,10 @@ function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K ext
 
 // ─── Step: Geofence ───────────────────────────────────────────────────────────
 
-function StepGeo({ draft, set, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }) {
+function StepGeo({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }>) {
   const radius = draft.radius;
-  const latNum = parseFloat(draft.lat) || 10.7724;
-  const lngNum = parseFloat(draft.long) || 106.6983;
+  const latNum = Number.parseFloat(draft.lat) || 10.7724;
+  const lngNum = Number.parseFloat(draft.long) || 106.6983;
 
   const presets = [
     { label: t('setup.wizard.geo.preset.street'),    r: 60 },
@@ -560,7 +578,7 @@ function StepGeo({ draft, set, t }: { draft: DraftLocation; set: <K extends keyo
 
 // ─── Step: Auto Clock-in/out ──────────────────────────────────────────────────
 
-function StepAuto({ draft, set, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }) {
+function StepAuto({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }>) {
   const rows = [
     { field: 'autoIn' as const,  vi: t('setup.wizard.auto.autoIn.label'),    sub: t('setup.wizard.auto.autoIn.sub'),    disabled: false },
     { field: 'autoOut' as const, vi: t('setup.wizard.auto.autoOut.label'),   sub: t('setup.wizard.auto.autoOut.sub'),   disabled: false },
@@ -573,11 +591,13 @@ function StepAuto({ draft, set, t }: { draft: DraftLocation; set: <K extends key
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 620 }}>
         {rows.map((r, idx) => {
           const on = r.field ? draft[r.field] : false;
+          const onActiveBg = !r.disabled && on ? 'rgba(0,180,160,0.06)' : 'rgba(255,255,255,0.72)';
+          const rowBg = r.disabled ? 'rgba(247,249,250,0.5)' : onActiveBg;
           return (
-            <div key={idx} style={{
+            <div key={r.field ?? 'biometric'} style={{
               display: 'flex', alignItems: 'center', gap: 18, padding: '18px 20px', borderRadius: 12,
               border: `1.5px solid ${!r.disabled && on ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)'}`,
-              background: r.disabled ? 'rgba(247,249,250,0.5)' : (!r.disabled && on ? 'rgba(0,180,160,0.06)' : 'rgba(255,255,255,0.72)'),
+              background: rowBg,
               backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
               opacity: r.disabled ? 0.55 : 1, transition: 'all 150ms'
             }}>
@@ -597,10 +617,10 @@ function StepAuto({ draft, set, t }: { draft: DraftLocation; set: <K extends key
 
 // ─── Step: Review & Create ────────────────────────────────────────────────────
 
-function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: {
+function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: Readonly<{
   draft: DraftLocation; onEdit: (key: StepKey) => void; onCreate: () => void;
   created: boolean; createdId: string; onDone: () => void; t: (k: string) => string;
-}) {
+}>) {
   const modeLabel: Record<DraftLocation['mode'], string> = {
     'wifi+geo': t('setup.wizard.review.modeWifiGps'),
     wifi:       t('setup.wizard.review.modeWifi'),
@@ -645,8 +665,8 @@ function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: 
         )}
         {draft.mode !== 'none' && (
           <ReviewBlock title={t('setup.wizard.review.block.auto')} stepKey="auto" onEdit={onEdit} editLabel={t('setup.wizard.review.editBtn')} rows={[
-            { label: t('setup.wizard.review.row.autoIn'),  value: draft.autoIn  ? <Tag tone="success" icon={<Icons.check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
-            { label: t('setup.wizard.review.row.autoOut'), value: draft.autoOut ? <Tag tone="success" icon={<Icons.check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
+            { label: t('setup.wizard.review.row.autoIn'),  value: draft.autoIn  ? <Tag tone="success" icon={<Check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
+            { label: t('setup.wizard.review.row.autoOut'), value: draft.autoOut ? <Tag tone="success" icon={<Check size={10} />}>{t('setup.wizard.review.on')}</Tag>  : <Tag tone="neutral">{t('setup.wizard.review.off')}</Tag> },
           ]} />
         )}
 
@@ -676,18 +696,18 @@ function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: 
 
 // ─── Small helpers ────────────────────────────────────────────────────────────
 
-function Em({ children }: { children: ReactNode }) {
+function Em({ children }: Readonly<{ children: ReactNode }>) {
   return <span style={{ color: '#C8D4DC' }}>{children}</span>;
 }
-function Mono({ children }: { children: ReactNode }) {
+function Mono({ children }: Readonly<{ children: ReactNode }>) {
   return <span style={{ fontSize: 12 }}>{children}</span>;
 }
 
-function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: {
+function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: Readonly<{
   title: string; stepKey: StepKey; onEdit: (k: StepKey) => void;
   rows: { label: string; value: ReactNode }[];
   editLabel: string;
-}) {
+}>) {
   return (
     <div style={{ ...glass, borderRadius: 12, overflow: 'hidden' }}>
       <div style={{
@@ -701,11 +721,11 @@ function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: {
           cursor: 'pointer', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: 5,
           padding: '3px 10px', borderRadius: 6
         }}>
-          <Icons.edit size={11} stroke="#00B4A0" /> {editLabel}
+          <Edit size={11} stroke="#00B4A0" /> {editLabel}
         </button>
       </div>
       {rows.map((r, i) => (
-        <div key={i} style={{
+        <div key={r.label} style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 18px',
           borderTop: i > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none'
         }}>
@@ -717,7 +737,7 @@ function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: {
   );
 }
 
-function SuccessState({ name, locId, onDone, t }: { name: string; locId: string; onDone: () => void; t: (k: string) => string }) {
+function SuccessState({ name, locId, onDone, t }: Readonly<{ name: string; locId: string; onDone: () => void; t: (k: string) => string }>) {
   const navigate = useNavigate();
   return (
     <div style={{ textAlign: 'center', padding: '56px 24px', maxWidth: 480, margin: '0 auto' }}>
@@ -727,7 +747,7 @@ function SuccessState({ name, locId, onDone, t }: { name: string; locId: string;
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 0 0 12px rgba(0,180,160,0.1), 0 8px 32px rgba(0,180,160,0.25)'
         }}>
-          <Icons.check size={36} stroke="#fff" sw={2.5} />
+          <Check size={36} stroke="#fff" sw={2.5} />
         </div>
       </div>
       <h2 style={{ fontSize: 28, fontWeight: 800, color: '#1E2D3D', marginBottom: 12, letterSpacing: '-0.02em' }}>{t('setup.wizard.success.title')}</h2>
@@ -736,15 +756,15 @@ function SuccessState({ name, locId, onDone, t }: { name: string; locId: string;
         {t('setup.wizard.success.next')}
       </p>
       <div style={{ ...glass, borderRadius: 14, padding: '16px', display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Btn variant="ghost" icon={<Icons.chevR size={14} style={{ transform: 'scaleX(-1)' }} />} onClick={onDone}>{t('setup.wizard.success.backToList')}</Btn>
-        <Btn variant="secondary" icon={<Icons.pin size={14} />} onClick={() => navigate(`/setup/locations/${locId}`)}>{t('setup.wizard.success.viewLocation')}</Btn>
-        <Btn variant="primary" icon={<Icons.users size={14} />} onClick={() => navigate(`/setup/locations/${locId}`, { state: { scrollTo: 'staff' } })}>{t('setup.wizard.success.assignStaff')}</Btn>
+        <Btn variant="ghost" icon={<ChevR size={14} style={{ transform: 'scaleX(-1)' }} />} onClick={onDone}>{t('setup.wizard.success.backToList')}</Btn>
+        <Btn variant="secondary" icon={<Pin size={14} />} onClick={() => navigate(`/setup/locations/${locId}`)}>{t('setup.wizard.success.viewLocation')}</Btn>
+        <Btn variant="primary" icon={<Users size={14} />} onClick={() => navigate(`/setup/locations/${locId}`, { state: { scrollTo: 'staff' } })}>{t('setup.wizard.success.assignStaff')}</Btn>
       </div>
     </div>
   );
 }
 
-function WizColorPicker({ value, onChange }: { value: string; onChange: (c: string) => void }) {
+function WizColorPicker({ value, onChange }: Readonly<{ value: string; onChange: (c: string) => void }>) {
   return (
     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', padding: '6px 0' }}>
       {COLOR_PALETTE.map(c => (
@@ -759,8 +779,8 @@ function WizColorPicker({ value, onChange }: { value: string; onChange: (c: stri
   );
 }
 
-function ErrMsg({ children }: { children: ReactNode }) {
+function ErrMsg({ children }: Readonly<{ children: ReactNode }>) {
   return <div style={{ fontSize: 12, color: '#DC2626', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-    <Icons.alert size={12} stroke="#DC2626" />{children}
+    <Alert size={12} stroke="#DC2626" />{children}
   </div>;
 }

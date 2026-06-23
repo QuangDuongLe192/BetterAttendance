@@ -47,6 +47,7 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
   if (isLoading) return <MgrAnnounceSkeleton />;
   if (error) return <ErrorBanner message={error} />;
 
+  const Send = Icons.send;
   const send = () => {
     setCompose(false);
     setTitle('');
@@ -67,28 +68,14 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
       </div>
 
       {/* Compose trigger / form */}
-      {!compose ? (
-        <button onClick={() => setCompose(true)}
-          style={{ ...glass, width: '100%', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px', borderRadius: 14, cursor: 'pointer', textAlign: 'left', border: '1.5px dashed rgba(0,180,160,0.35)', transition: 'all 150ms' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.6)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = glass.background as string; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.35)'; }}>
-          <span style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(0,180,160,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icons.send size={17} stroke="#00B4A0" />
-          </span>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{t('manager.announce.compose.trigger.title')}</div>
-            <div style={{ fontSize: 12, color: '#9BAAB5', marginTop: 1 }}>{t('manager.announce.compose.trigger.sub')}</div>
-          </div>
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#00B4A0', background: 'rgba(0,180,160,0.1)', padding: '6px 16px', borderRadius: 20 }}>{t('manager.announce.compose.trigger.btn')}</span>
-        </button>
-      ) : (
+      {compose ? (
         <div style={{ ...glass, borderRadius: 14, marginBottom: 24, overflow: 'hidden' }}>
           {/* Form header */}
           <div style={{ background: 'linear-gradient(145deg, rgba(30,45,61,0.88) 0%, rgba(0,90,78,0.84) 100%)', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: -16, right: -16, width: 100, height: 100, borderRadius: '50%', background: 'rgba(0,180,160,0.15)', pointerEvents: 'none' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
               <span style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(0,180,160,0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icons.send size={15} stroke="rgba(255,255,255,0.9)" />
+                <Send size={15} stroke="rgba(255,255,255,0.9)" />
               </span>
               <span style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{t('manager.announce.compose.title')}</span>
             </div>
@@ -141,10 +128,24 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
             </button>
             <button disabled={!title.trim()} onClick={send}
               style={{ flex: 2, padding: '10px', borderRadius: 10, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, background: title.trim() ? '#00B4A0' : 'rgba(200,212,220,0.3)', cursor: title.trim() ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 700, color: title.trim() ? '#fff' : '#9BAAB5', boxShadow: title.trim() ? '0 2px 8px rgba(0,180,160,0.3)' : 'none', transition: 'all 150ms' }}>
-              <Icons.send size={14} stroke="currentColor" /> {t('manager.announce.compose.send')}
+              <Send size={14} stroke="currentColor" /> {t('manager.announce.compose.send')}
             </button>
           </div>
         </div>
+      ) : (
+        <button onClick={() => setCompose(true)}
+          style={{ ...glass, width: '100%', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px', borderRadius: 14, cursor: 'pointer', textAlign: 'left', border: '1.5px dashed rgba(0,180,160,0.35)', transition: 'all 150ms' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.6)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = glass.background as string; e.currentTarget.style.borderColor = 'rgba(0,180,160,0.35)'; }}>
+          <span style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(0,180,160,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Send size={17} stroke="#00B4A0" />
+          </span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D' }}>{t('manager.announce.compose.trigger.title')}</div>
+            <div style={{ fontSize: 12, color: '#9BAAB5', marginTop: 1 }}>{t('manager.announce.compose.trigger.sub')}</div>
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#00B4A0', background: 'rgba(0,180,160,0.1)', padding: '6px 16px', borderRadius: 20 }}>{t('manager.announce.compose.trigger.btn')}</span>
+        </button>
       )}
 
       {/* Sent history */}
@@ -162,8 +163,9 @@ export function MgrAnnounce({ isLoading, error }: Props = {}) {
   );
 }
 
-function AnnouncementCard({ announcement: a }: { announcement: Announcement }) {
+function AnnouncementCard({ announcement: a }: Readonly<{ announcement: Announcement }>) {
   const { t } = useTranslation('manager');
+  const Send = Icons.send;
   const readPct = Math.round(a.read / a.total * 100);
   const scopes = a.scope.split(',');
   const allRead = a.read === a.total;
@@ -173,7 +175,7 @@ function AnnouncementCard({ announcement: a }: { announcement: Announcement }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         <span style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(0,180,160,0.08)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <Icons.send size={15} stroke="#00B4A0" />
+          <Send size={15} stroke="#00B4A0" />
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#1E2D3D', marginBottom: 4 }}>{a.title}</div>
@@ -218,7 +220,7 @@ function MgrAnnounceSkeleton() {
       <Skeleton h={32} w={240} style={{ marginBottom: 24 }} />
       <SkeletonCard lines={4} style={{ marginBottom: 24 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+        {(['a', 'b', 'c'] as const).map(k => <SkeletonCard key={k} lines={2} />)}
       </div>
     </div>
   );

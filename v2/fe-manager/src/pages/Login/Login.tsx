@@ -4,9 +4,13 @@ import { usePageTitle } from '../../lib/usePageTitle';
 import { useNavigate, useSearchParams, Navigate } from 'react-router';
 import { toast } from 'sonner';
 import { Icons } from '../../components/Icons';
+const Shield = Icons.shield;
+const Users = Icons.users;
+const Clock = Icons.clock;
+const ArrowR = Icons.arrowR;
+const ChevD = Icons.chevD;
 import { useAuth, type CurrentUser, type AccessRow } from '../../stores/AuthContext';
-import { STAFF, STAFF_ROLE_SCOPES } from '../../services/setup';
-import { LOCATIONS } from '../../services/setup';
+import { STAFF, STAFF_ROLE_SCOPES, LOCATIONS } from '../../services/setup';
 
 function scopeToAccess(larkUserId: string): AccessRow[] {
   const scope = STAFF_ROLE_SCOPES.find(s => s.larkUserId === larkUserId);
@@ -27,8 +31,6 @@ function staffToUser(larkUserId: string, title: string): CurrentUser {
 import candylioLogoDark from '../../public/candylio-logo-full-dark.svg';
 import larkLogo from '../../public/lark-logo-mark.png';
 
-// const APP_ID = 'cli_a95f6f0b59795eed'; // TODO: restore when backend is ready
-
 declare global {
   interface Window { tt: any; }
 }
@@ -44,7 +46,7 @@ const DEMO_USERS: { label: string; sublabel: string; badge: string; color: strin
   { label: 'Nhân viên',    sublabel: 'Nguyễn Văn An',       badge: 'STAFF',    color: '#6B7E8E', user: staffToUser('lark_user_001', 'Nhân viên pha chế') },
 ];
 
-function DevDemoPanel({ onLogin }: { onLogin: (user: CurrentUser) => void }) {
+function DevDemoPanel({ onLogin }: Readonly<{ onLogin: (user: CurrentUser) => void }>) {
   const { t } = useTranslation('common');
   const [hovered, setHovered] = useState<number | null>(null);
   return (
@@ -80,7 +82,7 @@ function DevDemoPanel({ onLogin }: { onLogin: (user: CurrentUser) => void }) {
   );
 }
 
-function Chip({ children, icon }: { children: React.ReactNode; icon: React.ReactNode }) {
+function Chip({ children, icon }: Readonly<{ children: React.ReactNode; icon: React.ReactNode }>) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 12px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.10)', color: '#E8ECEF', fontSize: 12.5, fontWeight: 600, fontFamily: 'var(--font-display)' }}>
       {icon}{children}
@@ -109,25 +111,25 @@ function LeftPanel() {
           {t('login.left.subtitle')}
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 32, paddingTop: 28, borderTop: '1px solid rgba(255,255,255,0.10)' }}>
-          <Chip icon={<Icons.shield size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sso')}</Chip>
-          <Chip icon={<Icons.users size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sync')}</Chip>
-          <Chip icon={<Icons.clock size={13} stroke="#7BE4D6" />}>{t('login.left.chip.onetouch')}</Chip>
+          <Chip icon={<Shield size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sso')}</Chip>
+          <Chip icon={<Users size={13} stroke="#7BE4D6" />}>{t('login.left.chip.sync')}</Chip>
+          <Chip icon={<Clock size={13} stroke="#7BE4D6" />}>{t('login.left.chip.onetouch')}</Chip>
         </div>
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12, color: '#9AABBC' }}>
         <span>{t('login.left.footer.copyright')}</span>
         <span style={{ display: 'flex', gap: 18 }}>
-          <a href="#" style={{ color: '#9AABBC', textDecoration: 'none' }}>{t('login.left.footer.privacy')}</a>
-          <a href="#" style={{ color: '#9AABBC', textDecoration: 'none' }}>{t('login.left.footer.terms')}</a>
-          <a href="#" style={{ color: '#9AABBC', textDecoration: 'none' }}>{t('login.left.footer.lang')}</a>
+          <button type="button" style={{ color: '#9AABBC', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.left.footer.privacy')}</button>
+          <button type="button" style={{ color: '#9AABBC', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.left.footer.terms')}</button>
+          <button type="button" style={{ color: '#9AABBC', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.left.footer.lang')}</button>
         </span>
       </div>
     </aside>
   );
 }
 
-function LarkButton({ state, onClick }: { state: LoginState; onClick: () => void }) {
+function LarkButton({ state, onClick }: Readonly<{ state: LoginState; onClick: () => void }>) {
   const { t } = useTranslation('common');
   const [hover, setHover] = useState(false);
   const loading = state === 'loading';
@@ -140,13 +142,13 @@ function LarkButton({ state, onClick }: { state: LoginState; onClick: () => void
       {loading ? (
         <span style={{ width: 16, height: 16, borderRadius: 999, border: '2px solid rgba(255,255,255,0.25)', borderTopColor: '#fff', animation: 'spin 700ms linear infinite', display: 'inline-block', flexShrink: 0 }} />
       ) : (
-        <Icons.arrowR size={16} stroke="#fff" />
+        <ArrowR size={16} stroke="#fff" />
       )}
     </button>
   );
 }
 
-function LoginCard({ state, onLogin }: { state: LoginState; onLogin: () => void }) {
+function LoginCard({ state, onLogin }: Readonly<{ state: LoginState; onLogin: () => void }>) {
   const { t } = useTranslation('common');
   const [whyOpen, setWhyOpen] = useState(false);
   return (
@@ -157,7 +159,7 @@ function LoginCard({ state, onLogin }: { state: LoginState; onLogin: () => void 
       <LarkButton state={state} onClick={onLogin} />
       {state === 'error' && (
         <div style={{ marginTop: 14, padding: '10px 14px', borderRadius: 8, background: '#FFF8F8', border: '1px solid #F5C5C5', color: '#7C1D1D', fontSize: 12.5, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-          <Icons.shield size={14} stroke="#7C1D1D" style={{ marginTop: 1, flexShrink: 0 }} />
+          <Shield size={14} stroke="#7C1D1D" style={{ marginTop: 1, flexShrink: 0 }} />
           <div>
             <div style={{ fontWeight: 700, marginBottom: 2 }}>{t('login.card.error.title')}</div>
             <div>{t('login.card.error.body')}</div>
@@ -166,10 +168,10 @@ function LoginCard({ state, onLogin }: { state: LoginState; onLogin: () => void 
       )}
       <div style={{ marginTop: 24, borderRadius: 8, background: '#F7F9FA', border: '1px solid #E8ECEF', overflow: 'hidden' }}>
         <button onClick={() => setWhyOpen(v => !v)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '12px 14px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#1E2D3D', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12.5, textAlign: 'left' }}>
-          <Icons.shield size={13} stroke="#00B4A0" />
+          <Shield size={13} stroke="#00B4A0" />
           <span style={{ flex: 1 }}>{t('login.card.why.label')}</span>
           <span style={{ transition: 'transform 200ms', transform: whyOpen ? 'rotate(180deg)' : 'rotate(0deg)', display: 'flex' }}>
-            <Icons.chevD size={13} stroke="#6B7E8E" />
+            <ChevD size={13} stroke="#6B7E8E" />
           </span>
         </button>
         {whyOpen && (
@@ -179,7 +181,7 @@ function LoginCard({ state, onLogin }: { state: LoginState; onLogin: () => void 
         )}
       </div>
       <div style={{ marginTop: 20, paddingTop: 18, borderTop: '1px solid #E8ECEF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12, color: '#6B7E8E' }}>
-        <span>{t('login.card.support')} <a href="#" style={{ color: '#00B4A0', fontWeight: 600, textDecoration: 'none' }}>{t('login.card.support.link')}</a></span>
+        <span>{t('login.card.support')} <button type="button" style={{ color: '#00B4A0', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('login.card.support.link')}</button></span>
         <span style={{ fontSize: 11, color: '#9EAFBD' }}>v2.4</span>
       </div>
     </div>
@@ -211,7 +213,9 @@ export function Login() {
   const { user, loginWithToken } = useAuth();
   usePageTitle(t('login.page_title'));
 
-  const redirectUri = useMemo(() => window.location.origin + window.location.pathname, []);
+  if (user) return <Navigate to="/" replace />;
+
+  const redirectUri = useMemo(() => globalThis.location.origin + globalThis.location.pathname, []);
 
   const handleCode = useCallback(async (code: string) => {
     setIsProcessing(true);
@@ -236,7 +240,6 @@ export function Login() {
   const loginByLark = useCallback(() => {
     if (searchParams.get('code')) return;
     setLoginState('loading');
-    // TODO: remove mock bypass when backend /api/auth/lark/token is ready
     loginWithToken('mock_token_dev', Date.now() / 1000 + 86400);
     toast.success(t('login.toast.success'));
     navigate('/', { replace: true });
@@ -245,8 +248,6 @@ export function Login() {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) { handleCode(code); }
-    // TODO: restore Lark auto-login when backend is ready
-    // else if (isLarkEnvironment()) { loginByLark(); }
   }, []);
 
   const loginAsDemo = useCallback((demoUser: CurrentUser) => {

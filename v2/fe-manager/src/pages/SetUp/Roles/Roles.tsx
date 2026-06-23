@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Btn, Tag, Field, Input, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { Icons } from '../../../components/Icons';
+const Plus = Icons.plus;
+const Check = Icons.check;
 import { ROLES, STAFF, SHIFT_TEMPLATES } from '../../../services/setup';
 import type { Role } from '../../../services/setup';
 import { RoleRow } from './Components/RoleRow';
@@ -87,8 +89,8 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
     toast.info(t('setup.roles.toast.deleted', { name }));
   };
 
-  const graceNum     = Math.max(0, Math.min(120, parseInt(grace) || 0));
-  const thresholdNum = Math.max(graceNum + 1, Math.min(480, parseInt(absenceThreshold) || 120));
+  const graceNum     = Math.max(0, Math.min(120, Number.parseInt(grace) || 0));
+  const thresholdNum = Math.max(graceNum + 1, Math.min(480, Number.parseInt(absenceThreshold) || 120));
 
   const fmtTime = (addMin: number) => {
     const total = 8 * 60 + addMin;
@@ -223,15 +225,19 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                 <div style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D' }}>{t('setup.roles.list.title')}</div>
               </div>
               {!isAddingRole && (
-                <Btn variant="primary" icon={<Icons.plus size={14} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
+                <Btn variant="primary" icon={<Plus size={14} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
               )}
             </div>
 
             <div style={{ ...glass, borderRadius: 14, overflow: 'hidden' }}>
               {/* Table header */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '10px 20px', background: 'rgba(30,45,61,0.04)', borderBottom: '1px solid rgba(200,212,220,0.4)' }}>
-                {[t('setup.roles.col.role'), t('setup.roles.col.staff'), ''].map((h, i) => (
-                  <div key={i} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{h}</div>
+                {[
+                  { key: 'role',    label: t('setup.roles.col.role') },
+                  { key: 'staff',   label: t('setup.roles.col.staff') },
+                  { key: 'actions', label: '' },
+                ].map(({ key, label }) => (
+                  <div key={key} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{label}</div>
                 ))}
               </div>
               {roleList.map((role, i) => (
@@ -259,7 +265,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                     autoFocus
                     value={newRoleName}
                     onChange={e => setNewRoleName(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') confirmAddRole(); if (e.key === 'Escape') cancelAddRole(); }}
+                    onKeyDown={e => { if (e.key === 'Enter') { confirmAddRole(); } else if (e.key === 'Escape') { cancelAddRole(); } }}
                     placeholder={t('setup.roles.newPlaceholder')}
                     style={{ fontSize: 14, fontWeight: 600, color: '#1E2D3D', background: 'none', border: 'none', outline: 'none', width: '100%', fontFamily: 'var(--font-body)' }}
                   />
@@ -269,7 +275,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                       <Icons.x size={15} />
                     </button>
                     <button onClick={confirmAddRole} disabled={!newRoleName.trim()} style={{ background: newRoleName.trim() ? '#00B4A0' : '#E8ECEF', border: 'none', cursor: newRoleName.trim() ? 'pointer' : 'default', padding: 6, borderRadius: 4, color: newRoleName.trim() ? '#fff' : '#9BAAB5', transition: 'background 150ms' }}>
-                      <Icons.check size={15} />
+                      <Check size={15} />
                     </button>
                   </div>
                 </div>
@@ -278,7 +284,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
               {/* Add button at bottom when adding */}
               {!isAddingRole && (
                 <div style={{ padding: '10px 20px', borderTop: roleList.length > 0 ? '1px solid rgba(200,212,220,0.35)' : 'none' }}>
-                  <Btn variant="ghost" size="sm" icon={<Icons.plus size={13} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
+                  <Btn variant="ghost" size="sm" icon={<Plus size={13} />} onClick={() => setIsAddingRole(true)}>{t('setup.roles.addBtn')}</Btn>
                 </div>
               )}
             </div>
@@ -335,15 +341,22 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
             {/* Shift list */}
             <div style={{ ...glass, borderRadius: 14, overflow: 'hidden' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '14px 1fr 110px 110px 80px 32px', gap: 12, padding: '10px 20px', background: 'rgba(30,45,61,0.04)', borderBottom: '1px solid rgba(200,212,220,0.4)' }}>
-                {['', t('setup.roles.shifts.col.name'), t('setup.roles.shifts.col.start'), t('setup.roles.shifts.col.end'), t('setup.roles.shifts.col.duration'), ''].map((h, i) => (
-                  <div key={i} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{h}</div>
+                {[
+                  { key: 'swatch',   label: '' },
+                  { key: 'name',     label: t('setup.roles.shifts.col.name') },
+                  { key: 'start',    label: t('setup.roles.shifts.col.start') },
+                  { key: 'end',      label: t('setup.roles.shifts.col.end') },
+                  { key: 'duration', label: t('setup.roles.shifts.col.duration') },
+                  { key: 'remove',   label: '' },
+                ].map(({ key, label }) => (
+                  <div key={key} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{label}</div>
                 ))}
               </div>
               {shifts.map((sh, i) => (
                 <ShiftRow key={sh.id} shift={sh} borderTop={i > 0} onUpdate={updateShift} onRemove={removeShift} autoFocus={sh.id === newShiftId} />
               ))}
               <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(200,212,220,0.35)' }}>
-                <Btn variant="ghost" size="sm" icon={<Icons.plus size={13} />} onClick={addShift}>{t('setup.roles.shifts.addBtn')}</Btn>
+                <Btn variant="ghost" size="sm" icon={<Plus size={13} />} onClick={addShift}>{t('setup.roles.shifts.addBtn')}</Btn>
               </div>
             </div>
           </div>
@@ -365,19 +378,19 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
               <Field label={t('setup.roles.grace.fieldGrace')}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 0, ...glass, borderRadius: 8, overflow: 'hidden' }}>
-                    <button onClick={() => setGrace(v => String(Math.max(0, parseInt(v) - 5 || 0)))}
+                    <button onClick={() => setGrace(v => String(Math.max(0, Number.parseInt(v) - 5 || 0)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>−</button>
                     <Input
                       value={grace}
                       onChange={v => {
-                        const n = Math.max(0, Math.min(120, parseInt(v) || 0));
+                        const n = Math.max(0, Math.min(120, Number.parseInt(v) || 0));
                         setGrace(n.toString());
                         if (n >= thresholdNum) setAbsenceThreshold((n + 1).toString());
                       }}
                       type="number"
                       style={{ width: 100, textAlign: 'center', border: 'none', borderLeft: '1px solid rgba(200,212,220,0.4)', borderRight: '1px solid rgba(200,212,220,0.4)', borderRadius: 0 }}
                     />
-                    <button onClick={() => setGrace(v => String(Math.min(120, parseInt(v) + 5 || 5)))}
+                    <button onClick={() => setGrace(v => String(Math.min(120, Number.parseInt(v) + 5 || 5)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>+</button>
                   </div>
                   <span style={{ fontSize: 12, color: '#9BAAB5' }}>{t('setup.roles.grace.graceUnit')}</span>
@@ -390,18 +403,18 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
               <Field label={t('setup.roles.grace.fieldAbsence')}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 0, ...glass, borderRadius: 8, overflow: 'hidden' }}>
-                    <button onClick={() => setAbsenceThreshold(v => String(Math.max(graceNum + 1, parseInt(v) - 15 || graceNum + 1)))}
+                    <button onClick={() => setAbsenceThreshold(v => String(Math.max(graceNum + 1, Number.parseInt(v) - 15 || graceNum + 1)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>−</button>
                     <Input
                       value={absenceThreshold}
                       onChange={v => {
-                        const n = Math.max(graceNum + 1, Math.min(480, parseInt(v) || graceNum + 1));
+                        const n = Math.max(graceNum + 1, Math.min(480, Number.parseInt(v) || graceNum + 1));
                         setAbsenceThreshold(n.toString());
                       }}
                       type="number"
                       style={{ width: 100, textAlign: 'center', border: 'none', borderLeft: '1px solid rgba(200,212,220,0.4)', borderRight: '1px solid rgba(200,212,220,0.4)', borderRadius: 0 }}
                     />
-                    <button onClick={() => setAbsenceThreshold(v => String(Math.min(480, parseInt(v) + 15 || graceNum + 16)))}
+                    <button onClick={() => setAbsenceThreshold(v => String(Math.min(480, Number.parseInt(v) + 15 || graceNum + 16)))}
                       style={{ padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 16, lineHeight: 1 }}>+</button>
                   </div>
                   <span style={{ fontSize: 12, color: '#9BAAB5' }}>{t('setup.roles.grace.absenceUnit', { n: graceNum + 1 })}</span>
@@ -506,13 +519,13 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
           {graceDirty && (
             <>
               <Btn variant="dark" size="sm" onClick={cancelGrace} style={{ color: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,255,255,0.15)' }}>{t('setup.roles.saveBar.cancelGrace')}</Btn>
-              <Btn variant="primary" size="sm" icon={<Icons.check size={13} />} onClick={saveGrace}>{t('setup.roles.saveBar.saveGrace')}</Btn>
+              <Btn variant="primary" size="sm" icon={<Check size={13} />} onClick={saveGrace}>{t('setup.roles.saveBar.saveGrace')}</Btn>
             </>
           )}
           {shiftsDirty && (
             <>
               <Btn variant="dark" size="sm" onClick={cancelShifts} style={{ color: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,255,255,0.15)' }}>{t('setup.roles.saveBar.cancelShifts')}</Btn>
-              <Btn variant="primary" size="sm" icon={<Icons.check size={13} />} onClick={saveShifts}>{t('setup.roles.saveBar.saveShifts')}</Btn>
+              <Btn variant="primary" size="sm" icon={<Check size={13} />} onClick={saveShifts}>{t('setup.roles.saveBar.saveShifts')}</Btn>
             </>
           )}
         </div>
@@ -521,7 +534,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
   );
 }
 
-function GraceExample({ time, label, tone }: { time: string; label: string; tone: 'success' | 'warning' | 'danger' }) {
+function GraceExample({ time, label, tone }: Readonly<{ time: string; label: string; tone: 'success' | 'warning' | 'danger' }>) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 12, color: '#1E2D3D', width: 46, flexShrink: 0 }}>{time}</span>
@@ -535,7 +548,7 @@ function SetupRolesSkeleton() {
     <div>
       <Skeleton h={32} w={160} style={{ marginBottom: 24 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-        {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+        {(['a', 'b', 'c', 'd', 'e', 'f'] as const).map((k) => <SkeletonCard key={k} lines={3} />)}
       </div>
     </div>
   );
