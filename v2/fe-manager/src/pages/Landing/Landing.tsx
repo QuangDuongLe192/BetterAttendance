@@ -197,11 +197,9 @@ function WorkspaceCard({ ws, onOpen }: Readonly<{ ws: VisibleWorkspace; onOpen: 
   const ArrowR = Icons.arrowR;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={onOpen}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpen(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
@@ -216,7 +214,7 @@ function WorkspaceCard({ ws, onOpen }: Readonly<{ ws: VisibleWorkspace; onOpen: 
           ? `0 20px 48px rgba(30,45,61,0.14), 0 0 0 1px rgba(255,255,255,0.5), inset 0 1px 0 rgba(255,255,255,0.85)`
           : `0 4px 16px rgba(30,45,61,0.07), 0 0 0 1px rgba(255,255,255,0.4), inset 0 1px 0 rgba(255,255,255,0.7)`,
         transition: 'transform 220ms cubic-bezier(0.2,0.7,0.2,1), box-shadow 220ms',
-        minHeight: 440,
+        minHeight: 440, padding: 0, font: 'inherit', textAlign: 'left', width: '100%',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 26px', borderBottom: '1px solid rgba(200,212,220,0.45)', background: `linear-gradient(to right, ${ws.accent}20, transparent 80%)` }}>
@@ -290,7 +288,7 @@ function WorkspaceCard({ ws, onOpen }: Readonly<{ ws: VisibleWorkspace; onOpen: 
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
