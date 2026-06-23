@@ -127,7 +127,7 @@ export function ManagerApp() {
 
             {wsOpen && (
               <>
-                <div onClick={() => setWsOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />
+                <div onClick={() => setWsOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setWsOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />
                 <div style={{ position: 'absolute', top: 'calc(100% - 4px)', left: 12, right: 12, zIndex: 50, background: '#243344', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, overflow: 'hidden', boxShadow: '0 8px 28px rgba(0,0,0,0.35)' }}>
                   <div style={{ padding: '8px 12px 6px', fontSize: 10, fontWeight: 700, color: 'rgba(106,179,232,0.7)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>{t('manager.sidebar.workspace.label')}</div>
                   {workspaces.map(ws => (
@@ -183,7 +183,7 @@ export function ManagerApp() {
 
                 {storeOpen && (
                   <>
-                    <div onClick={() => setStoreOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />
+                    <div onClick={() => setStoreOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setStoreOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />
                     <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, background: '#2A3B4D', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, marginTop: 4, overflow: 'hidden' }}>
                       <button
                         onClick={() => { navigate(`/manager/${active}/all`); setStoreOpen(false); }}

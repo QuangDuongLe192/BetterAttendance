@@ -325,6 +325,7 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: Read
     <button
       type="button"
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="anim-card"

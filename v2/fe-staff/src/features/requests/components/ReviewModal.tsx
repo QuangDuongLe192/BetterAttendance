@@ -23,7 +23,7 @@ export function ReviewModal({ request, action, onConfirm, onClose }: ReviewModal
       position: 'fixed', inset: 0, zIndex: 999,
       background: 'rgba(0,0,0,0.45)',
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-    }} onClick={onClose}>
+    }} onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}>
       <div
         style={{
           background: 'var(--bg-surface)', borderRadius: '20px 20px 0 0',
@@ -31,6 +31,7 @@ export function ReviewModal({ request, action, onConfirm, onClose }: ReviewModal
           boxShadow: '0 -4px 24px rgba(0,0,0,0.15)',
         }}
         onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
       >
         <div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--line-1)', margin: '0 auto 20px' }} />
         <h3 style={{

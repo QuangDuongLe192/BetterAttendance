@@ -154,7 +154,7 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
   const staffWithShifts = staffInStore.filter(s =>
     shifts.some(sh => sh.larkUserId === s.larkUserId && weekDayStrs.has(dateStrFromVN(sh.scheduleInTime)))
   );
-  const legendStores = [...new Set(shifts.map(s => s.locationId))].sort();
+  const legendStores = [...new Set(shifts.map(s => s.locationId))].sort((a, b) => a.localeCompare(b));
 
   return (
     <>
@@ -411,6 +411,7 @@ function WeekPicker({ weekOffset, onChange, onClose }: Readonly<{
           return (
             <button key={rowOffset} type="button"
               onClick={() => onChange(rowOffset)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onChange(rowOffset); }}
               onMouseEnter={() => setHoverOff(rowOffset)}
               onMouseLeave={() => setHoverOff(null)}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderRadius: 7, background: rowBg, cursor: 'pointer', marginBottom: 2, width: '100%', border: 'none', padding: 0 }}>

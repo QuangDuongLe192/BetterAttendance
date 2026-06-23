@@ -1,7 +1,6 @@
-import { fmtVND } from '../lib/fmt';
-import type { FinPeriod, FinHistory, FinLoc, PayrollItem, PayrollRawEntry, PayrollEntry, FinSummary, FinByLoc } from '../services/Finance/finance';
+import type { FinPeriod, FinHistory, FinLoc, PayrollRawEntry, PayrollEntry, FinSummary, FinByLoc } from '../services/Finance/finance';
 
-export { fmtVND };
+export { fmtVND } from '../lib/fmt';
 
 export const fmtM = (n: number): string => {
   const m = n / 1_000_000;

@@ -75,7 +75,10 @@ export function DayDetail({ shifts, isLoading }: DayDetailProps) {
           <div
             key={shift.shiftId}
             className="cd-day-detail__card"
+            role="button"
+            tabIndex={0}
             onClick={() => navigate(`/shifts/${shift.shiftId}`)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/shifts/${shift.shiftId}`); }}
           >
             <div className="cd-day-detail__time">
               {formatShiftTime(shift.start, i18n.language)} — {formatShiftTime(shift.end, i18n.language)}

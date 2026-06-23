@@ -256,6 +256,8 @@ export function Login() {
     navigate('/', { replace: true });
   }, [loginWithToken, navigate, t]);
 
+  if (user) return <Navigate to="/" replace />;
+
   const cardStyle: CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px', background: '#F7F9FA', minHeight: '100vh' };
 
   if (isProcessing) return (
