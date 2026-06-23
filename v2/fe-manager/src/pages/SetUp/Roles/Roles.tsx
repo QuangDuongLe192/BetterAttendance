@@ -523,7 +523,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
   );
 }
 
-function GraceExample({ time, label, tone }: { time: string; label: string; tone: 'success' | 'warning' | 'danger' }) {
+function GraceExample({ time, label, tone }: Readonly<{ time: string; label: string; tone: 'success' | 'warning' | 'danger' }>) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 12, color: '#1E2D3D', width: 46, flexShrink: 0 }}>{time}</span>
