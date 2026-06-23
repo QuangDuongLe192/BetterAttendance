@@ -12,9 +12,13 @@ interface Props {
   error?: string | null;
 }
 
-export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) {
+export function FinApprove({ summary, byLoc, period, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('finance');
   const [approved, setApproved] = useState(false);
+  const Check = Icons.check;
+  const Download = Icons.download;
+  const Clock = Icons.clock;
+  const Lock = Icons.lock;
 
   if (isLoading) return <FinApproveSkeleton />;
   if (error) return <ErrorBanner message={error} />;
@@ -25,7 +29,7 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
   if (approved) return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 20, textAlign: 'center' }}>
       <div style={{ width: 72, height: 72, borderRadius: 999, background: '#F0FAF7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icons.check size={36} stroke="#1A6B55" sw={2}/>
+        <Check size={36} stroke="#1A6B55" sw={2}/>
       </div>
       <div>
         <h2 style={{ fontSize: 28, fontWeight: 800, color: '#1E2D3D', letterSpacing: '-0.01em', marginBottom: 8 }}>{t('finance.approve.done.title')}</h2>
@@ -38,8 +42,8 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
         </p>
       </div>
       <div style={{ display: 'flex', gap: 12 }}>
-        <Btn variant="secondary" icon={<Icons.download size={14}/>}>{t('finance.approve.done.exportCsvBtn')}</Btn>
-        <Btn variant="primary" icon={<Icons.download size={14}/>}>{t('finance.approve.done.exportMisaBtn')}</Btn>
+        <Btn variant="secondary" icon={<Download size={14}/>}>{t('finance.approve.done.exportCsvBtn')}</Btn>
+        <Btn variant="primary" icon={<Download size={14}/>}>{t('finance.approve.done.exportMisaBtn')}</Btn>
       </div>
     </div>
   );
@@ -55,12 +59,12 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
       <Card style={{ background: '#1E2D3D', borderColor: '#1E2D3D', marginBottom: 24, padding: 0, overflow: 'hidden' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderBottom: 'none' }}>
           {[
-            { label: t('finance.approve.summary.period'),   val: t('finance.approve.summary.periodVal', { start: period.start.slice(0, 5), end: period.end }), sub: period.label },
-            { label: t('finance.approve.summary.total'),    val: fmtVND(summary.total), sub: t('finance.approve.summary.staffCount', { count: summary.staff }), big: true },
-            { label: t('finance.approve.summary.reviewed'), val: `${summary.reviewed}/${summary.staff}`, sub: canApprove ? t('finance.approve.summary.done') : t('finance.approve.summary.remaining', { count: summary.pending }), warn: !canApprove },
-            { label: t('finance.approve.summary.lockDate'), val: period.lockDate, sub: t('finance.approve.summary.lockDeadline') },
+            { id: 'period',   label: t('finance.approve.summary.period'),   val: t('finance.approve.summary.periodVal', { start: period.start.slice(0, 5), end: period.end }), sub: period.label },
+            { id: 'total',    label: t('finance.approve.summary.total'),    val: fmtVND(summary.total), sub: t('finance.approve.summary.staffCount', { count: summary.staff }), big: true },
+            { id: 'reviewed', label: t('finance.approve.summary.reviewed'), val: `${summary.reviewed}/${summary.staff}`, sub: canApprove ? t('finance.approve.summary.done') : t('finance.approve.summary.remaining', { count: summary.pending }), warn: !canApprove },
+            { id: 'lockDate', label: t('finance.approve.summary.lockDate'), val: period.lockDate, sub: t('finance.approve.summary.lockDeadline') },
           ].map((c, i) => (
-            <div key={i} style={{ padding: '22px 24px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
+            <div key={c.id} style={{ padding: '22px 24px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
               <div style={{ fontSize: 11, color: '#6AB3E8', fontFamily: 'var(--font-display)', fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>{c.label}</div>
               <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: c.big ? 20 : 17, color: c.warn ? '#F4B26E' : '#fff', letterSpacing: '-0.01em' }}>{c.val}</div>
               <div style={{ fontSize: 11, color: c.warn ? '#F4B26E' : '#C8D4DC', marginTop: 4 }}>{c.sub}</div>
@@ -85,7 +89,7 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
                       <span style={{ fontWeight: 700, fontSize: 14, color: '#1E2D3D' }}>{l.name}</span>
                     </div>
                     {allDone
-                      ? <Tag tone="success" icon={<Icons.check size={10}/>}>{t('finance.approve.checklist.allDone', { count: l.count })}</Tag>
+                      ? <Tag tone="success" icon={<Check size={10}/>}>{t('finance.approve.checklist.allDone', { count: l.count })}</Tag>
                       : <Tag tone="warning">{t('finance.approve.checklist.partial', { reviewed: l.reviewed, count: l.count })}</Tag>}
                   </div>
                   {!allDone && (
@@ -106,7 +110,7 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
           </div>
           {!canApprove && (
             <div style={{ marginTop: 14, padding: '12px 14px', background: '#FFF3E0', borderRadius: 8, fontSize: 13, color: '#B45309', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-              <Icons.clock size={16} stroke="#B45309" style={{ flexShrink: 0, marginTop: 1 }}/>
+              <Clock size={16} stroke="#B45309" style={{ flexShrink: 0, marginTop: 1 }}/>
               {t('finance.approve.checklist.pendingWarning', { count: summary.pending })}
             </div>
           )}
@@ -121,7 +125,7 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
           ].map((f, i) => {
             const IconComp = Icons[f.icon];
             return (
-              <div key={i} style={{ padding: '18px 20px', background: '#fff', border: '1px solid #E8ECEF', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div key={f.titleKey} style={{ padding: '18px 20px', background: '#fff', border: '1px solid #E8ECEF', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 16 }}>
                 <span style={{ width: 40, height: 40, borderRadius: 8, background: '#F7F9FA', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <IconComp size={18} stroke="#00B4A0"/>
                 </span>
@@ -132,7 +136,7 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
                   </div>
                   <p style={{ fontSize: 12, color: '#6B7E8E', margin: 0, lineHeight: 1.5 }}>{t(f.descKey)}</p>
                 </div>
-                <Btn variant={f.tone} size="sm" icon={<Icons.download size={12}/>}>{t(f.btnKey)}</Btn>
+                <Btn variant={f.tone} size="sm" icon={<Download size={12}/>}>{t(f.btnKey)}</Btn>
               </div>
             );
           })}
@@ -151,7 +155,7 @@ export function FinApprove({ summary, byLoc, period, isLoading, error }: Props) 
               : t('finance.approve.cta.notReadyBody', { count: summary.pending })}
           </p>
         </div>
-        <Btn variant="primary" size="lg" disabled={!canApprove} onClick={() => setApproved(true)} icon={<Icons.lock size={16}/>}
+        <Btn variant="primary" size="lg" disabled={!canApprove} onClick={() => setApproved(true)} icon={<Lock size={16}/>}
           style={{ fontSize: 16, padding: '16px 32px', opacity: canApprove ? 1 : 0.4 }}>
           {t('finance.approve.cta.lockBtn')}
         </Btn>
@@ -165,7 +169,7 @@ function FinApproveSkeleton() {
     <div>
       <Skeleton h={32} w={260} style={{ marginBottom: 32 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+        {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={'approve-skel-' + i} lines={3} />)}
       </div>
     </div>
   );

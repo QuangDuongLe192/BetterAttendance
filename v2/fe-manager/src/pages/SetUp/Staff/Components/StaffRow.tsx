@@ -18,7 +18,10 @@ export function StaffRow({ staff, borderTop, isSelected, col, onClick }: {
   return (
     <div
       className="staff-row"
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{

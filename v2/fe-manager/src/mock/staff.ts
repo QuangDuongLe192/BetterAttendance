@@ -1,5 +1,4 @@
 import type { StaffEntity, StaffSummary, ManagerRef, StaffRoleScope } from '../services/Staff/staff';
-import { fmtVND } from '../lib/fmt';
 
 export const STAFF: StaffEntity[] = [
   { larkUserId: 'lark_user_001', name: 'Nguyễn Văn An', avatar: '', phone: '090 442 1188', locationIds: ['L1', 'L2'], managedLocs: [], payType: 'hourly', rate: 32000, roleIds: ['R1', 'R2'],floater: true  },
@@ -54,4 +53,4 @@ export const rolesOf = (larkUserId: string): string[] => {
 export const hasRole = (larkUserId: string, role: string): boolean =>
   rolesOf(larkUserId).includes(role);
 
-export { fmtVND };
+export { fmtVND } from '../lib/fmt';

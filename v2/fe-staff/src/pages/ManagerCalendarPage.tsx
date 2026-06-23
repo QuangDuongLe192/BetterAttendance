@@ -311,7 +311,7 @@ export function ManagerCalendarPage() {
   const allShifts = useMemo(() => shiftsData?.shifts ?? [], [shiftsData?.shifts]);
 
   const allBranches = useMemo(
-    () => [...new Set(allShifts.map(s => s.location))].filter(Boolean).sort(),
+    () => [...new Set(allShifts.map(s => s.location))].filter(Boolean).sort((a, b) => a.localeCompare(b)),
     [allShifts],
   );
 

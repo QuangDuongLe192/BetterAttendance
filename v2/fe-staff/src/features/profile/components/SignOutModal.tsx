@@ -18,6 +18,7 @@ export function SignOutModal({
         padding: '0 0 calc(80px + env(safe-area-inset-bottom))',
       }}
       onClick={onCancel}
+      onKeyDown={(e) => { if (e.key === 'Escape') onCancel(); }}
     >
       <div
         style={{
@@ -25,6 +26,7 @@ export function SignOutModal({
           padding: '24px 20px 20px', width: '100%', maxWidth: 480,
         }}
         onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
       >
         <p style={{
           fontFamily: 'var(--font-display)', fontWeight: 700,
