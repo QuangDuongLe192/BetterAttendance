@@ -522,8 +522,8 @@ function StepWifi({ draft, set, errors, t }: Readonly<{ draft: DraftLocation; se
 
 function StepGeo({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }>) {
   const radius = draft.radius;
-  const latNum = parseFloat(draft.lat) || 10.7724;
-  const lngNum = parseFloat(draft.long) || 106.6983;
+  const latNum = Number.parseFloat(draft.lat) || 10.7724;
+  const lngNum = Number.parseFloat(draft.long) || 106.6983;
 
   const presets = [
     { label: t('setup.wizard.geo.preset.street'),    r: 60 },
