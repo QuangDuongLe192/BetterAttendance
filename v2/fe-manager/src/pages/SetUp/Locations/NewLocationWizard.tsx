@@ -104,7 +104,7 @@ function validateWifi(draft: DraftLocation, t: (k: string) => string): Record<st
 
 // ─── Root Component ───────────────────────────────────────────────────────────
 
-export function NewLocationWizard({ onDone }: { onDone: () => void }) {
+export function NewLocationWizard({ onDone }: Readonly<{ onDone: () => void }>) {
   const { t } = useTranslation('setup');
   const [step, setStep] = useState(1);
   const [dir, setDir] = useState(1);
@@ -209,7 +209,7 @@ export function NewLocationWizard({ onDone }: { onDone: () => void }) {
 
 // ─── Vertical Stepper ─────────────────────────────────────────────────────────
 
-function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { steps: StepDef[]; current: number; onGo: (n: number) => void; draft: DraftLocation; newLocationLabel: string }) {
+function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: Readonly<{ steps: StepDef[]; current: number; onGo: (n: number) => void; draft: DraftLocation; newLocationLabel: string }>) {
   return (
     <div style={{ width: 220, flexShrink: 0 }}>
       <div style={{ position: 'sticky', top: 84 }}>
@@ -274,7 +274,7 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: { step
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
-function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLabel, backLabel, nextLabel }: { step: number; total: number; onBack: () => void; onNext: () => void; isLast: boolean; onCancel: () => void; cancelLabel: string; backLabel: string; nextLabel: string }) {
+function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLabel, backLabel, nextLabel }: Readonly<{ step: number; total: number; onBack: () => void; onNext: () => void; isLast: boolean; onCancel: () => void; cancelLabel: string; backLabel: string; nextLabel: string }>) {
   const ghostBtn: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8,
     background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
@@ -323,7 +323,7 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
 
 // ─── Step Header ──────────────────────────────────────────────────────────────
 
-function StepHeader({ vi, sub, icon }: { vi: string; sub?: string; icon?: keyof typeof Icons }) {
+function StepHeader({ vi, sub, icon }: Readonly<{ vi: string; sub?: string; icon?: keyof typeof Icons }>) {
   const IconComp = icon ? Icons[icon] : null;
   return (
     <div style={{ marginBottom: 32, display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -345,7 +345,7 @@ function StepHeader({ vi, sub, icon }: { vi: string; sub?: string; icon?: keyof 
 
 // ─── Step 1: Basic Info ───────────────────────────────────────────────────────
 
-function Step1Basic({ draft, set, errors, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }) {
+function Step1Basic({ draft, set, errors, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }>) {
   return (
     <div>
       <StepHeader vi={t('setup.wizard.basic.title')} sub={t('setup.wizard.basic.sub')} icon="pin" />
@@ -368,7 +368,7 @@ function Step1Basic({ draft, set, errors, t }: { draft: DraftLocation; set: <K e
 
 // ─── Step 2: Validation Mode ──────────────────────────────────────────────────
 
-function StepMode({ draft, onSelect, t }: { draft: DraftLocation; onSelect: (m: DraftLocation['mode']) => void; t: (k: string) => string }) {
+function StepMode({ draft, onSelect, t }: Readonly<{ draft: DraftLocation; onSelect: (m: DraftLocation['mode']) => void; t: (k: string) => string }>) {
   const modes: { id: DraftLocation['mode']; icon: keyof typeof Icons; vi: string; sub: string; pros: string[]; cons: string[]; recommended?: boolean }[] = [
     { id: 'wifi',     icon: 'wifi',   vi: t('setup.wizard.mode.wifiOnly.title'),  sub: t('setup.wizard.mode.wifiOnly.sub'),  pros: [t('setup.wizard.mode.wifiOnly.pro1'), t('setup.wizard.mode.wifiOnly.pro2')], cons: [t('setup.wizard.mode.wifiOnly.con1')] },
     { id: 'geo',      icon: 'target', vi: t('setup.wizard.mode.gpsOnly.title'),   sub: t('setup.wizard.mode.gpsOnly.sub'),   pros: [t('setup.wizard.mode.gpsOnly.pro1'), t('setup.wizard.mode.gpsOnly.pro2')], cons: [t('setup.wizard.mode.gpsOnly.con1'), t('setup.wizard.mode.gpsOnly.con2')] },
@@ -441,7 +441,7 @@ function StepMode({ draft, onSelect, t }: { draft: DraftLocation; onSelect: (m: 
 
 // ─── Step: Wi-Fi ──────────────────────────────────────────────────────────────
 
-function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }) {
+function StepWifi({ draft, set, errors, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; errors: Record<string, string>; t: (k: string) => string }>) {
   const addBlank = () => set('networks', [...draft.networks, { ssid: '', bssid: '' }]);
   const removeAt = (i: number) => set('networks', draft.networks.filter((_, idx) => idx !== i));
   const updateAt = (i: number, field: keyof WifiNetwork, val: string) =>
@@ -510,7 +510,7 @@ function StepWifi({ draft, set, errors, t }: { draft: DraftLocation; set: <K ext
 
 // ─── Step: Geofence ───────────────────────────────────────────────────────────
 
-function StepGeo({ draft, set, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }) {
+function StepGeo({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }>) {
   const radius = draft.radius;
   const latNum = parseFloat(draft.lat) || 10.7724;
   const lngNum = parseFloat(draft.long) || 106.6983;
@@ -568,7 +568,7 @@ function StepGeo({ draft, set, t }: { draft: DraftLocation; set: <K extends keyo
 
 // ─── Step: Auto Clock-in/out ──────────────────────────────────────────────────
 
-function StepAuto({ draft, set, t }: { draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }) {
+function StepAuto({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K extends keyof DraftLocation>(k: K, v: DraftLocation[K]) => void; t: (k: string) => string }>) {
   const rows = [
     { field: 'autoIn' as const,  vi: t('setup.wizard.auto.autoIn.label'),    sub: t('setup.wizard.auto.autoIn.sub'),    disabled: false },
     { field: 'autoOut' as const, vi: t('setup.wizard.auto.autoOut.label'),   sub: t('setup.wizard.auto.autoOut.sub'),   disabled: false },
@@ -605,10 +605,10 @@ function StepAuto({ draft, set, t }: { draft: DraftLocation; set: <K extends key
 
 // ─── Step: Review & Create ────────────────────────────────────────────────────
 
-function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: {
+function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: Readonly<{
   draft: DraftLocation; onEdit: (key: StepKey) => void; onCreate: () => void;
   created: boolean; createdId: string; onDone: () => void; t: (k: string) => string;
-}) {
+}>) {
   const modeLabel: Record<DraftLocation['mode'], string> = {
     'wifi+geo': t('setup.wizard.review.modeWifiGps'),
     wifi:       t('setup.wizard.review.modeWifi'),
@@ -684,18 +684,18 @@ function StepReview({ draft, onEdit, onCreate, created, createdId, onDone, t }: 
 
 // ─── Small helpers ────────────────────────────────────────────────────────────
 
-function Em({ children }: { children: ReactNode }) {
+function Em({ children }: Readonly<{ children: ReactNode }>) {
   return <span style={{ color: '#C8D4DC' }}>{children}</span>;
 }
-function Mono({ children }: { children: ReactNode }) {
+function Mono({ children }: Readonly<{ children: ReactNode }>) {
   return <span style={{ fontSize: 12 }}>{children}</span>;
 }
 
-function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: {
+function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: Readonly<{
   title: string; stepKey: StepKey; onEdit: (k: StepKey) => void;
   rows: { label: string; value: ReactNode }[];
   editLabel: string;
-}) {
+}>) {
   return (
     <div style={{ ...glass, borderRadius: 12, overflow: 'hidden' }}>
       <div style={{
@@ -725,7 +725,7 @@ function ReviewBlock({ title, stepKey, onEdit, rows, editLabel }: {
   );
 }
 
-function SuccessState({ name, locId, onDone, t }: { name: string; locId: string; onDone: () => void; t: (k: string) => string }) {
+function SuccessState({ name, locId, onDone, t }: Readonly<{ name: string; locId: string; onDone: () => void; t: (k: string) => string }>) {
   const navigate = useNavigate();
   return (
     <div style={{ textAlign: 'center', padding: '56px 24px', maxWidth: 480, margin: '0 auto' }}>
@@ -752,7 +752,7 @@ function SuccessState({ name, locId, onDone, t }: { name: string; locId: string;
   );
 }
 
-function WizColorPicker({ value, onChange }: { value: string; onChange: (c: string) => void }) {
+function WizColorPicker({ value, onChange }: Readonly<{ value: string; onChange: (c: string) => void }>) {
   return (
     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', padding: '6px 0' }}>
       {COLOR_PALETTE.map(c => (
@@ -767,7 +767,7 @@ function WizColorPicker({ value, onChange }: { value: string; onChange: (c: stri
   );
 }
 
-function ErrMsg({ children }: { children: ReactNode }) {
+function ErrMsg({ children }: Readonly<{ children: ReactNode }>) {
   return <div style={{ fontSize: 12, color: '#DC2626', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
     <Alert size={12} stroke="#DC2626" />{children}
   </div>;
