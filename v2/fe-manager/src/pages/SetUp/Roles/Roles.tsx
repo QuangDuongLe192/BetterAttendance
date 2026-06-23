@@ -232,8 +232,12 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
             <div style={{ ...glass, borderRadius: 14, overflow: 'hidden' }}>
               {/* Table header */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '10px 20px', background: 'rgba(30,45,61,0.04)', borderBottom: '1px solid rgba(200,212,220,0.4)' }}>
-                {[t('setup.roles.col.role'), t('setup.roles.col.staff'), ''].map((h, i) => (
-                  <div key={i} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{h}</div>
+                {[
+                  { key: 'role',    label: t('setup.roles.col.role') },
+                  { key: 'staff',   label: t('setup.roles.col.staff') },
+                  { key: 'actions', label: '' },
+                ].map(({ key, label }) => (
+                  <div key={key} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{label}</div>
                 ))}
               </div>
               {roleList.map((role, i) => (
@@ -261,7 +265,7 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
                     autoFocus
                     value={newRoleName}
                     onChange={e => setNewRoleName(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') confirmAddRole(); if (e.key === 'Escape') cancelAddRole(); }}
+                    onKeyDown={e => { if (e.key === 'Enter') { confirmAddRole(); } else if (e.key === 'Escape') { cancelAddRole(); } }}
                     placeholder={t('setup.roles.newPlaceholder')}
                     style={{ fontSize: 14, fontWeight: 600, color: '#1E2D3D', background: 'none', border: 'none', outline: 'none', width: '100%', fontFamily: 'var(--font-body)' }}
                   />
@@ -337,8 +341,15 @@ export function Roles({ isLoading, error, onDirtyChange }: Props = {}) {
             {/* Shift list */}
             <div style={{ ...glass, borderRadius: 14, overflow: 'hidden' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '14px 1fr 110px 110px 80px 32px', gap: 12, padding: '10px 20px', background: 'rgba(30,45,61,0.04)', borderBottom: '1px solid rgba(200,212,220,0.4)' }}>
-                {['', t('setup.roles.shifts.col.name'), t('setup.roles.shifts.col.start'), t('setup.roles.shifts.col.end'), t('setup.roles.shifts.col.duration'), ''].map((h, i) => (
-                  <div key={i} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{h}</div>
+                {[
+                  { key: 'swatch',   label: '' },
+                  { key: 'name',     label: t('setup.roles.shifts.col.name') },
+                  { key: 'start',    label: t('setup.roles.shifts.col.start') },
+                  { key: 'end',      label: t('setup.roles.shifts.col.end') },
+                  { key: 'duration', label: t('setup.roles.shifts.col.duration') },
+                  { key: 'remove',   label: '' },
+                ].map(({ key, label }) => (
+                  <div key={key} style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>{label}</div>
                 ))}
               </div>
               {shifts.map((sh, i) => (
@@ -537,7 +548,7 @@ function SetupRolesSkeleton() {
     <div>
       <Skeleton h={32} w={160} style={{ marginBottom: 24 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-        {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+        {(['a', 'b', 'c', 'd', 'e', 'f'] as const).map((k) => <SkeletonCard key={k} lines={3} />)}
       </div>
     </div>
   );
