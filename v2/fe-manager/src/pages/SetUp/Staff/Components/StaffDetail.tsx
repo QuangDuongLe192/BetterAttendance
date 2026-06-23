@@ -29,7 +29,7 @@ const sectionLabel: React.CSSProperties = {
   marginBottom: 8,
 };
 
-export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () => void }) {
+export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onClose: () => void }>) {
   const { t } = useTranslation('setup');
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState({
@@ -298,7 +298,7 @@ export function StaffDetail({ staff, onClose }: { staff: StaffType; onClose: () 
   );
 }
 
-function Section({ children }: { children: React.ReactNode }) {
+function Section({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(200,212,220,0.2)' }}>
       {children}
