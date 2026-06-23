@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Avatar, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { Icons } from '../../../components/Icons';
+const Plus = Icons.plus;
+const Send = Icons.send;
+const Download = Icons.download;
 import { ChevronRight, CalendarDays } from 'lucide-react';
 import { TODAY_ROSTER } from '../../../services/manager';
 import { roleById, locById, STAFF, LOCATIONS } from '../../../services/setup';
@@ -211,17 +214,17 @@ export function MgrSchedule({ activeStore, isLoading, error }: Props) {
 
           <button onClick={() => openAdd('', weekDays[0].full)}
             style={{ ...glass, display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 20, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#3A4F63', border: '1px solid rgba(200,212,220,0.4)' }}>
-            <Icons.plus size={14} stroke="#6B7E8E" /> {t('manager.schedule.addShift')}
+            <Plus size={14} stroke="#6B7E8E" /> {t('manager.schedule.addShift')}
           </button>
 
           <button onClick={handlePublish} disabled={pendingCount === 0}
             style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 20, border: 'none', cursor: pendingCount > 0 ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 700, color: pendingCount > 0 ? '#fff' : '#9BAAB5', background: pendingCount > 0 ? '#00B4A0' : 'rgba(200,212,220,0.3)', boxShadow: pendingCount > 0 ? '0 2px 8px rgba(0,180,160,0.25)' : 'none', transition: 'all 150ms' }}>
-            <Icons.send size={14} />
+            <Send size={14} />
             {pendingCount > 0 ? t('manager.schedule.publishCount', { count: pendingCount }) : t('manager.schedule.publish')}
           </button>
 
           <button style={{ ...glass, display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 20, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#3A4F63', border: '1px solid rgba(200,212,220,0.4)' }}>
-            <Icons.download size={14} stroke="#6B7E8E" /> {t('manager.schedule.export')}
+            <Download size={14} stroke="#6B7E8E" /> {t('manager.schedule.export')}
           </button>
         </div>
           {legendStores.length > 0 && (
