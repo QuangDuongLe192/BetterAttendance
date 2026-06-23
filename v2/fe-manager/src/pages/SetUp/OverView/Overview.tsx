@@ -139,7 +139,7 @@ export function Overview({ onNav, isLoading, error }: Readonly<Props>) {
         </div>
         <Card pad={false} style={glass}>
           {(AUDIT ?? []).slice(0, 4).map((a, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '160px 220px 1fr 1fr', padding: '18px 24px', gap: 24, alignItems: 'center', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.4)' : 'none' }}>
+            <div key={String(a.t)} style={{ display: 'grid', gridTemplateColumns: '160px 220px 1fr 1fr', padding: '18px 24px', gap: 24, alignItems: 'center', borderTop: i > 0 ? '1px solid rgba(200,212,220,0.4)' : 'none' }}>
               <div style={{ fontSize: 12, color: '#6B7E8E' }}>{fmtMs(a.t)}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Avatar name={a.actor.name} size={26} />
@@ -322,7 +322,8 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: Read
   const [hover, setHover] = useState(false);
   const IconComp = Icons[icon as keyof typeof Icons];
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -331,6 +332,7 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: Read
         display: 'flex', flexDirection: 'column', gap: 16,
         padding: 24, borderRadius: 8, cursor: 'pointer',
         animationDelay: `${delay}ms`,
+        textAlign: 'left', width: '100%', font: 'inherit',
         ...glass,
         transform: hover ? 'translateY(-4px) scale(1.01)' : 'translateY(0) scale(1)',
         boxShadow: hover
@@ -366,7 +368,7 @@ function ModuleCard({ icon, title, desc, count, warn, onClick, delay = 0 }: Read
         <Tag tone="neutral">{count}</Tag>
         {warn && <Tag tone="warning" icon={<Dot size={8} />}>{warn}</Tag>}
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -375,7 +377,7 @@ function SetupOverviewSkeleton() {
     <div>
       <Skeleton h={32} w={240} style={{ marginBottom: 32 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 32 }}>
-        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+        {(['a', 'b', 'c', 'd'] as const).map((k) => <SkeletonCard key={k} lines={2} />)}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24 }}>
         <SkeletonCard lines={5} />
