@@ -52,7 +52,7 @@ function getSteps(mode: DraftLocation['mode'], t: (k: string) => string): StepDe
     { key: 'mode',   label: t('setup.wizard.step.mode'),   icon: 'shield' },
     ...(mode === 'wifi' || mode === 'wifi+geo' ? [{ key: 'wifi' as StepKey, label: t('setup.wizard.step.wifi'), icon: 'wifi' as const }] : []),
     ...(mode === 'geo' || mode === 'wifi+geo'  ? [{ key: 'geo' as StepKey,  label: t('setup.wizard.step.geo'),  icon: 'target' as const }] : []),
-    ...(mode !== 'none' ? [{ key: 'auto' as StepKey, label: t('setup.wizard.step.auto'), icon: 'clock' as const }] : []),
+    ...(mode === 'none' ? [] : [{ key: 'auto' as StepKey, label: t('setup.wizard.step.auto'), icon: 'clock' as const }]),
     { key: 'review', label: t('setup.wizard.step.review'), icon: 'check' },
   ];
   return defs.map((s, i) => ({ ...s, id: i + 1 }));
