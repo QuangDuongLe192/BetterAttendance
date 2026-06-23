@@ -249,7 +249,7 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
             {DAYS.map((d, i) => {
               const isToday = weekDays[i].full === TODAY_FULL;
               return (
-                <div key={i} style={{ padding: '10px 8px', borderLeft: '1px solid rgba(200,212,220,0.25)', textAlign: 'center', background: isToday ? 'rgba(0,180,160,0.04)' : 'transparent' }}>
+                <div key={weekDays[i].full} style={{ padding: '10px 8px', borderLeft: '1px solid rgba(200,212,220,0.25)', textAlign: 'center', background: isToday ? 'rgba(0,180,160,0.04)' : 'transparent' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', justifyContent: 'center' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? '#00B4A0' : '#6B7E8E', textTransform: 'uppercase' }}>{d.split('\n')[0]}</div>
                     <div style={{ fontSize: 11, color: isToday ? '#00B4A0' : '#9BAAB5' }}>{d.split('\n')[1]}</div>
@@ -275,6 +275,7 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
             const staffShifts = shifts.filter(s => s.larkUserId === staff.larkUserId);
             return (
               <div key={staff.larkUserId}
+                role="row"
                 style={{ display: 'grid', gridTemplateColumns: '180px repeat(7, 1fr)', borderTop: si > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none', minHeight: 52, minWidth: 900, transition: 'background 100ms' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,180,160,0.02)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
@@ -288,24 +289,10 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
                   const dayShifts = staffShifts.filter(s => dateStrFromVN(s.scheduleInTime) === weekDays[di].full);
                   const isToday = weekDays[di].full === TODAY_FULL;
                   return (
-                    <div key={di} style={{ borderLeft: '1px solid rgba(200,212,220,0.2)', padding: '6px 5px', background: isToday ? 'rgba(0,180,160,0.015)' : 'transparent', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      {dayShifts.map(sh => {
-                        const role = roleById(sh.roleId);
-                        const shColor = locColor(sh.locationId);
-                        const dIn = new Date(sh.scheduleInTime + VN_OFFSET_MS);
-                        const dOut = new Date(sh.scheduleOutTime + VN_OFFSET_MS);
-                        const startStr = `${dIn.getUTCHours().toString().padStart(2, '0')}:${dIn.getUTCMinutes().toString().padStart(2, '0')}`;
-                        const endStr = `${dOut.getUTCHours().toString().padStart(2, '0')}:${dOut.getUTCMinutes().toString().padStart(2, '0')}`;
-                        return (
-                          <button key={sh.jobId} onClick={(e) => openDetail(sh, e)} title={t('manager.schedule.detail.viewDetail')}
-                            style={{ background: `${shColor}14`, borderLeft: `2.5px solid ${shColor}`, borderTop: 'none', borderRight: 'none', borderBottom: 'none', borderRadius: 4, padding: '4px 6px', cursor: 'pointer', textAlign: 'left', width: '100%', transition: 'opacity 100ms' }}
-                            onMouseEnter={e => { e.currentTarget.style.opacity = '0.75'; }}
-                            onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: shColor }}>{role?.name ?? sh.roleId}</div>
-                            <div style={{ fontSize: 9, color: shColor, opacity: 0.8 }}>{startStr}–{endStr}</div>
-                          </button>
-                        );
-                      })}
+                    <div key={weekDays[di].full} style={{ borderLeft: '1px solid rgba(200,212,220,0.2)', padding: '6px 5px', background: isToday ? 'rgba(0,180,160,0.015)' : 'transparent', display: 'flex', flexDirection: 'column', gap: 3 }}>
+                      {dayShifts.map(sh => (
+                        <ShiftChip key={sh.jobId} sh={sh} onDetail={openDetail} detailLabel={t('manager.schedule.detail.viewDetail')} />
+                      ))}
                       <button onClick={() => openAdd(staff.larkUserId, weekDays[di].full)}
                         style={{ width: '100%', height: dayShifts.length === 0 ? 36 : 20, background: 'transparent', border: '1px dashed rgba(200,212,220,0.45)', borderRadius: 4, cursor: 'pointer', fontSize: dayShifts.length === 0 ? 16 : 12, color: '#C8D4DC', lineHeight: 1, flexShrink: 0, transition: 'all 80ms' }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,180,160,0.35)'; e.currentTarget.style.color = '#00B4A0'; e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; }}
@@ -397,7 +384,7 @@ function WeekPicker({ weekOffset, onChange, onClose }: Readonly<{
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} role="presentation" style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
       <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, zIndex: 50, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(200,212,220,0.35)', borderRadius: 14, boxShadow: '0 12px 32px rgba(30,45,61,0.14)', padding: 16, minWidth: 268 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <button onClick={prevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 6px', borderRadius: 6, color: '#6B7E8E', display: 'flex' }}>
@@ -419,24 +406,29 @@ function WeekPicker({ weekOffset, onChange, onClose }: Readonly<{
           const rowOffset = weekOffsetOf(row[0]);
           const isSelected = rowOffset === weekOffset;
           const isHover = rowOffset === hoverOff;
+          const hoverBg = isHover ? 'rgba(0,180,160,0.07)' : 'transparent';
+          const rowBg = isSelected ? '#1E2D3D' : hoverBg;
           return (
-            <div key={ri}
+            <button key={rowOffset} type="button"
               onClick={() => onChange(rowOffset)}
               onMouseEnter={() => setHoverOff(rowOffset)}
               onMouseLeave={() => setHoverOff(null)}
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderRadius: 7, background: isSelected ? '#1E2D3D' : isHover ? 'rgba(0,180,160,0.07)' : 'transparent', cursor: 'pointer', marginBottom: 2 }}>
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderRadius: 7, background: rowBg, cursor: 'pointer', marginBottom: 2, width: '100%', border: 'none', padding: 0 }}>
               {row.map((date, di) => {
                 const inMonth = date.getMonth() === calMonth;
                 const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
                 const isToday = dateKey === todayStr;
+                const defaultColor = inMonth ? '#3A4F63' : '#C8D4DC';
+                const activeColor = isToday ? '#00B4A0' : defaultColor;
+                const cellColor = isSelected ? '#fff' : activeColor;
                 return (
-                  <div key={di} style={{ textAlign: 'center', padding: '6px 2px', fontSize: 12, fontWeight: isToday ? 700 : 400, color: isSelected ? '#fff' : isToday ? '#00B4A0' : inMonth ? '#3A4F63' : '#C8D4DC', position: 'relative' }}>
+                  <div key={dateKey} style={{ textAlign: 'center', padding: '6px 2px', fontSize: 12, fontWeight: isToday ? 700 : 400, color: cellColor, position: 'relative' }}>
                     {date.getDate()}
                     {isToday && !isSelected && <span style={{ position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)', width: 3, height: 3, borderRadius: 999, background: '#00B4A0', display: 'block' }} />}
                   </div>
                 );
               })}
-            </div>
+            </button>
           );
         })}
 
@@ -484,7 +476,7 @@ function ShiftDetailPopover({ shift, pos, onClose, onEdit }: Readonly<{
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 500 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} role="presentation" style={{ position: 'fixed', inset: 0, zIndex: 500 }} />
       <div style={{ position: 'fixed', left: pos.x, top: pos.y, width: 268, zIndex: 501, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(200,212,220,0.35)', borderRadius: 12, boxShadow: '0 8px 32px rgba(30,45,61,0.14)', overflow: 'hidden', animation: 'popIn 150ms ease' }}>
         <style>{`@keyframes popIn { from { opacity:0; transform:scale(0.96) translateY(-4px); } to { opacity:1; transform:none; } }`}</style>
 
@@ -505,12 +497,20 @@ function ShiftDetailPopover({ shift, pos, onClose, onEdit }: Readonly<{
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginTop: 2 }}>
-            {[
-              { label: t('manager.schedule.detail.scheduled.in'), val: fmtTime(shift.scheduleInTime), color: '#1E2D3D' },
-              { label: t('manager.schedule.detail.scheduled.out'), val: fmtTime(shift.scheduleOutTime), color: '#1E2D3D' },
-              { label: t('manager.schedule.detail.actual.in'), val: shift.actualInTime ? fmtTime(shift.actualInTime) : '—', color: shift.actualInTime ? '#00B4A0' : '#C8D4DC' },
-              { label: t('manager.schedule.detail.actual.out'), val: shift.actualOutTime ? fmtTime(shift.actualOutTime) : (shift.status === 'in' ? t('manager.schedule.detail.working') : '—'), color: shift.actualOutTime ? '#3A4F63' : shift.status === 'in' ? '#00B4A0' : '#C8D4DC' },
-            ].map(({ label, val, color }) => (
+            {(() => {
+              const actualInVal = shift.actualInTime ? fmtTime(shift.actualInTime) : '—';
+              const actualInColor = shift.actualInTime ? '#00B4A0' : '#C8D4DC';
+              const workingVal = shift.status === 'in' ? t('manager.schedule.detail.working') : '—';
+              const actualOutVal = shift.actualOutTime ? fmtTime(shift.actualOutTime) : workingVal;
+              const outDefaultColor = shift.status === 'in' ? '#00B4A0' : '#C8D4DC';
+              const actualOutColor = shift.actualOutTime ? '#3A4F63' : outDefaultColor;
+              return [
+                { label: t('manager.schedule.detail.scheduled.in'), val: fmtTime(shift.scheduleInTime), color: '#1E2D3D' },
+                { label: t('manager.schedule.detail.scheduled.out'), val: fmtTime(shift.scheduleOutTime), color: '#1E2D3D' },
+                { label: t('manager.schedule.detail.actual.in'), val: actualInVal, color: actualInColor },
+                { label: t('manager.schedule.detail.actual.out'), val: actualOutVal, color: actualOutColor },
+              ];
+            })().map(({ label, val, color }) => (
               <div key={label} style={{ background: 'rgba(247,249,250,0.8)', borderRadius: 8, padding: '8px 10px' }}>
                 <div style={{ fontSize: 10, color: '#9BAAB5', fontWeight: 600, marginBottom: 3, textTransform: 'uppercase', letterSpacing: 0.4 }}>{label}</div>
                 <div style={{ fontSize: 14, fontWeight: 700, color }}>{val}</div>
@@ -536,13 +536,31 @@ function ShiftDetailPopover({ shift, pos, onClose, onEdit }: Readonly<{
   );
 }
 
+function ShiftChip({ sh, onDetail, detailLabel }: Readonly<{ sh: ShiftEntity; onDetail: (sh: ShiftEntity, e: React.MouseEvent) => void; detailLabel: string }>) {
+  const role = roleById(sh.roleId);
+  const shColor = locColor(sh.locationId);
+  const dIn = new Date(sh.scheduleInTime + VN_OFFSET_MS);
+  const dOut = new Date(sh.scheduleOutTime + VN_OFFSET_MS);
+  const startStr = `${dIn.getUTCHours().toString().padStart(2, '0')}:${dIn.getUTCMinutes().toString().padStart(2, '0')}`;
+  const endStr = `${dOut.getUTCHours().toString().padStart(2, '0')}:${dOut.getUTCMinutes().toString().padStart(2, '0')}`;
+  return (
+    <button onClick={(e) => onDetail(sh, e)} title={detailLabel}
+      style={{ background: `${shColor}14`, borderLeft: `2.5px solid ${shColor}`, borderTop: 'none', borderRight: 'none', borderBottom: 'none', borderRadius: 4, padding: '4px 6px', cursor: 'pointer', textAlign: 'left', width: '100%', transition: 'opacity 100ms' }}
+      onMouseEnter={e => { e.currentTarget.style.opacity = '0.75'; }}
+      onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: shColor }}>{role?.name ?? sh.roleId}</div>
+      <div style={{ fontSize: 9, color: shColor, opacity: 0.8 }}>{startStr}–{endStr}</div>
+    </button>
+  );
+}
+
 function MgrScheduleSkeleton() {
   return (
     <div>
       <Skeleton h={32} w={280} style={{ marginBottom: 24 }} />
       <SkeletonCard lines={2} style={{ marginBottom: 16 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+        {(['a', 'b', 'c', 'd', 'e'] as const).map(k => <SkeletonCard key={k} lines={3} />)}
       </div>
     </div>
   );
