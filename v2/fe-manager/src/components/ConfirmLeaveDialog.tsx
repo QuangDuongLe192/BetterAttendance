@@ -20,7 +20,6 @@ export function ConfirmLeaveDialog({ open, title, body, confirmLabel, cancelLabe
       open
       aria-modal
       onClose={onCancel}
-      onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
       style={{ position: 'fixed', inset: 0, zIndex: 9000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(30,45,61,0.45)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', border: 'none', padding: 0, margin: 0, maxWidth: 'none', width: '100%', height: '100%' }}
     >
       <div
