@@ -141,6 +141,8 @@ export function NewLocationWizard({ onDone }: Readonly<{ onDone: () => void }>) 
 
   const create = () => {
     const newId = `L${LOCATIONS.length + 1}`;
+    const singleValidation = draft.mode === 'none' ? [] : [draft.mode];
+    const activeValidation = draft.mode === 'wifi+geo' ? ['wifi', 'geo'] : singleValidation;
     const newLoc: Location = {
       locationId: newId,
       name: draft.name,
@@ -151,7 +153,7 @@ export function NewLocationWizard({ onDone }: Readonly<{ onDone: () => void }>) 
         radiusMeters: draft.radius,
         allowed_bssid: draft.networks.map(n => n.bssid).filter(Boolean),
       },
-      activeValidation: draft.mode === 'wifi+geo' ? ['wifi', 'geo'] : draft.mode === 'none' ? [] : [draft.mode],
+      activeValidation,
       style: { color: draft.color },
       status: 'Active',
       delegation: { enabled: false, canAssignRoles: false, canEditAttendance: false, canApproveOT: false },
@@ -227,6 +229,15 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: Readon
             const done = current > s.id;
             const active = current === s.id;
             const IconComp = Icons[s.icon];
+            const inactiveBg = active ? '#1E2D3D' : 'rgba(200,212,220,0.25)';
+            const stepBg = done ? '#00B4A0' : inactiveBg;
+            const doneShadow = done ? '0 2px 8px rgba(0,180,160,0.25)' : 'none';
+            const stepShadow = active ? '0 0 0 4px rgba(30,45,61,0.12)' : doneShadow;
+            const iconContent = active
+              ? <IconComp size={13} stroke="#fff" />
+              : <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11 }}>{s.id}</span>;
+            const doneLabelColor = done ? '#3A4F63' : '#C8D4DC';
+            const stepLabelColor = active ? '#1E2D3D' : doneLabelColor;
             return (
               <div key={s.key} style={{ display: 'flex', gap: 12 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 30, flexShrink: 0 }}>
@@ -234,19 +245,14 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: Readon
                     onClick={() => done ? onGo(s.id) : undefined}
                     style={{
                       width: 30, height: 30, borderRadius: 999, border: 'none',
-                      background: done ? '#00B4A0' : active ? '#1E2D3D' : 'rgba(200,212,220,0.25)',
+                      background: stepBg,
                       color: (done || active) ? '#fff' : '#9BAAB5',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       cursor: done ? 'pointer' : 'default', flexShrink: 0,
-                      boxShadow: active ? '0 0 0 4px rgba(30,45,61,0.12)' : done ? '0 2px 8px rgba(0,180,160,0.25)' : 'none',
+                      boxShadow: stepShadow,
                       transition: 'all 220ms',
                     }}>
-                    {done
-                      ? <Check size={13} stroke="#fff" sw={2.5} />
-                      : active
-                        ? <IconComp size={13} stroke="#fff" />
-                        : <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11 }}>{s.id}</span>
-                    }
+                    {done ? <Check size={13} stroke="#fff" sw={2.5} /> : iconContent}
                   </button>
                   {i < steps.length - 1 && (
                     <div style={{
@@ -258,7 +264,7 @@ function WizardStepper({ steps, current, onGo, draft, newLocationLabel }: Readon
                 <div style={{ paddingTop: 6, paddingBottom: i < steps.length - 1 ? 24 : 0, minWidth: 0 }}>
                   <div style={{
                     fontFamily: 'var(--font-display)', fontWeight: active ? 700 : 600, fontSize: 12.5,
-                    color: active ? '#1E2D3D' : done ? '#3A4F63' : '#C8D4DC', transition: 'color 220ms', lineHeight: 1.3
+                    color: stepLabelColor, transition: 'color 220ms', lineHeight: 1.3
                   }}>
                     {s.label}
                   </div>
@@ -304,13 +310,17 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
         )}
       </div>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-        {Array.from({ length: total }).map((_, i) => (
-          <div key={i} style={{
-            height: 6, width: step === i + 1 ? 22 : 6, borderRadius: 999,
-            background: i + 1 < step ? '#00B4A0' : step === i + 1 ? '#fff' : 'rgba(255,255,255,0.2)',
-            transition: 'all 280ms cubic-bezier(0.2,0.7,0.2,1)'
-          }} />
-        ))}
+        {Array.from({ length: total }).map((_, i) => {
+          const activeDotBg = step === i + 1 ? '#fff' : 'rgba(255,255,255,0.2)';
+          const dotBg = i + 1 < step ? '#00B4A0' : activeDotBg;
+          return (
+            <div key={i} style={{
+              height: 6, width: step === i + 1 ? 22 : 6, borderRadius: 999,
+              background: dotBg,
+              transition: 'all 280ms cubic-bezier(0.2,0.7,0.2,1)'
+            }} />
+          );
+        })}
       </div>
       <div style={{ width: 130, display: 'flex', justifyContent: 'flex-end' }}>
         {!isLast && (
@@ -581,11 +591,13 @@ function StepAuto({ draft, set, t }: Readonly<{ draft: DraftLocation; set: <K ex
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 620 }}>
         {rows.map((r, idx) => {
           const on = r.field ? draft[r.field] : false;
+          const onActiveBg = !r.disabled && on ? 'rgba(0,180,160,0.06)' : 'rgba(255,255,255,0.72)';
+          const rowBg = r.disabled ? 'rgba(247,249,250,0.5)' : onActiveBg;
           return (
             <div key={idx} style={{
               display: 'flex', alignItems: 'center', gap: 18, padding: '18px 20px', borderRadius: 12,
               border: `1.5px solid ${!r.disabled && on ? 'rgba(0,180,160,0.3)' : 'rgba(200,212,220,0.35)'}`,
-              background: r.disabled ? 'rgba(247,249,250,0.5)' : (!r.disabled && on ? 'rgba(0,180,160,0.06)' : 'rgba(255,255,255,0.72)'),
+              background: rowBg,
               backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
               opacity: r.disabled ? 0.55 : 1, transition: 'all 150ms'
             }}>
