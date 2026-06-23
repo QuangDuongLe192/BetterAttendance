@@ -3,6 +3,8 @@ import { Icons } from '../../../components/Icons';
 import { Card, Tag, Avatar, Eyebrow, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { type PayrollEntry, type FinSummary, type FinByLoc, type FinLoc, fmtVND, fmtM } from '../../../services/finance';
 
+const Clock = Icons.clock;
+
 interface Props {
   payroll: PayrollEntry[];
   summary: FinSummary;
@@ -12,7 +14,7 @@ interface Props {
   error?: string | null;
 }
 
-export function FinAnalytics({ payroll, summary, byLoc, finLocs, isLoading, error }: Props) {
+export function FinAnalytics({ payroll, summary, byLoc, finLocs, isLoading, error }: Readonly<Props>) {
   const { t } = useTranslation('finance');
 
   if (isLoading) return <FinAnalyticsSkeleton />;
@@ -102,7 +104,7 @@ export function FinAnalytics({ payroll, summary, byLoc, finLocs, isLoading, erro
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                 {s.items.filter(it => (it.otH ?? 0) > 0).map((it, ii) => (
-                  <span key={ii} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 999, background: it.color + '15', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>{it.name}</span>
+                  <span key={it.name} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 999, background: it.color + '15', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>{it.name}</span>
                 ))}
               </div>
               <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 16, color: '#B45309' }}>{s.otHours}h</div>
@@ -121,7 +123,7 @@ export function FinAnalytics({ payroll, summary, byLoc, finLocs, isLoading, erro
           </div>
         )}
         <div style={{ padding: '14px 24px', background: '#FFF9F0', borderTop: '1px solid #F0E0C0', fontSize: 12, color: '#B45309', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Icons.clock size={14} stroke="#B45309"/>
+          <Clock size={14} stroke="#B45309"/>
           {t('finance.analytics.ot.warning')}
         </div>
       </Card>

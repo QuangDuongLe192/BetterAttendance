@@ -192,10 +192,15 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
   const [hover, setHover] = useState(false);
   const live = WS_LIVE_KEYS[ws.id];
   const Icon = Icons[ws.icon];
+  const Grid = Icons.grid;
+  const ArrowR = Icons.arrowR;
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpen(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
@@ -254,7 +259,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
         {/* Scope content */}
         {ws.scope === 'global' ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, background: '#EAF3FB', border: '1px solid rgba(43,126,196,0.15)' }}>
-            <Icons.grid size={13} stroke="#2B7EC4" />
+            <Grid size={13} stroke="#2B7EC4" />
             <span style={{ fontSize: 12.5, fontWeight: 600, color: '#2B7EC4', fontFamily: 'var(--font-display)' }}>{t('landing.workspace.scope.admin_badge')}</span>
           </div>
         ) : (
@@ -280,7 +285,7 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
         {/* Permissions row */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 14 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px', borderRadius: 8, background: hover ? '#008C7C' : '#1E2D3D', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13, transition: 'background 150ms' }}>
-            {t('landing.workspace.card.open')} <Icons.arrowR size={14} stroke="#fff" />
+            {t('landing.workspace.card.open')} <ArrowR size={14} stroke="#fff" />
           </span>
         </div>
       </div>
@@ -289,8 +294,9 @@ function WorkspaceCard({ ws, onOpen }: { ws: VisibleWorkspace; onOpen: () => voi
 }
 
 // ─── Locked card ──────────────────────────────────────────────────────────────
-function LockedCard({ ws }: { ws: WorkspaceDef }) {
+function LockedCard({ ws }: Readonly<{ ws: WorkspaceDef }>) {
   const { t } = useTranslation('common');
+  const Lock = Icons.lock;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', color: '#6B7E8E', borderRadius: 14, padding: '24px 26px', minHeight: 440, justifyContent: 'space-between', background: 'rgba(255,255,255,0.35)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px dashed rgba(200,212,220,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)' }}>
       <div>
@@ -299,7 +305,7 @@ function LockedCard({ ws }: { ws: WorkspaceDef }) {
           <span style={{ width: 1, height: 14, background: '#C8D4DC' }} />
           <RoleBadge role={ws.role} />
         </div>
-        <Icons.lock size={22} stroke="#9EAFBD" />
+        <Lock size={22} stroke="#9EAFBD" />
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: '#3A4F63', margin: '14px 0 4px', letterSpacing: '-0.01em' }}>{t(ws.full)}</h2>
         <p style={{ fontSize: 13, color: '#6B7E8E', margin: '8px 0 0', lineHeight: 1.55 }}>
           {t('landing.workspace.locked.no_access', { role: ws.role })}
@@ -329,7 +335,8 @@ export function Landing() {
   });
   const showCards = allCards.filter(c => c.kind === 'open');
   const n = showCards.length;
-  const gridCols = n === 1 ? '460px' : n === 2 ? '1fr 1fr' : '1fr 1fr 1fr';
+  const innerCols = n === 2 ? '1fr 1fr' : '1fr 1fr 1fr';
+  const gridCols = n === 1 ? '460px' : innerCols;
 
   const openWorkspace = (id: string) => {
     const routes: Record<string, string> = { setup: '/setup', manager: '/manager', finance: '/finance' };
@@ -377,9 +384,9 @@ export function Landing() {
             <div style={{ padding: '0 4px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#4A6070', fontSize: 12 }}>
               <span>{t('landing.footer.copyright')}</span>
               <span style={{ display: 'flex', gap: 18 }}>
-                <a href="#" style={{ color: '#4A6070', textDecoration: 'none' }}>{t('landing.footer.privacy')}</a>
-                <a href="#" style={{ color: '#4A6070', textDecoration: 'none' }}>{t('landing.footer.terms')}</a>
-                <a href="#" onClick={e => { e.preventDefault(); logout(); nav('/login', { replace: true, state: { fromLogout: true } }); }} style={{ color: '#4A6070', textDecoration: 'none' }}>{t('landing.footer.logout')}</a>
+                <button type="button" style={{ color: '#4A6070', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('landing.footer.privacy')}</button>
+                <button type="button" style={{ color: '#4A6070', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('landing.footer.terms')}</button>
+                <button type="button" onClick={() => { logout(); nav('/login', { replace: true, state: { fromLogout: true } }); }} style={{ color: '#4A6070', textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>{t('landing.footer.logout')}</button>
               </span>
             </div>
           </div>
