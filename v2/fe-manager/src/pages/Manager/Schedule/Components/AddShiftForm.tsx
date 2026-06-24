@@ -75,6 +75,33 @@ function field(label: string, children: React.ReactNode) {
   );
 }
 
+function submitShift(
+  form: FormState,
+  editShiftId: string | undefined,
+  t: (k: string) => string,
+  onSave: (data: Omit<ShiftEntity, 'jobId'>, editShiftId?: string) => void,
+  onClose: () => void,
+): void {
+  const scheduleInTime = makeVNTime(form.dateStr, form.startTime);
+  let scheduleOutTime = makeVNTime(form.dateStr, form.endTime);
+  if (scheduleOutTime <= scheduleInTime) scheduleOutTime += 86400000;
+  onSave({
+    larkUserId: form.staffId,
+    locationId: form.locationId,
+    locationName: locById(form.locationId).name,
+    roleId: form.roleId,
+    scheduleInTime,
+    scheduleOutTime,
+    scheduleTotal: scheduleOutTime - scheduleInTime,
+    actualInTime: null,
+    actualOutTime: null,
+    shiftLabel: t('manager.schedule.form.shiftLabel'),
+    tag: roleById(form.roleId)?.name ?? form.roleId,
+    status: 'upcoming',
+  }, editShiftId);
+  onClose();
+}
+
 export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose, onSave, onDelete, getShift }: Props) {
   const { t } = useTranslation('manager');
   const isEdit = ctx.editShiftId !== undefined;
@@ -108,27 +135,7 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
 
   const canSave = !!(form.staffId && form.roleId && totalMins > 0 && hasChanges);
 
-  const handleSubmit = () => {
-    const scheduleInTime = makeVNTime(form.dateStr, form.startTime);
-    let scheduleOutTime = makeVNTime(form.dateStr, form.endTime);
-    if (scheduleOutTime <= scheduleInTime) scheduleOutTime += 86400000; // +24h for overnight
-
-    onSave({
-      larkUserId: form.staffId,
-      locationId: form.locationId,
-      locationName: locById(form.locationId).name,
-      roleId: form.roleId,
-      scheduleInTime,
-      scheduleOutTime,
-      scheduleTotal: scheduleOutTime - scheduleInTime,
-      actualInTime: null,
-      actualOutTime: null,
-      shiftLabel: t('manager.schedule.form.shiftLabel'),
-      tag: roleById(form.roleId)?.name ?? form.roleId,
-      status: 'upcoming',
-    }, ctx.editShiftId);
-    onClose();
-  };
+  const handleSubmit = () => submitShift(form, ctx.editShiftId, t, onSave, onClose);
 
   const inputCls: React.CSSProperties = {
     width: '100%', padding: '9px 11px', fontSize: 13,

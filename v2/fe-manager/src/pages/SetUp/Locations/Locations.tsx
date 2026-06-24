@@ -137,6 +137,24 @@ interface LocationInfoTabProps {
   readonly setDraft: React.Dispatch<React.SetStateAction<DraftState>>;
 }
 
+interface ValidationModeGridProps {
+  readonly mode: string[];
+  readonly isEditing: boolean;
+  readonly setDraft: React.Dispatch<React.SetStateAction<DraftState>>;
+}
+
+function ValidationModeGrid({ mode, isEditing, setDraft }: ValidationModeGridProps) {
+  const { t } = useTranslation('setup');
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+      <ModeOption icon="wifi"   title={t('setup.locations.validation.wifiOnly.title')}  sub={t('setup.locations.validation.wifiOnly.sub')}  selected={mode.includes('wifi') && !mode.includes('geo')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi'] })) : undefined} />
+      <ModeOption icon="target" title={t('setup.locations.validation.gpsOnly.title')}   sub={t('setup.locations.validation.gpsOnly.sub')}   selected={mode.includes('geo') && !mode.includes('wifi')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['geo'] })) : undefined} />
+      <ModeOption icon="shield" title={t('setup.locations.validation.both.title')}      sub={t('setup.locations.validation.both.sub')}      selected={mode.includes('wifi') && mode.includes('geo')}   onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi', 'geo'] })) : undefined} />
+      <ModeOption icon="x"     title={t('setup.locations.validation.none.title')}      sub={t('setup.locations.validation.none.sub')}      selected={!mode.includes('wifi') && !mode.includes('geo')} onClick={isEditing ? () => setDraft(d => ({ ...d, mode: [] })) : undefined} />
+    </div>
+  );
+}
+
 function LocationInfoTab({ draft, locId, isEditing, setDraft }: LocationInfoTabProps) {
   const { t } = useTranslation('setup');
   const hasModes = draft.mode.includes('wifi') || draft.mode.includes('geo');
@@ -146,12 +164,7 @@ function LocationInfoTab({ draft, locId, isEditing, setDraft }: LocationInfoTabP
       <div className="loc-section" style={{ animationDelay: '120ms', ...glass, borderRadius: 14, padding: '22px 24px' }}>
         <Eyebrow style={{ marginBottom: 6 }}>{t('setup.locations.validation.eyebrow')}</Eyebrow>
         <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D', margin: '0 0 18px' }}>{t('setup.locations.validation.title')}</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-          <ModeOption icon="wifi"   title={t('setup.locations.validation.wifiOnly.title')}  sub={t('setup.locations.validation.wifiOnly.sub')}  selected={draft.mode.includes('wifi') && !draft.mode.includes('geo')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi'] })) : undefined} />
-          <ModeOption icon="target" title={t('setup.locations.validation.gpsOnly.title')}   sub={t('setup.locations.validation.gpsOnly.sub')}   selected={draft.mode.includes('geo') && !draft.mode.includes('wifi')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['geo'] })) : undefined} />
-          <ModeOption icon="shield" title={t('setup.locations.validation.both.title')}      sub={t('setup.locations.validation.both.sub')}      selected={draft.mode.includes('wifi') && draft.mode.includes('geo')}   onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi', 'geo'] })) : undefined} />
-          <ModeOption icon="x"     title={t('setup.locations.validation.none.title')}      sub={t('setup.locations.validation.none.sub')}      selected={!draft.mode.includes('wifi') && !draft.mode.includes('geo')} onClick={isEditing ? () => setDraft(d => ({ ...d, mode: [] })) : undefined} />
-        </div>
+        <ValidationModeGrid mode={draft.mode} isEditing={isEditing} setDraft={setDraft} />
       </div>
       {hasModes && (
         <div className="loc-section" style={{ animationDelay: '160ms', display: 'grid', gridTemplateColumns: both ? '1fr 1fr' : '1fr', gap: 18 }}>
