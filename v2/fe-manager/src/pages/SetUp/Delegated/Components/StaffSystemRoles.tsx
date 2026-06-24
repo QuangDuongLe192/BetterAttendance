@@ -5,6 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Switch, Avatar } from '../../../../components/UI';
 import { Icons } from '../../../../components/Icons';
+const Search = Icons.search;
+const Users = Icons.users;
+const Lock = Icons.lock;
+const ChevR = Icons.chevR;
+const Briefcase = Icons.briefcase;
+const Shield = Icons.shield;
+const Check = Icons.check;
 import { STAFF } from '../../../../services/setup';
 import type { Staff as StaffType, StaffRoleScope } from '../../../../services/setup';
 
@@ -18,10 +25,10 @@ const glass: React.CSSProperties = {
   boxShadow: '0 4px 16px rgba(30,45,61,0.07), inset 0 1px 0 rgba(255,255,255,0.7)',
 };
 
-export function StaffSystemRoles({ scopes, setScopes }: {
+export function StaffSystemRoles({ scopes, setScopes }: Readonly<{
   scopes: StaffRoleScope[];
   setScopes: React.Dispatch<React.SetStateAction<StaffRoleScope[]>>;
-}) {
+}>) {
   const { t } = useTranslation('setup');
   const staffList = STAFF ?? [];
   const [drawerStaffId, setDrawerStaffId] = useState<string | null>(null);
@@ -69,8 +76,6 @@ export function StaffSystemRoles({ scopes, setScopes }: {
   const pagedStaff = filteredStaff.slice(staffPage * PAGE_SIZE, (staffPage + 1) * PAGE_SIZE);
   const drawerStaff = drawerStaffId ? staffList.find(s => s.larkUserId === drawerStaffId) ?? null : null;
 
-  const financeCount = staffList.filter(s => rolesOf(s.larkUserId).includes('FINANCE')).length;
-
   return (
     <div style={{ marginBottom: 8 }}>
 
@@ -87,7 +92,7 @@ export function StaffSystemRoles({ scopes, setScopes }: {
       {/* Search + filter toolbar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, padding: '0 14px', ...glass, borderRadius: 8, height: 36, boxSizing: 'border-box' }}>
-          <Icons.search size={14} stroke="#6B7E8E" />
+          <Search size={14} stroke="#6B7E8E" />
           <input
             value={staffSearch}
             onChange={e => { setStaffSearch(e.target.value); setStaffPage(0); }}
@@ -124,15 +129,20 @@ export function StaffSystemRoles({ scopes, setScopes }: {
         {/* Column header */}
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.2fr) minmax(0,1.6fr) 36px', padding: '9px 20px',
           background: 'rgba(247,249,250,0.7)', borderBottom: '1px solid rgba(200,212,220,0.3)' }}>
-          {[t('setup.delegated.finance.col.staff'), t('setup.delegated.finance.col.phone'), t('setup.delegated.finance.col.sysRole'), ''].map((h, i) => (
-            <div key={i} style={{ fontSize: 11, fontWeight: 700, color: '#6B7E8E', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{h}</div>
+          {[
+            { key: 'staff', h: t('setup.delegated.finance.col.staff') },
+            { key: 'phone', h: t('setup.delegated.finance.col.phone') },
+            { key: 'sysRole', h: t('setup.delegated.finance.col.sysRole') },
+            { key: 'actions', h: '' },
+          ].map(({ key, h }) => (
+            <div key={key} style={{ fontSize: 11, fontWeight: 700, color: '#6B7E8E', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{h}</div>
           ))}
         </div>
 
         {filteredStaff.length === 0 && (
           <div style={{ padding: '48px 24px', textAlign: 'center' }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(0,180,160,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-              <Icons.users size={20} stroke="#00B4A0" />
+              <Users size={20} stroke="#00B4A0" />
             </div>
             <div style={{ fontSize: 13, color: '#9BAAB5' }}>{t('setup.delegated.finance.empty')}</div>
           </div>
@@ -175,7 +185,7 @@ export function StaffSystemRoles({ scopes, setScopes }: {
               <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
                 {isAdmin && (
                   <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999, background: 'rgba(200,212,220,0.25)', color: '#6B7E8E', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <Icons.lock size={9} stroke="#9BAAB5" /> {t('setup.delegated.finance.badge.admin')}
+                    <Lock size={9} stroke="#9BAAB5" /> {t('setup.delegated.finance.badge.admin')}
                   </span>
                 )}
                 {isManager && !isAdmin && (
@@ -191,7 +201,7 @@ export function StaffSystemRoles({ scopes, setScopes }: {
 
               {/* Arrow */}
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                {!isAdmin && <Icons.chevR size={13} stroke="#C8D4DC" />}
+                {!isAdmin && <ChevR size={13} stroke="#C8D4DC" />}
               </div>
             </div>
           );
@@ -226,13 +236,15 @@ export function StaffSystemRoles({ scopes, setScopes }: {
   );
 }
 
-function PageBtn({ children, onClick, disabled, active }: { children: React.ReactNode; onClick: () => void; disabled?: boolean; active?: boolean }) {
+function PageBtn({ children, onClick, disabled, active }: Readonly<{ children: React.ReactNode; onClick: () => void; disabled?: boolean; active?: boolean }>) {
+  const bgColor = active ? '#E6F9F7' : disabled ? 'transparent' : 'rgba(255,255,255,0.6)';
+  const textColor = active ? '#00B4A0' : disabled ? '#C8D4DC' : '#3A4F63';
   return (
     <button onClick={onClick} disabled={disabled} style={{
       minWidth: 28, height: 28, padding: '0 6px', borderRadius: 6, fontSize: 13, fontWeight: active ? 700 : 400,
       border: active ? '1.5px solid #00B4A0' : '1px solid rgba(200,212,220,0.5)',
-      background: active ? '#E6F9F7' : disabled ? 'transparent' : 'rgba(255,255,255,0.6)',
-      color: active ? '#00B4A0' : disabled ? '#C8D4DC' : '#3A4F63',
+      background: bgColor,
+      color: textColor,
       cursor: disabled ? 'default' : 'pointer',
       backdropFilter: 'blur(8px)',
       transition: 'all 120ms',
@@ -259,7 +271,7 @@ function FinanceDrawer({ staff, currentRoles, onClose, onSave }: {
         @keyframes drawerSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes backdropFadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
-      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.45)', zIndex: 900, animation: 'backdropFadeIn 200ms ease' }} />
+      <button type="button" onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.45)', zIndex: 900, animation: 'backdropFadeIn 200ms ease', border: 'none', padding: 0, cursor: 'default' }}></button>
       <div style={{
         position: 'fixed', top: 0, right: 0, bottom: 0, width: 400,
         zIndex: 901, display: 'flex', flexDirection: 'column',
@@ -280,7 +292,7 @@ function FinanceDrawer({ staff, currentRoles, onClose, onSave }: {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14, position: 'relative' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(0,180,160,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,180,160,0.35)' }}>
-                <Icons.briefcase size={16} stroke="#5AE4D4" />
+                <Briefcase size={16} stroke="#5AE4D4" />
               </div>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{t('setup.delegated.finance.drawer.accessLabel')}</div>
@@ -305,7 +317,7 @@ function FinanceDrawer({ staff, currentRoles, onClose, onSave }: {
 
           {isManager && (
             <div style={{ padding: '10px 14px', borderRadius: 9, background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', fontSize: 12, color: '#4F46E5', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Icons.shield size={13} stroke="#4F46E5" />
+              <Shield size={13} stroke="#4F46E5" />
               {t('setup.delegated.finance.drawer.isManagerHint')}
             </div>
           )}
@@ -323,7 +335,7 @@ function FinanceDrawer({ staff, currentRoles, onClose, onSave }: {
             transition: 'all 150ms',
           }}>
             <div style={{ width: 34, height: 34, borderRadius: 9, background: financeOn ? 'rgba(0,180,160,0.12)' : 'rgba(200,212,220,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 150ms' }}>
-              <Icons.briefcase size={16} stroke={financeOn ? '#00B4A0' : '#9BAAB5'} />
+              <Briefcase size={16} stroke={financeOn ? '#00B4A0' : '#9BAAB5'} />
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D', marginBottom: 3 }}>{t('setup.delegated.finance.drawer.financeLabel')}</div>
@@ -357,7 +369,7 @@ function FinanceDrawer({ staff, currentRoles, onClose, onSave }: {
               background: '#00B4A0', color: '#fff', fontSize: 13, fontWeight: 700,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
             }}>
-              <Icons.check size={14} stroke="#fff" />
+              <Check size={14} stroke="#fff" />
               {t('setup.delegated.finance.drawer.save')}
             </button>
           )}
