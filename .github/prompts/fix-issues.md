@@ -90,6 +90,8 @@ For each file in the working list, complete Steps A–C, then commit **once** fo
 
 **Step A — Check skills file**
 
+> **Lưu ý:** `.github/prompts/refactor-sonar-skills.md` là file **local-only** (gitignored). Không commit, không stage file này — chỉ đọc và ghi trực tiếp trên máy local.
+
 Read `.github/prompts/refactor-sonar-skills.md`. For each rule that will be fixed in this file, check for `## Rule: {rule}`.
 
 - **Found** → note the fix pattern.
@@ -110,7 +112,7 @@ Fix every flagged issue in the file, working rule by rule (complete one rule bef
 **If a specific issue cannot be confidently fixed without risking a regression:**
 Log: `SKIPPED {key} ({rule} L{line}): {one-sentence reason}` and continue with the next issue.
 
-After fixing all issues in the file, update `.github/prompts/refactor-sonar-skills.md` for any rules not already documented.
+After fixing all issues in the file, update `.github/prompts/refactor-sonar-skills.md` for any rules not already documented. **Không stage/commit file này** — nó là local-only.
 
 ---
 
@@ -137,7 +139,7 @@ git -C ../worktrees/sonar-{date} add --all
 git -C ../worktrees/sonar-{date} commit -m "fix: [SonarQube] {rule} — {5-8 word description}"
 ```
 
-Update the skills file if the rule was not already documented.
+Update the skills file if the rule was not already documented. **Không stage/commit file này** — nó là local-only.
 
 ---
 
