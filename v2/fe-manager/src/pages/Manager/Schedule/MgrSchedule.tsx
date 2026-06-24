@@ -275,7 +275,6 @@ export function MgrSchedule({ activeStore, isLoading, error }: Readonly<Props>) 
             const staffShifts = shifts.filter(s => s.larkUserId === staff.larkUserId);
             return (
               <div key={staff.larkUserId}
-                role="row"
                 style={{ display: 'grid', gridTemplateColumns: '180px repeat(7, 1fr)', borderTop: si > 0 ? '1px solid rgba(200,212,220,0.2)' : 'none', minHeight: 52, minWidth: 900, transition: 'background 100ms' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,180,160,0.02)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
@@ -384,7 +383,7 @@ function WeekPicker({ weekOffset, onChange, onClose }: Readonly<{
 
   return (
     <>
-      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} role="presentation" style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
       <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, zIndex: 50, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(200,212,220,0.35)', borderRadius: 14, boxShadow: '0 12px 32px rgba(30,45,61,0.14)', padding: 16, minWidth: 268 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <button onClick={prevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 6px', borderRadius: 6, color: '#6B7E8E', display: 'flex' }}>
@@ -477,7 +476,7 @@ function ShiftDetailPopover({ shift, pos, onClose, onEdit }: Readonly<{
 
   return (
     <>
-      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} role="presentation" style={{ position: 'fixed', inset: 0, zIndex: 500 }} />
+      <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} style={{ position: 'fixed', inset: 0, zIndex: 500 }} />
       <div style={{ position: 'fixed', left: pos.x, top: pos.y, width: 268, zIndex: 501, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(200,212,220,0.35)', borderRadius: 12, boxShadow: '0 8px 32px rgba(30,45,61,0.14)', overflow: 'hidden', animation: 'popIn 150ms ease' }}>
         <style>{`@keyframes popIn { from { opacity:0; transform:scale(0.96) translateY(-4px); } to { opacity:1; transform:none; } }`}</style>
 
