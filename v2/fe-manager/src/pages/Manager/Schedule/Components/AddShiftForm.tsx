@@ -75,6 +75,10 @@ function field(label: string, children: React.ReactNode) {
   );
 }
 
+function isShiftInFuture(existing: ShiftEntity | undefined): boolean {
+  return !!existing && existing.scheduleInTime > Date.now();
+}
+
 function getInitRoleId(existing: ShiftEntity | undefined, initStaffId: string): string {
   return existing?.roleId ?? (initStaffId
     ? (STAFF.find(s => s.larkUserId === initStaffId)?.roleIds?.[0] ?? '')
@@ -135,9 +139,9 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
   const { t } = useTranslation('manager');
   const isEdit = ctx.editShiftId !== undefined;
   const existing = isEdit ? getShift(ctx.editShiftId!) : undefined;
-  const isFuture = existing ? existing.scheduleInTime > Date.now() : false;
+  const isFuture = isShiftInFuture(existing);
   const isAll = activeStore === 'all';
-  const [form, setForm] = useState<FormState>(() => getInitForm(ctx, existing, weekDays, activeStore, mgrStores, isAll));
+  const [form, setForm] = useState<FormState>(getInitForm(ctx, existing, weekDays, activeStore, mgrStores, isAll));
 
   const locId = isAll ? form.locationId : activeStore;
   const staffAtLoc = STAFF.filter(s => s.floater || s.locationIds.includes(locId));
