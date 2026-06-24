@@ -75,6 +75,35 @@ function field(label: string, children: React.ReactNode) {
   );
 }
 
+function getInitRoleId(existing: ShiftEntity | undefined, initStaffId: string): string {
+  return existing?.roleId ?? (initStaffId
+    ? (STAFF.find(s => s.larkUserId === initStaffId)?.roleIds?.[0] ?? '')
+    : '');
+}
+
+function getInitForm(
+  ctx: AddCtx,
+  existing: ShiftEntity | undefined,
+  weekDays: WeekDay[],
+  activeStore: string,
+  mgrStores: string[],
+  isAll: boolean,
+): FormState {
+  const initLocId = existing?.locationId ?? (isAll ? (mgrStores[0] ?? '') : activeStore);
+  const defaultDate = existing
+    ? dateStrFromVN(existing.scheduleInTime)
+    : (ctx.dateStr || (weekDays[0]?.full ?? ''));
+  const initStaffId = existing?.larkUserId ?? ctx.staffId ?? '';
+  return {
+    staffId: initStaffId,
+    locationId: initLocId,
+    roleId: getInitRoleId(existing, initStaffId),
+    dateStr: defaultDate,
+    startTime: existing ? timeStrFromVN(existing.scheduleInTime) : '07:00',
+    endTime: existing ? timeStrFromVN(existing.scheduleOutTime) : '14:00',
+  };
+}
+
 function submitShift(
   form: FormState,
   editShiftId: string | undefined,
@@ -108,21 +137,7 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
   const existing = isEdit ? getShift(ctx.editShiftId!) : undefined;
   const isFuture = existing ? existing.scheduleInTime > Date.now() : false;
   const isAll = activeStore === 'all';
-  const initLocId = existing?.locationId ?? (isAll ? (mgrStores[0] ?? '') : activeStore);
-  const defaultDate = existing ? dateStrFromVN(existing.scheduleInTime) : (ctx.dateStr || (weekDays[0]?.full ?? ''));
-
-  const initStaffId = existing?.larkUserId ?? ctx.staffId ?? '';
-  const initRoleId = existing?.roleId
-    ?? (initStaffId ? (STAFF.find(s => s.larkUserId === initStaffId)?.roleIds?.[0] ?? '') : '');
-
-  const [form, setForm] = useState({
-    staffId: initStaffId,
-    locationId: initLocId,
-    roleId: initRoleId,
-    dateStr: defaultDate,
-    startTime: existing ? timeStrFromVN(existing.scheduleInTime) : '07:00',
-    endTime: existing ? timeStrFromVN(existing.scheduleOutTime) : '14:00',
-  });
+  const [form, setForm] = useState<FormState>(() => getInitForm(ctx, existing, weekDays, activeStore, mgrStores, isAll));
 
   const locId = isAll ? form.locationId : activeStore;
   const staffAtLoc = STAFF.filter(s => s.floater || s.locationIds.includes(locId));
