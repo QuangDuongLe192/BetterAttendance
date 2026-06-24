@@ -38,6 +38,25 @@ const sectionLabel: React.CSSProperties = {
   letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 10,
 };
 
+function addLocToScopes(prev: StaffRoleScope[], locId: string, larkUserId: string): StaffRoleScope[] {
+  const existing = prev.find(s => s.larkUserId === larkUserId);
+  if (!existing) return [...prev, { larkUserId, orgRoles: [], managedLocationIds: [locId] }];
+  if (existing.managedLocationIds.includes(locId)) return prev;
+  return prev.map(s =>
+    s.larkUserId === larkUserId
+      ? { ...s, managedLocationIds: [...s.managedLocationIds, locId] }
+      : s
+  );
+}
+
+function removeLocFromScopes(prev: StaffRoleScope[], locId: string, larkUserId: string): StaffRoleScope[] {
+  return prev
+    .map(s => s.larkUserId === larkUserId
+      ? { ...s, managedLocationIds: s.managedLocationIds.filter(l => l !== locId) }
+      : s)
+    .filter(s => s.orgRoles.length > 0 || s.managedLocationIds.length > 0);
+}
+
 export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
   const { t } = useTranslation('setup');
   const [tab, setTab] = useState<'delegation' | 'system'>('delegation');
@@ -67,16 +86,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
       .filter(Boolean) as typeof STAFF;
 
   const addManager = (locId: string, larkUserId: string) => {
-    setRoleScopes(prev => {
-      const existing = prev.find(s => s.larkUserId === larkUserId);
-      if (existing) {
-        if (existing.managedLocationIds.includes(locId)) return prev;
-        return prev.map(s => s.larkUserId === larkUserId
-          ? { ...s, managedLocationIds: [...s.managedLocationIds, locId] }
-          : s);
-      }
-      return [...prev, { larkUserId, orgRoles: [], managedLocationIds: [locId] }];
-    });
+    setRoleScopes(prev => addLocToScopes(prev, locId, larkUserId));
     const staffName = (STAFF ?? []).find(s => s.larkUserId === larkUserId)?.name;
     const locName = locById(locId)?.name;
     toast.success(t('setup.delegated.toast.addedManager', { staff: staffName, loc: locName }));
@@ -85,12 +95,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
   const removeManager = (locId: string, larkUserId: string) => {
     const staffName = (STAFF ?? []).find(s => s.larkUserId === larkUserId)?.name;
     const locName = locById(locId)?.name;
-    setRoleScopes(prev => prev
-      .map(s => s.larkUserId === larkUserId
-        ? { ...s, managedLocationIds: s.managedLocationIds.filter(l => l !== locId) }
-        : s)
-      .filter(s => s.orgRoles.length > 0 || s.managedLocationIds.length > 0)
-    );
+    setRoleScopes(prev => removeLocFromScopes(prev, locId, larkUserId));
     toast.info(t('setup.delegated.toast.removedManager', { staff: staffName, loc: locName }));
   };
 

@@ -94,6 +94,101 @@ function TabButton({ id, label, icon, active, disabled, disabledHint, onSelect }
   );
 }
 
+type DraftState = {
+  name: string; addr: string; mode: string[]; radius: number;
+  lat: number; lng: number; networks: WifiNetwork[]; autoIn: boolean; autoOut: boolean;
+};
+
+function bssidToNetwork(bssid: string, scanNetworks: WifiNetwork[]): WifiNetwork {
+  const found = scanNetworks.find(n => n.bssid === bssid);
+  return { ssid: found?.ssid ?? '', bssid };
+}
+
+function hasInvalidBssidNetwork(networks: WifiNetwork[]): boolean {
+  return networks.some(n => n.bssid !== '' && !/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(n.bssid));
+}
+
+function locToDraft(loc: Location, scanNetworks: WifiNetwork[]): DraftState {
+  return {
+    name: loc.name,
+    addr: loc.address,
+    mode: [...loc.activeValidation],
+    radius: loc.validationConfig.radiusMeters,
+    lat: loc.lat,
+    lng: loc.long,
+    networks: (loc.validationConfig.allowed_bssid ?? []).map(b => bssidToNetwork(b, scanNetworks)),
+    autoIn: loc.autoIn,
+    autoOut: loc.autoOut,
+  };
+}
+
+function useScrollToStaff(ref: React.RefObject<HTMLDivElement>, scrollToStaff: boolean | undefined) {
+  useEffect(() => {
+    if (!scrollToStaff || !ref.current) return;
+    const timer = setTimeout(() => ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+    return () => clearTimeout(timer);
+  }, [scrollToStaff, ref]);
+}
+
+interface LocationInfoTabProps {
+  readonly draft: DraftState;
+  readonly locId: string;
+  readonly isEditing: boolean;
+  readonly setDraft: React.Dispatch<React.SetStateAction<DraftState>>;
+}
+
+interface ValidationModeGridProps {
+  readonly mode: string[];
+  readonly isEditing: boolean;
+  readonly setDraft: React.Dispatch<React.SetStateAction<DraftState>>;
+}
+
+function ValidationModeGrid({ mode, isEditing, setDraft }: ValidationModeGridProps) {
+  const { t } = useTranslation('setup');
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+      <ModeOption icon="wifi"   title={t('setup.locations.validation.wifiOnly.title')}  sub={t('setup.locations.validation.wifiOnly.sub')}  selected={mode.includes('wifi') && !mode.includes('geo')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi'] })) : undefined} />
+      <ModeOption icon="target" title={t('setup.locations.validation.gpsOnly.title')}   sub={t('setup.locations.validation.gpsOnly.sub')}   selected={mode.includes('geo') && !mode.includes('wifi')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['geo'] })) : undefined} />
+      <ModeOption icon="shield" title={t('setup.locations.validation.both.title')}      sub={t('setup.locations.validation.both.sub')}      selected={mode.includes('wifi') && mode.includes('geo')}   onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi', 'geo'] })) : undefined} />
+      <ModeOption icon="x"     title={t('setup.locations.validation.none.title')}      sub={t('setup.locations.validation.none.sub')}      selected={!mode.includes('wifi') && !mode.includes('geo')} onClick={isEditing ? () => setDraft(d => ({ ...d, mode: [] })) : undefined} />
+    </div>
+  );
+}
+
+function LocationInfoTab({ draft, locId, isEditing, setDraft }: LocationInfoTabProps) {
+  const { t } = useTranslation('setup');
+  const hasModes = draft.mode.includes('wifi') || draft.mode.includes('geo');
+  const both = draft.mode.includes('wifi') && draft.mode.includes('geo');
+  return (
+    <>
+      <div className="loc-section" style={{ animationDelay: '120ms', ...glass, borderRadius: 14, padding: '22px 24px' }}>
+        <Eyebrow style={{ marginBottom: 6 }}>{t('setup.locations.validation.eyebrow')}</Eyebrow>
+        <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D', margin: '0 0 18px' }}>{t('setup.locations.validation.title')}</h3>
+        <ValidationModeGrid mode={draft.mode} isEditing={isEditing} setDraft={setDraft} />
+      </div>
+      {hasModes && (
+        <div className="loc-section" style={{ animationDelay: '160ms', display: 'grid', gridTemplateColumns: both ? '1fr 1fr' : '1fr', gap: 18 }}>
+          {draft.mode.includes('wifi') && (
+            <WifiScannerCard locId={locId} networks={draft.networks} onNetworksChange={ns => setDraft(d => ({ ...d, networks: ns }))} isEditing={isEditing} />
+          )}
+          {draft.mode.includes('geo') && (
+            <GeofenceMapCard lat={draft.lat} lng={draft.lng} radius={draft.radius} onLatChange={v => setDraft(d => ({ ...d, lat: v }))} onLngChange={v => setDraft(d => ({ ...d, lng: v }))} onRadiusChange={r => setDraft(d => ({ ...d, radius: r }))} isEditing={isEditing} />
+          )}
+        </div>
+      )}
+      <div className="loc-section" style={{ animationDelay: '200ms', ...glass, borderRadius: 14, padding: '22px 24px' }}>
+        <Eyebrow style={{ marginBottom: 6 }}>{t('setup.locations.autoClock.eyebrow')}</Eyebrow>
+        <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D', margin: '0 0 18px' }}>{t('setup.locations.autoClock.title')}</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <AutoToggleRow label={t('setup.locations.autoClock.autoIn.label')} sub={t('setup.locations.autoClock.autoIn.sub')} checked={draft.autoIn} onChange={isEditing ? v => setDraft(d => ({ ...d, autoIn: v })) : undefined} />
+          <AutoToggleRow label={t('setup.locations.autoClock.autoOut.label')} sub={t('setup.locations.autoClock.autoOut.sub')} checked={draft.autoOut} onChange={isEditing ? v => setDraft(d => ({ ...d, autoOut: v })) : undefined} />
+          <AutoToggleRow label={t('setup.locations.autoClock.biometric.label')} sub={t('setup.locations.autoClock.biometric.sub')} checked={false} disabled />
+        </div>
+      </div>
+    </>
+  );
+}
+
 function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location; scrollToStaff?: boolean; onEditingChange?: (v: boolean) => void }) {
   const navigate = useNavigate();
   const { t } = useTranslation('setup');
@@ -106,31 +201,11 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
   const [color, setColor] = useState(loc.style.color);
 
   const scanNetworks = WIFI_SCAN[loc.locationId]?.networks ?? [];
-  const bssidToNetwork = (bssid: string): WifiNetwork => {
-    const found = scanNetworks.find(n => n.bssid === bssid);
-    return { ssid: found?.ssid ?? '', bssid };
-  };
+  const [draft, setDraft] = useState<DraftState>(() => locToDraft(loc, scanNetworks));
 
-  const [draft, setDraft] = useState({
-    name: loc.name,
-    addr: loc.address,
-    mode: [...loc.activeValidation],
-    radius: loc.validationConfig.radiusMeters,
-    lat: loc.lat,
-    lng: loc.long,
-    networks: (loc.validationConfig.allowed_bssid ?? []).map(bssidToNetwork),
-    autoIn: loc.autoIn,
-    autoOut: loc.autoOut,
-  });
+  useScrollToStaff(staffRef, scrollToStaff);
 
-  useEffect(() => {
-    if (scrollToStaff && staffRef.current) {
-      const t = setTimeout(() => staffRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
-      return () => clearTimeout(t);
-    }
-  }, [scrollToStaff]);
-
-  const hasInvalidBssid = draft.networks.some(n => n.bssid !== '' && !/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(n.bssid));
+  const hasInvalidBssid = hasInvalidBssidNetwork(draft.networks);
 
   const modeLabel = deriveModeLabel(draft.mode, t);
 
@@ -146,17 +221,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
   }
 
   function handleCancel() {
-    setDraft({
-      name: loc.name,
-      addr: loc.address,
-      mode: [...loc.activeValidation],
-      radius: loc.validationConfig.radiusMeters,
-      lat: loc.lat,
-      lng: loc.long,
-      networks: (loc.validationConfig.allowed_bssid ?? []).map(bssidToNetwork),
-      autoIn: loc.autoIn,
-      autoOut: loc.autoOut,
-    });
+    setDraft(locToDraft(loc, scanNetworks));
     setColor(loc.style.color);
     setEditing(false);
   }
@@ -246,58 +311,9 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
           </div>
         </div>
 
-        {tab === 'infor' && <>
-          {/* Validation mode */}
-          <div className="loc-section" style={{ animationDelay: '120ms', ...glass, borderRadius: 14, padding: '22px 24px' }}>
-            <Eyebrow style={{ marginBottom: 6 }}>{t('setup.locations.validation.eyebrow')}</Eyebrow>
-            <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D', margin: '0 0 18px' }}>{t('setup.locations.validation.title')}</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-              <ModeOption icon="wifi"   title={t('setup.locations.validation.wifiOnly.title')}  sub={t('setup.locations.validation.wifiOnly.sub')}  selected={draft.mode.includes('wifi') && !draft.mode.includes('geo')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi'] })) : undefined} />
-              <ModeOption icon="target" title={t('setup.locations.validation.gpsOnly.title')}   sub={t('setup.locations.validation.gpsOnly.sub')}   selected={draft.mode.includes('geo') && !draft.mode.includes('wifi')}  onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['geo'] })) : undefined} />
-              <ModeOption icon="shield" title={t('setup.locations.validation.both.title')}      sub={t('setup.locations.validation.both.sub')}      selected={draft.mode.includes('wifi') && draft.mode.includes('geo')}   onClick={isEditing ? () => setDraft(d => ({ ...d, mode: ['wifi', 'geo'] })) : undefined} />
-              <ModeOption icon="x"     title={t('setup.locations.validation.none.title')}      sub={t('setup.locations.validation.none.sub')}      selected={!draft.mode.includes('wifi') && !draft.mode.includes('geo')} onClick={isEditing ? () => setDraft(d => ({ ...d, mode: [] })) : undefined} />
-            </div>
-          </div>
-
-          {/* Wifi + Geo cards */}
-          {(draft.mode.includes('wifi') || draft.mode.includes('geo')) && (() => {
-            const both = draft.mode.includes('wifi') && draft.mode.includes('geo');
-            return (
-              <div className="loc-section" style={{ animationDelay: '160ms', display: 'grid', gridTemplateColumns: both ? '1fr 1fr' : '1fr', gap: 18 }}>
-                {draft.mode.includes('wifi') && (
-                  <WifiScannerCard
-                    locId={loc.locationId}
-                    networks={draft.networks}
-                    onNetworksChange={ns => setDraft(d => ({ ...d, networks: ns }))}
-                    isEditing={isEditing}
-                  />
-                )}
-                {draft.mode.includes('geo') && (
-                  <GeofenceMapCard
-                    lat={draft.lat}
-                    lng={draft.lng}
-                    radius={draft.radius}
-                    onLatChange={v => setDraft(d => ({ ...d, lat: v }))}
-                    onLngChange={v => setDraft(d => ({ ...d, lng: v }))}
-                    onRadiusChange={r => setDraft(d => ({ ...d, radius: r }))}
-                    isEditing={isEditing}
-                  />
-                )}
-              </div>
-            );
-          })()}
-
-          {/* Auto clock */}
-          <div className="loc-section" style={{ animationDelay: '200ms', ...glass, borderRadius: 14, padding: '22px 24px' }}>
-            <Eyebrow style={{ marginBottom: 6 }}>{t('setup.locations.autoClock.eyebrow')}</Eyebrow>
-            <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1E2D3D', margin: '0 0 18px' }}>{t('setup.locations.autoClock.title')}</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <AutoToggleRow label={t('setup.locations.autoClock.autoIn.label')} sub={t('setup.locations.autoClock.autoIn.sub')} checked={draft.autoIn} onChange={isEditing ? v => setDraft(d => ({ ...d, autoIn: v })) : undefined} />
-              <AutoToggleRow label={t('setup.locations.autoClock.autoOut.label')} sub={t('setup.locations.autoClock.autoOut.sub')} checked={draft.autoOut} onChange={isEditing ? v => setDraft(d => ({ ...d, autoOut: v })) : undefined} />
-              <AutoToggleRow label={t('setup.locations.autoClock.biometric.label')} sub={t('setup.locations.autoClock.biometric.sub')} checked={false} disabled />
-            </div>
-          </div>
-        </>}
+        {tab === 'infor' && (
+          <LocationInfoTab draft={draft} locId={loc.locationId} isEditing={isEditing} setDraft={setDraft} />
+        )}
 
         {tab === 'staff' && (
           <div ref={staffRef} className="loc-section" style={{ animationDelay: '120ms' }}>

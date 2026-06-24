@@ -61,27 +61,87 @@ interface Props {
   getShift: (id: string) => ShiftEntity | undefined;
 }
 
+function fmtTotal(mins: number): string {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return m > 0 ? `${h} giờ ${m} phút` : `${h} giờ`;
+}
+
+function field(label: string, children: React.ReactNode) {
+  return (
+    <div>
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#6B7E8E', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 }}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function isShiftInFuture(existing: ShiftEntity | undefined): boolean {
+  return !!existing && existing.scheduleInTime > Date.now();
+}
+
+function getInitRoleId(existing: ShiftEntity | undefined, initStaffId: string): string {
+  return existing?.roleId ?? (initStaffId
+    ? (STAFF.find(s => s.larkUserId === initStaffId)?.roleIds?.[0] ?? '')
+    : '');
+}
+
+function getInitForm(
+  ctx: AddCtx,
+  existing: ShiftEntity | undefined,
+  weekDays: WeekDay[],
+  activeStore: string,
+  mgrStores: string[],
+  isAll: boolean,
+): FormState {
+  const initLocId = existing?.locationId ?? (isAll ? (mgrStores[0] ?? '') : activeStore);
+  const defaultDate = existing
+    ? dateStrFromVN(existing.scheduleInTime)
+    : (ctx.dateStr || (weekDays[0]?.full ?? ''));
+  const initStaffId = existing?.larkUserId ?? ctx.staffId ?? '';
+  return {
+    staffId: initStaffId,
+    locationId: initLocId,
+    roleId: getInitRoleId(existing, initStaffId),
+    dateStr: defaultDate,
+    startTime: existing ? timeStrFromVN(existing.scheduleInTime) : '07:00',
+    endTime: existing ? timeStrFromVN(existing.scheduleOutTime) : '14:00',
+  };
+}
+
+function submitShift(
+  form: FormState,
+  editShiftId: string | undefined,
+  t: (k: string) => string,
+  onSave: (data: Omit<ShiftEntity, 'jobId'>, editShiftId?: string) => void,
+  onClose: () => void,
+): void {
+  const scheduleInTime = makeVNTime(form.dateStr, form.startTime);
+  let scheduleOutTime = makeVNTime(form.dateStr, form.endTime);
+  if (scheduleOutTime <= scheduleInTime) scheduleOutTime += 86400000;
+  onSave({
+    larkUserId: form.staffId,
+    locationId: form.locationId,
+    locationName: locById(form.locationId).name,
+    roleId: form.roleId,
+    scheduleInTime,
+    scheduleOutTime,
+    scheduleTotal: scheduleOutTime - scheduleInTime,
+    actualInTime: null,
+    actualOutTime: null,
+    shiftLabel: t('manager.schedule.form.shiftLabel'),
+    tag: roleById(form.roleId)?.name ?? form.roleId,
+    status: 'upcoming',
+  }, editShiftId);
+  onClose();
+}
+
 export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose, onSave, onDelete, getShift }: Props) {
   const { t } = useTranslation('manager');
   const isEdit = ctx.editShiftId !== undefined;
   const existing = isEdit ? getShift(ctx.editShiftId!) : undefined;
-  const isFuture = existing ? existing.scheduleInTime > Date.now() : false;
+  const isFuture = isShiftInFuture(existing);
   const isAll = activeStore === 'all';
-  const initLocId = existing?.locationId ?? (isAll ? (mgrStores[0] ?? '') : activeStore);
-  const defaultDate = existing ? dateStrFromVN(existing.scheduleInTime) : (ctx.dateStr || (weekDays[0]?.full ?? ''));
-
-  const initStaffId = existing?.larkUserId ?? ctx.staffId ?? '';
-  const initRoleId = existing?.roleId
-    ?? (initStaffId ? (STAFF.find(s => s.larkUserId === initStaffId)?.roleIds?.[0] ?? '') : '');
-
-  const [form, setForm] = useState({
-    staffId: initStaffId,
-    locationId: initLocId,
-    roleId: initRoleId,
-    dateStr: defaultDate,
-    startTime: existing ? timeStrFromVN(existing.scheduleInTime) : '07:00',
-    endTime: existing ? timeStrFromVN(existing.scheduleOutTime) : '14:00',
-  });
+  const [form, setForm] = useState<FormState>(getInitForm(ctx, existing, weekDays, activeStore, mgrStores, isAll));
 
   const locId = isAll ? form.locationId : activeStore;
   const staffAtLoc = STAFF.filter(s => s.floater || s.locationIds.includes(locId));
@@ -90,43 +150,11 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
 
   const { totalMins, isOvernight } = calcShiftDuration(form.startTime, form.endTime);
 
-  const fmtTotal = (mins: number) => {
-    const h = Math.floor(mins / 60), m = mins % 60;
-    return m > 0 ? `${h} giờ ${m} phút` : `${h} giờ`;
-  };
-
   const hasChanges = detectChanges(form, existing, isEdit);
 
   const canSave = !!(form.staffId && form.roleId && totalMins > 0 && hasChanges);
 
-  const handleSubmit = () => {
-    const scheduleInTime = makeVNTime(form.dateStr, form.startTime);
-    let scheduleOutTime = makeVNTime(form.dateStr, form.endTime);
-    if (scheduleOutTime <= scheduleInTime) scheduleOutTime += 86400000; // +24h for overnight
-
-    onSave({
-      larkUserId: form.staffId,
-      locationId: form.locationId,
-      locationName: locById(form.locationId).name,
-      roleId: form.roleId,
-      scheduleInTime,
-      scheduleOutTime,
-      scheduleTotal: scheduleOutTime - scheduleInTime,
-      actualInTime: null,
-      actualOutTime: null,
-      shiftLabel: t('manager.schedule.form.shiftLabel'),
-      tag: roleById(form.roleId)?.name ?? form.roleId,
-      status: 'upcoming',
-    }, ctx.editShiftId);
-    onClose();
-  };
-
-  const field = (label: string, children: React.ReactNode) => (
-    <div>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#6B7E8E', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 }}>{label}</label>
-      {children}
-    </div>
-  );
+  const handleSubmit = () => submitShift(form, ctx.editShiftId, t, onSave, onClose);
 
   const inputCls: React.CSSProperties = {
     width: '100%', padding: '9px 11px', fontSize: 13,
