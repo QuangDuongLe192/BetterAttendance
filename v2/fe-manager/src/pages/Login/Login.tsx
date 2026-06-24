@@ -213,8 +213,6 @@ export function Login() {
   const { user, loginWithToken } = useAuth();
   usePageTitle(t('login.page_title'));
 
-  if (user) return <Navigate to="/" replace />;
-
   const redirectUri = useMemo(() => globalThis.location.origin + globalThis.location.pathname, []);
 
   const handleCode = useCallback(async (code: string) => {
