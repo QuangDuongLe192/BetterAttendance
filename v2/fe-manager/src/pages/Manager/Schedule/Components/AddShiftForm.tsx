@@ -61,6 +61,20 @@ interface Props {
   getShift: (id: string) => ShiftEntity | undefined;
 }
 
+function fmtTotal(mins: number): string {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return m > 0 ? `${h} giờ ${m} phút` : `${h} giờ`;
+}
+
+function field(label: string, children: React.ReactNode) {
+  return (
+    <div>
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#6B7E8E', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 }}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
 export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose, onSave, onDelete, getShift }: Props) {
   const { t } = useTranslation('manager');
   const isEdit = ctx.editShiftId !== undefined;
@@ -90,11 +104,6 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
 
   const { totalMins, isOvernight } = calcShiftDuration(form.startTime, form.endTime);
 
-  const fmtTotal = (mins: number) => {
-    const h = Math.floor(mins / 60), m = mins % 60;
-    return m > 0 ? `${h} giờ ${m} phút` : `${h} giờ`;
-  };
-
   const hasChanges = detectChanges(form, existing, isEdit);
 
   const canSave = !!(form.staffId && form.roleId && totalMins > 0 && hasChanges);
@@ -120,13 +129,6 @@ export function AddShiftDrawer({ ctx, weekDays, activeStore, mgrStores, onClose,
     }, ctx.editShiftId);
     onClose();
   };
-
-  const field = (label: string, children: React.ReactNode) => (
-    <div>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#6B7E8E', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 }}>{label}</label>
-      {children}
-    </div>
-  );
 
   const inputCls: React.CSSProperties = {
     width: '100%', padding: '9px 11px', fontSize: 13,

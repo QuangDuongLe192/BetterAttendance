@@ -55,6 +55,11 @@ interface SectionProps {
   onDirtyDelegated: (v: boolean) => void;
 }
 
+function getActiveSection(section: string | undefined, isNewLocation: boolean): SectionId {
+  if (isNewLocation) return 'locations';
+  return (section as SectionId) || 'overview';
+}
+
 function renderSection({ active, subId, onNav, isLoading, error, onEditingChange, onDirtyRoles, onDirtyDelegated }: SectionProps) {
   if (active === 'overview') return <Overview onNav={onNav} isLoading={isLoading} error={error} />;
   if (active === 'locations') return subId
@@ -72,7 +77,7 @@ export function SetupApp() {
   const { section, subId } = useParams<{ section?: string; subId?: string }>();
   const navigate = useNavigate();
   const isNewLocation = section === 'locations-new';
-  const active: SectionId = isNewLocation ? 'locations' : ((section as SectionId) || 'overview');
+  const active = getActiveSection(section, isNewLocation);
 
   const NAV = [
     { id: 'overview' as const, label: t('setup.nav.overview'), icon: 'grid' as const },
