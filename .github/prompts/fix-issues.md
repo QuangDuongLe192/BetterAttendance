@@ -18,7 +18,14 @@ This workflow supports three modes. Read the invocation to determine which mode 
 
 ### Phase 1 — Download Issues File
 
-**Step 1.1** — Pull latest main to ensure worktree starts from up-to-date code:
+**Step 1.1** — Check for uncommitted changes, then pull latest main:
+```bash
+git status --porcelain
+```
+
+Nếu output **không rỗng** (có file đang sửa dở): log `ERROR: Uncommitted changes detected. Commit or stash your changes before running this workflow.` và **dừng lại** — không tiếp tục.
+
+Nếu output rỗng (working tree sạch): tiếp tục pull:
 ```bash
 git fetch origin && git reset --hard origin/main
 ```
@@ -212,10 +219,12 @@ gh pr view refactor/sonar-{date} --json id --jq '.id'
 Store as `{pr_node_id}`.
 
 **Step 4.5** — Add PR to GitHub Project:
+
+Read `{project_id}` from the Reference table below, then run:
 ```bash
 gh api graphql -f query='mutation {
   addProjectV2ItemById(input: {
-    projectId: "PVT_kwHODRzg-84Bayhv"
+    projectId: "{project_id}"
     contentId: "{pr_node_id}"
   }) { item { id } }
 }'
@@ -223,13 +232,15 @@ gh api graphql -f query='mutation {
 Store `item.id` as `{item_id}`.
 
 **Step 4.6** — Set status to **In Review**:
+
+Read `{project_id}`, `{status_field_id}`, and `{option_id: In review}` from the Reference table below, then run:
 ```bash
 gh api graphql -f query='mutation {
   updateProjectV2ItemFieldValue(input: {
-    projectId: "PVT_kwHODRzg-84Bayhv"
+    projectId: "{project_id}"
     itemId: "{item_id}"
-    fieldId: "PVTSSF_lAHODRzg-84BayhvzhVnkWs"
-    value: { singleSelectOptionId: "df73e18b" }
+    fieldId: "{status_field_id}"
+    value: { singleSelectOptionId: "{option_id: In review}" }
   }) { projectV2Item { id } }
 }'
 ```
