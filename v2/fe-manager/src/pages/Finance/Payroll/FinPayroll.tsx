@@ -7,6 +7,8 @@ import { type PayrollEntry, type FinSummary, type FinByLoc, type FinLoc, fmtVND,
 const Users = Icons.users;
 const Check = Icons.check;
 const Edit = Icons.edit;
+const ChevR = Icons.chevR;
+const Download = Icons.download;
 
 type Layout = 'split' | 'table' | 'cards';
 
@@ -71,7 +73,8 @@ function EmployeeDetail({ s, finLocs, compact, onReview, onUnreview }: Readonly<
           const lineReg = it.type === 'hourly' ? (it.regH ?? 0) * (it.rate ?? 0) : 0;
           const lineOT  = it.type === 'hourly' ? (it.otH  ?? 0) * (it.rate ?? 0) * 1.5 : 0;
           const lineMo  = it.type === 'monthly' ? (it.monthly ?? 0) : 0;
-          const otDisplay = it.type === 'monthly' ? '—' : ((it.otH ?? 0) > 0 ? `${it.otH}h` : '—');
+          const otHDisplay = (it.otH ?? 0) > 0 ? `${it.otH}h` : '—';
+          const otDisplay = it.type === 'monthly' ? '—' : otHDisplay;
           return (
             <>
               <div key={it.name} style={{ display: 'grid', gridTemplateColumns: '1fr 64px 56px 56px 90px 100px', padding: '13px 18px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', background: i % 2 ? '#FAFBFC' : '#fff' }}>
@@ -210,8 +213,8 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: 
         const isExp = exp === s.id;
         return (
           <div key={s.id}>
-            <div role="button" tabIndex={0} onClick={() => setExp(isExp ? null : s.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExp(isExp ? null : s.id); }} style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
-              <span style={{ color: '#6B7E8E', display: 'inline-block', transition: 'transform 150ms', transform: isExp ? 'rotate(90deg)' : 'none' }}><Icons.chevR size={13}/></span>
+            <button onClick={() => setExp(isExp ? null : s.id)} style={{ display: 'grid', gridTemplateColumns: cols, padding: '15px 20px', width: '100%', border: 'none', borderTop: i > 0 ? '1px solid #E8ECEF' : 'none', textAlign: 'left', alignItems: 'center', cursor: 'pointer', background: isExp ? '#F7FCFB' : '#fff', transition: 'background 120ms' }}>
+              <span style={{ color: '#6B7E8E', display: 'inline-block', transition: 'transform 150ms', transform: isExp ? 'rotate(90deg)' : 'none' }}><ChevR size={13}/></span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Avatar name={s.name} size={28} bg={s.isManager ? '#00B4A0' : '#1E2D3D'}/>
                 <div>
@@ -223,8 +226,8 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: 
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                {s.items.map((it, ii) => (
-                  <span key={ii} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10, padding: '2px 6px', borderRadius: 999, background: it.color + '18', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>
+                {s.items.map((it) => (
+                  <span key={it.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10, padding: '2px 6px', borderRadius: 999, background: it.color + '18', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>
                     <span style={{ width: 5, height: 5, borderRadius: 1, background: it.color }}/>{it.name}
                   </span>
                 ))}
@@ -235,9 +238,9 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: 
               <div style={{ textAlign: 'right', fontSize: 12, color: (s.totalReg + s.totalOT) > 0 ? '#008C7C' : '#C8D4DC' }}>{(s.totalReg + s.totalOT) > 0 ? fmtM(s.totalReg + s.totalOT) : '—'}</div>
               <div style={{ textAlign: 'right', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: '#1E2D3D' }}>{fmtM(s.total)}</div>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                {s.status === 'reviewed' ? <Tag tone="success" icon={<Icons.check size={9}/>}>OK</Tag> : <Tag tone="warning">{t('finance.overview.byLoc.waiting')}</Tag>}
+                {s.status === 'reviewed' ? <Tag tone="success" icon={<Check size={9}/>}>OK</Tag> : <Tag tone="warning">{t('finance.overview.byLoc.waiting')}</Tag>}
               </div>
-            </div>
+            </button>
             {isExp && (
               <div style={{ borderTop: '1px dashed #E8ECEF', background: '#F7FCFB' }}>
                 <EmployeeDetail s={s} finLocs={finLocs} compact onReview={onReview} onUnreview={onUnreview}/>
@@ -261,7 +264,7 @@ function PayrollTable({ list, finLocs, onReview, onUnreview }: Readonly<{ list: 
 
 // ─── Variant C: Cards ────────────────────────────────────────────────────────
 
-function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEntry[]; finLocs: FinLoc[]; onReview: (id: string) => void; onUnreview: (id: string) => void }) {
+function PayrollCards({ list, finLocs, onReview, onUnreview }: Readonly<{ list: PayrollEntry[]; finLocs: FinLoc[]; onReview: (id: string) => void; onUnreview: (id: string) => void }>) {
   const { t } = useTranslation('finance');
   const [sel, setSel] = useState<PayrollEntry | null>(null);
   const currentSel = sel ? list.find(p => p.id === sel.id) ?? null : null;
@@ -269,7 +272,7 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
   if (currentSel) return (
     <div>
       <button onClick={() => setSel(null)} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, marginBottom: 16, background: 'transparent', border: 'none', cursor: 'pointer', color: '#00B4A0', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13 }}>
-        <Icons.chevR size={13} stroke="#00B4A0" style={{ transform: 'rotate(180deg)' }}/> {t('finance.payroll.cards.backBtn')}
+        <ChevR size={13} stroke="#00B4A0" style={{ transform: 'rotate(180deg)' }}/> {t('finance.payroll.cards.backBtn')}
       </button>
       <div style={{ background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8 }}>
         <EmployeeDetail s={currentSel} finLocs={finLocs} onReview={onReview} onUnreview={onUnreview}/>
@@ -285,10 +288,10 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
         const hr = s.total > 0 ? (s.totalReg  / s.total) * 100 : 0;
         const ot = s.total > 0 ? (s.totalOT   / s.total) * 100 : 0;
         return (
-          <div key={s.id} role="button" tabIndex={0} onClick={() => setSel(s)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSel(s); }}
-            style={{ background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8, padding: 20, cursor: 'pointer', transition: 'all 150ms' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1E2D3D'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(30,45,61,0.08)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#C8D4DC'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
+          <button key={s.id} onClick={() => setSel(s)}
+            style={{ background: '#fff', border: '1px solid #C8D4DC', borderRadius: 8, padding: 20, cursor: 'pointer', transition: 'all 150ms', width: '100%', textAlign: 'left' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#1E2D3D'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(30,45,61,0.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = '#C8D4DC'; e.currentTarget.style.boxShadow = 'none'; }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Avatar name={s.name} size={36} bg={s.isManager ? '#00B4A0' : '#1E2D3D'}/>
@@ -300,11 +303,11 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
                   </div>
                 </div>
               </div>
-              {s.status === 'reviewed' ? <Icons.check size={14} stroke="#1A6B55"/> : <span style={{ width: 8, height: 8, borderRadius: 999, background: '#B45309', display: 'inline-block', marginTop: 4 }}/>}
+              {s.status === 'reviewed' ? <Check size={14} stroke="#1A6B55"/> : <span style={{ width: 8, height: 8, borderRadius: 999, background: '#B45309', display: 'inline-block', marginTop: 4 }}/>}
             </div>
             <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 14 }}>
-              {s.items.map((it, ii) => (
-                <span key={ii} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10, padding: '3px 7px', borderRadius: 999, background: it.color + '15', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>
+              {s.items.map((it) => (
+                <span key={it.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10, padding: '3px 7px', borderRadius: 999, background: it.color + '15', color: it.color, fontFamily: 'var(--font-display)', fontWeight: 700 }}>
                   <span style={{ width: 5, height: 5, borderRadius: 1, background: it.color }}/>
                   {it.name}{it.type === 'hourly' && ` · ${(it.regH ?? 0) + (it.otH ?? 0)}h`}
                   {(it.otH ?? 0) > 0 && <span style={{ color: '#B45309' }}> ↑OT</span>}
@@ -327,7 +330,7 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
               <span style={{ fontSize: 11, color: '#6B7E8E' }}>{t('finance.payroll.cards.periodTotal')}</span>
               <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 17, letterSpacing: '-0.01em', color: '#1E2D3D' }}>{fmtVND(s.total)}</span>
             </div>
-          </div>
+          </button>
         );
       })}
     </div>
@@ -336,7 +339,7 @@ function PayrollCards({ list, finLocs, onReview, onUnreview }: { list: PayrollEn
 
 // ─── PayrollScreen: wrapper ──────────────────────────────────────────────────
 
-export function FinPayroll({ payroll, summary, byLoc, finLocs, layout, onLayoutChange, onReview, onUnreview, isLoading, error }: PayrollProps) {
+export function FinPayroll({ payroll, summary, byLoc, finLocs, layout, onLayoutChange, onReview, onUnreview, isLoading, error }: Readonly<PayrollProps>) {
   const { t } = useTranslation('finance');
   const [locFilter, setLocFilter] = useState<string | null>(null);
 
@@ -374,13 +377,13 @@ export function FinPayroll({ payroll, summary, byLoc, finLocs, layout, onLayoutC
               );
             })}
           </div>
-          <Btn variant="secondary" size="sm" icon={<Icons.download size={13}/>}>{t('finance.payroll.exportCsv')}</Btn>
+          <Btn variant="secondary" size="sm" icon={<Download size={13}/>}>{t('finance.payroll.exportCsv')}</Btn>
         </div>
       </div>
 
       {/* location filter */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-        <button onClick={() => setLocFilter(null)} style={{ padding: '7px 14px', borderRadius: 999, border: `1px solid ${!locFilter ? '#1E2D3D' : '#C8D4DC'}`, background: !locFilter ? '#1E2D3D' : '#fff', color: !locFilter ? '#fff' : '#3A4F63', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12, cursor: 'pointer', transition: 'all 120ms' }}>
+        <button onClick={() => setLocFilter(null)} style={{ padding: '7px 14px', borderRadius: 999, border: `1px solid ${locFilter ? '#C8D4DC' : '#1E2D3D'}`, background: locFilter ? '#fff' : '#1E2D3D', color: locFilter ? '#3A4F63' : '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12, cursor: 'pointer', transition: 'all 120ms' }}>
           {t('finance.payroll.filter.all', { count: safePayroll.length })}
         </button>
         {safeByLoc.map(l => (
@@ -405,10 +408,10 @@ function FinPayrollSkeleton() {
       <Skeleton h={32} w={220} style={{ marginBottom: 32 }} />
       <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 24 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+          {(['a','b','c','d'] as const).map((k) => <SkeletonCard key={k} lines={2} />)}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+          {(['a','b','c','d','e','f'] as const).map((k) => <SkeletonCard key={k} lines={2} />)}
         </div>
       </div>
     </div>
