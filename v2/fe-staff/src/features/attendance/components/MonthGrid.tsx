@@ -4,6 +4,9 @@ import { Icons } from '../../../shared/components/Icons';
 import { buildMonthGrid } from '../../../shared/lib/date';
 import type { WeeklyDayShift } from '../types';
 
+const ArrowL = Icons.arrowL;
+const ArrowR = Icons.arrowR;
+
 const DOW_VI = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 const DOW_EN = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 const CELL_H = 46;
@@ -55,7 +58,7 @@ export function MonthGrid({
   onNextMonth,
   isCollapsed,
   onWeekSwipe,
-}: MonthGridProps) {
+}: Readonly<MonthGridProps>) {
   const { i18n, t } = useTranslation();
   const lang = i18n.language;
 
@@ -68,7 +71,7 @@ export function MonthGrid({
       : new Date(viewYear, viewMonth, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   // Full-grid translateY (expanded mode)
-  const selectedDay = parseInt(selectedDate.split('-')[2], 10);
+  const selectedDay = Number.parseInt(selectedDate.split('-')[2], 10);
   const selectedMonthPrefix = selectedDate.slice(0, 7);
   const thisMonthPrefix = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}`;
   const cellIdx = selectedMonthPrefix === thisMonthPrefix ? cells.indexOf(selectedDay) : 0;
@@ -176,26 +179,26 @@ export function MonthGrid({
       const isSelected = iso === selectedDate;
       const shifts = shiftMap.get(iso) ?? [];
       const visibleDots = shifts.slice(0, 3);
-      const day = parseInt(iso.split('-')[2], 10);
+      const day = Number.parseInt(iso.split('-')[2], 10);
 
       let cls = 'cd-month-cal__cell';
       if (isSelected) cls += ' cd-month-cal__cell--selected';
       else if (isToday) cls += ' cd-month-cal__cell--today';
 
       return (
-        <div key={iso} className={cls} role="button" tabIndex={0} onClick={() => onSelectDate(iso)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectDate(iso); }}>
+        <button type="button" key={iso} className={cls} onClick={() => onSelectDate(iso)} style={{ background: 'none', border: 'none', padding: 0 }}>
           <div className="cd-month-cal__num">{day}</div>
           {visibleDots.length > 0 && (
             <div className="cd-month-cal__dots">
-              {visibleDots.map((shift, idx) => (
+              {visibleDots.map((shift) => (
                 <div
-                  key={idx}
+                  key={shift.shiftId}
                   className={`cd-month-cal__dot${shift.status === 'cancelled' ? ' cd-month-cal__dot--cancelled' : ''}`}
                 />
               ))}
             </div>
           )}
-        </div>
+        </button>
       );
     });
   }
@@ -209,7 +212,7 @@ export function MonthGrid({
           onClick={isCollapsed ? () => onWeekSwipe(-7) : onPrevMonth}
           aria-label={t('calendar.prevMonth')}
         >
-          <Icons.arrowL size={14} />
+          <ArrowL size={14} />
         </button>
         <span className="cd-month-cal__title">{monthLabel}</span>
         <button
@@ -218,7 +221,7 @@ export function MonthGrid({
           onClick={isCollapsed ? () => onWeekSwipe(7) : onNextMonth}
           aria-label={t('calendar.nextMonth')}
         >
-          <Icons.arrowR size={14} />
+          <ArrowR size={14} />
         </button>
       </div>
 
@@ -251,11 +254,11 @@ export function MonthGrid({
             onTouchStart={handleMonthTouchStart}
             onTouchEnd={handleMonthTouchEnd}
           >
-            {cells.map((day, i) => {
+            {cells.map((day, i) => ({ day, cellKey: day !== null ? `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : `e${i}` })).map(({ day, cellKey }) => {
               if (day === null) {
-                return <div key={`empty-${i}`} className="cd-month-cal__cell cd-month-cal__cell--empty" />;
+                return <div key={cellKey} className="cd-month-cal__cell cd-month-cal__cell--empty" />;
               }
-              const iso = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const iso = cellKey;
               const isToday = iso === todayStr;
               const isSelected = iso === selectedDate;
               const shifts = shiftMap.get(iso) ?? [];
@@ -266,19 +269,19 @@ export function MonthGrid({
               else if (isToday) cls += ' cd-month-cal__cell--today';
 
               return (
-                <div key={iso} className={cls} role="button" tabIndex={0} onClick={() => onSelectDate(iso)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectDate(iso); }}>
+                <button type="button" key={iso} className={cls} onClick={() => onSelectDate(iso)} style={{ background: 'none', border: 'none', padding: 0 }}>
                   <div className="cd-month-cal__num">{day}</div>
                   {visibleDots.length > 0 && (
                     <div className="cd-month-cal__dots">
-                      {visibleDots.map((shift, idx) => (
+                      {visibleDots.map((shift) => (
                         <div
-                          key={idx}
+                          key={shift.shiftId}
                           className={`cd-month-cal__dot${shift.status === 'cancelled' ? ' cd-month-cal__dot--cancelled' : ''}`}
                         />
                       ))}
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
