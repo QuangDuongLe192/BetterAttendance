@@ -5,9 +5,16 @@ import { Btn, Skeleton, SkeletonCard, ErrorBanner, Eyebrow } from '../../../comp
 import { Icons } from '../../../components/Icons';
 import { LOCATIONS, type Location } from '../../../services/setup';
 
+const Wifi = Icons.wifi;
+const Target = Icons.target;
+const Search = Icons.search;
+const Plus = Icons.plus;
+const Pin = Icons.pin;
+const ChevR = Icons.chevR;
+
 interface Props { isLoading?: boolean; error?: string | null; }
 
-function modeLabel(mode: string[] = [], t: (k: string) => string): string {
+function modeLabel(t: (k: string) => string, mode: string[] = []): string {
   const hasWifi = mode.includes('wifi');
   const hasGeo  = mode.includes('geo');
   if (hasWifi && hasGeo) return t('setup.locations.mode.wifiAndGps');
@@ -19,9 +26,9 @@ function modeLabel(mode: string[] = [], t: (k: string) => string): string {
 function modeIcon(mode: string[] = []) {
   const hasWifi = mode.includes('wifi');
   const hasGeo  = mode.includes('geo');
-  if (hasWifi && hasGeo) return <><Icons.wifi size={12} stroke="#00B4A0" /><Icons.target size={12} stroke="#00B4A0" /></>;
-  if (hasWifi) return <Icons.wifi size={12} stroke="#00B4A0" />;
-  if (hasGeo)  return <Icons.target size={12} stroke="#00B4A0" />;
+  if (hasWifi && hasGeo) return <><Wifi size={12} stroke="#00B4A0" /><Target size={12} stroke="#00B4A0" /></>;
+  if (hasWifi) return <Wifi size={12} stroke="#00B4A0" />;
+  if (hasGeo)  return <Target size={12} stroke="#00B4A0" />;
   return <Icons.x size={12} stroke="#6B7E8E" />;
 }
 
@@ -33,7 +40,7 @@ const glass: React.CSSProperties = {
   boxShadow: '0 4px 16px rgba(30,45,61,0.07), inset 0 1px 0 rgba(255,255,255,0.7)',
 };
 
-export function LocationsList({ isLoading, error }: Props) {
+export function LocationsList({ isLoading, error }: Readonly<Props>) {
   const navigate = useNavigate();
   const { t } = useTranslation('setup');
   const [search, setSearch] = useState('');
@@ -72,7 +79,7 @@ export function LocationsList({ isLoading, error }: Props) {
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 14px', ...glass, borderRadius: 8, minWidth: 240, height: 36, boxSizing: 'border-box' }}>
-              <Icons.search size={14} stroke="#6B7E8E" />
+              <Search size={14} stroke="#6B7E8E" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -85,7 +92,7 @@ export function LocationsList({ isLoading, error }: Props) {
                 </button>
               )}
             </div>
-            <Btn variant="primary" size="sm" icon={<Icons.plus size={14} />} onClick={() => navigate('/setup/locations-new')} style={{ height: 36, boxSizing: 'border-box' }}>
+            <Btn variant="primary" size="sm" icon={<Plus size={14} />} onClick={() => navigate('/setup/locations-new')} style={{ height: 36, boxSizing: 'border-box' }}>
               {t('setup.locations.addBtn')}
             </Btn>
           </div>
@@ -114,20 +121,19 @@ export function LocationsList({ isLoading, error }: Props) {
   );
 }
 
-function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number; onClick: () => void; t: (k: string) => string }) {
+function LocationCard({ loc, delay, onClick, t }: Readonly<{ loc: Location; delay: number; onClick: () => void; t: (k: string) => string }>) {
   const [hover, setHover] = useState(false);
   const active = (loc.activeValidation ?? []).length > 0;
 
   return (
-    <div
+    <button
+      type="button"
       className="loc-row"
-      role="button"
-      tabIndex={0}
       onClick={onClick}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
+        padding: 0, width: '100%', textAlign: 'left',
         ...glass,
         borderRadius: 12,
         borderTop: `3px solid ${loc.style?.color ?? '#6B7E8E'}`,
@@ -139,8 +145,7 @@ function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number
         transition: 'transform 200ms cubic-bezier(0.2,0.7,0.2,1), box-shadow 200ms',
         overflow: 'hidden',
         animationDelay: `${delay}ms`,
-      }}
-    >
+      }}>
       {/* Card header */}
       <div style={{ padding: '18px 20px 14px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -149,7 +154,7 @@ function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number
             <span style={{ fontSize: 15, fontWeight: 700, color: '#1E2D3D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{loc.name}</span>
           </div>
           <div style={{ fontSize: 12, color: '#6B7E8E', display: 'flex', alignItems: 'center', gap: 5}}>
-            <Icons.pin size={11} stroke="#9BAAB5" />
+            <Pin size={11} stroke="#9BAAB5" />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{loc.address}</span>
           </div>
         </div>
@@ -158,7 +163,7 @@ function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number
           transition: 'transform 180ms ease',
           display: 'flex', flexShrink: 0,
         }}>
-          <Icons.chevR size={16} stroke={hover ? loc.style?.color ?? '#00B4A0' : '#C8D4DC'} />
+          <ChevR size={16} stroke={hover ? loc.style?.color ?? '#00B4A0' : '#C8D4DC'} />
         </span>
       </div>
 
@@ -166,7 +171,7 @@ function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number
       <div style={{ display: 'flex', padding: '12px 20px', borderTop: '1px solid rgba(200,212,220,0.35)', gap: 0 }}>
         <Stat label={t('setup.locations.stat.staff')} value={loc.staffCount.toString()} />
         <div style={{ width: 1, background: 'rgba(200,212,220,0.35)', margin: '0 16px' }} />
-        <Stat label={t('setup.locations.stat.mode')} value={modeLabel(loc.activeValidation, t)} icon={modeIcon(loc.activeValidation)} />
+        <Stat label={t('setup.locations.stat.mode')} value={modeLabel(t, loc.activeValidation)} icon={modeIcon(loc.activeValidation)} />
         <div style={{ width: 1, background: 'rgba(200,212,220,0.35)', margin: '0 16px' }} />
         <Stat label={t('setup.locations.stat.radius')} value={`${loc.validationConfig?.radiusMeters ?? 0}m`} />
       </div>
@@ -178,11 +183,11 @@ function LocationCard({ loc, delay, onClick, t }: { loc: Location; delay: number
           {active ? t('setup.locations.status.active') : t('setup.locations.status.unconfiguredAuth')}
         </span>
       </div>
-    </div>
+    </button>
   );
 }
 
-function Stat({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+function Stat({ label, value, icon }: Readonly<{ label: string; value: string; icon?: React.ReactNode }>) {
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'var(--font-display)', marginBottom: 3 }}>{label}</div>
@@ -199,7 +204,7 @@ function LocationsListSkeleton() {
     <div>
       <Skeleton h={32} w={200} style={{ marginBottom: 24 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 14 }}>
-        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+        {(['a', 'b', 'c', 'd'] as const).map(k => <SkeletonCard key={k} lines={3} />)}
       </div>
     </div>
   );
