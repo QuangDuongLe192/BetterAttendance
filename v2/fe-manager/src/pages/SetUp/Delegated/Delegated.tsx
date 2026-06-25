@@ -3,6 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Eyebrow, Switch, Avatar, Skeleton, SkeletonCard, ErrorBanner } from '../../../components/UI';
 import { Icons } from '../../../components/Icons';
+const Alert = Icons.alert;
+const ChevD = Icons.chevD;
+const Lock = Icons.lock;
+const Check = Icons.check;
+const Plus = Icons.plus;
 import { LOCATIONS, STAFF, STAFF_ROLE_SCOPES, locById } from '../../../services/setup';
 import type { StaffRoleScope } from '../../../services/setup';
 import { StaffSystemRoles } from './Components/StaffSystemRoles';
@@ -176,7 +181,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
               {configs.some(c => c.enabled && managersForLoc(c.locId).length === 0) && (
                 <div style={{ ...glass, borderRadius: 8, padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 7,
                   background: 'rgba(254,243,199,0.82)', border: '1px solid rgba(245,158,11,0.3)' }}>
-                  <Icons.alert size={13} stroke="#F59E0B" />
+                  <Alert size={13} stroke="#F59E0B" />
                   <span style={{ fontSize: 13, fontWeight: 600, color: '#B45309' }}>{t('setup.delegated.warnNoManager')}</span>
                 </div>
               )}
@@ -197,14 +202,12 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                     transition: 'box-shadow 150ms',
                   }}>
                     {/* Card header row */}
-                    <div
-                      role="button"
-                      tabIndex={0}
+                    <button
+                      type="button"
                       onClick={() => setExpandedLoc(isExpanded ? null : cfg.locId)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedLoc(isExpanded ? null : cfg.locId); }}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px',
-                        cursor: 'pointer',
+                        cursor: 'pointer', width: '100%', textAlign: 'left', border: 'none',
                         background: isExpanded ? 'rgba(247,249,250,0.6)' : 'transparent',
                         borderBottom: isExpanded ? '1px solid rgba(200,212,220,0.25)' : 'none',
                         transition: 'background 120ms',
@@ -256,12 +259,12 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                       </div>
 
                       {/* Toggle */}
-                      <div onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
+                      <div role="none" onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
                         <Switch checked={cfg.enabled} onChange={v => update(cfg.locId, { enabled: v })} />
                       </div>
 
-                      <Icons.chevD size={14} stroke="#9BAAB5" style={{ transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 150ms', flexShrink: 0 }} />
-                    </div>
+                      <ChevD size={14} stroke="#9BAAB5" style={{ transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 150ms', flexShrink: 0 }} />
+                    </button>
 
                     {/* Expanded — enabled */}
                     {isExpanded && cfg.enabled && (
@@ -331,7 +334,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                     {isExpanded && !cfg.enabled && (
                       <div style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(200,212,220,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <Icons.lock size={14} stroke="#9BAAB5" />
+                          <Lock size={14} stroke="#9BAAB5" />
                         </div>
                         <span style={{ fontSize: 13, color: '#9BAAB5' }}>
                           {t('setup.delegated.disabled.hint')}
@@ -362,7 +365,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
           borderTop: '1px solid rgba(255,255,255,0.1)',
           boxShadow: '0 -4px 24px rgba(0,0,0,0.2)',
         }}>
-          <Icons.alert size={15} stroke="#F59E0B" />
+          <Alert size={15} stroke="#F59E0B" />
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', flex: 1 }}>{t('setup.delegated.saveBar.unsaved')}</span>
           <button onClick={handleCancel} style={{
             padding: '7px 18px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)',
@@ -374,7 +377,7 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
             background: '#00B4A0', color: '#fff', fontSize: 13, fontWeight: 700,
             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
           }}>
-            <Icons.check size={14} stroke="#fff" />
+            <Check size={14} stroke="#fff" />
             {t('setup.delegated.saveBar.save')}
           </button>
         </div>
@@ -383,18 +386,18 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
   );
 }
 
-function ManagerDropdown({ candidates, onAdd, addLabel }: {
+function ManagerDropdown({ candidates, onAdd, addLabel }: Readonly<{
   candidates: typeof STAFF;
   onAdd: (larkUserId: string) => void;
   addLabel: string;
-}) {
+}>) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+      if (!ref.current?.contains(e.target)) setOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -415,7 +418,7 @@ function ManagerDropdown({ candidates, onAdd, addLabel }: {
           cursor: 'pointer', transition: 'background 100ms',
         }}
       >
-        <Icons.plus size={11} /> {addLabel}
+        <Plus size={11} /> {addLabel}
       </button>
       {open && (
         <div style={{
@@ -450,9 +453,9 @@ function ManagerDropdown({ candidates, onAdd, addLabel }: {
   );
 }
 
-function PermRow({ label, desc, checked, onChange, restricted, restrictedLabel }: {
+function PermRow({ label, desc, checked, onChange, restricted, restrictedLabel }: Readonly<{
   label: string; desc: string; checked: boolean; onChange: (v: boolean) => void; restricted?: boolean; restrictedLabel?: string;
-}) {
+}>) {
   return (
     <div className="perm-row" style={{
       display: 'flex', alignItems: 'flex-start', gap: 14,
@@ -467,7 +470,7 @@ function PermRow({ label, desc, checked, onChange, restricted, restrictedLabel }
           <span style={{ fontSize: 13, fontWeight: 600, color: '#1E2D3D' }}>{label}</span>
           {restricted && restrictedLabel && (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#6B7E8E', background: 'rgba(200,212,220,0.3)', padding: '2px 7px', borderRadius: 4 }}>
-              <Icons.lock size={9} stroke="#6B7E8E" />
+              <Lock size={9} stroke="#6B7E8E" />
               {restrictedLabel}
             </span>
           )}
@@ -484,7 +487,7 @@ function SetupDelegatedSkeleton() {
     <div>
       <Skeleton h={32} w={220} style={{ marginBottom: 24 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} lines={3} />)}
+        {(['a', 'b', 'c'] as const).map(k => <SkeletonCard key={k} lines={3} />)}
       </div>
     </div>
   );
