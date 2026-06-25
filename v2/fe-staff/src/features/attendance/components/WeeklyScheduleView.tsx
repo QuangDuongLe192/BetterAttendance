@@ -4,6 +4,10 @@ import { formatClockTime } from '../../../shared/lib/shift';
 import { formatDayDate, getDayLabel } from '../../../shared/lib/date';
 import type { WeeklyDay } from '../types';
 
+const ArrowL = Icons.arrowL;
+const ArrowR = Icons.arrowR;
+const Clock = Icons.clock;
+
 interface WeeklyScheduleViewProps {
   days: WeeklyDay[];
   onPrevWeek: () => void;
@@ -12,7 +16,7 @@ interface WeeklyScheduleViewProps {
   onShiftClick?: (date: string, shiftIndex: number) => void;
 }
 
-export function WeeklyScheduleView({ days, onPrevWeek, onNextWeek, onGoToToday, onShiftClick }: WeeklyScheduleViewProps) {
+export function WeeklyScheduleView({ days, onPrevWeek, onNextWeek, onGoToToday, onShiftClick }: Readonly<WeeklyScheduleViewProps>) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const todayIso = new Date().toISOString().split('T')[0];
@@ -21,11 +25,11 @@ export function WeeklyScheduleView({ days, onPrevWeek, onNextWeek, onGoToToday, 
     <div>
       <div className="cd-weeknav">
         <button onClick={onPrevWeek}>
-          <Icons.arrowL size={16} />{t('attendance.weekly.prevWeek')}
+          <ArrowL size={16} />{t('attendance.weekly.prevWeek')}
         </button>
         <button className="cd-weeknav__now" onClick={onGoToToday}>{t('attendance.weekly.thisWeek')}</button>
         <button onClick={onNextWeek}>
-          {t('attendance.weekly.nextWeek')}<Icons.arrowR size={16} />
+          {t('attendance.weekly.nextWeek')}<ArrowR size={16} />
         </button>
       </div>
 
@@ -43,7 +47,7 @@ export function WeeklyScheduleView({ days, onPrevWeek, onNextWeek, onGoToToday, 
                   <span className="cd-week__empty">{t('attendance.weekly.noShift')}</span>
                 ) : (
                   day.shifts.map((shift, i) => (
-                    <div key={i} className="cd-week__shift" role="button" tabIndex={0} onClick={() => onShiftClick?.(day.date, i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onShiftClick?.(day.date, i); }}>
+                    <button key={shift.shiftId} className="cd-week__shift" onClick={() => onShiftClick?.(day.date, i)}>
                       <div className="cd-week__time">
                         {formatClockTime(shift.start, lang)}<span> — </span>{formatClockTime(shift.end, lang)}
                       </div>
@@ -52,19 +56,19 @@ export function WeeklyScheduleView({ days, onPrevWeek, onNextWeek, onGoToToday, 
                         <div className="cd-day-detail__clock">
                           {shift.clockIn && (
                             <span className="cd-day-detail__clock-item">
-                              <Icons.clock size={11} sw={2} />
+                              <Clock size={11} sw={2} />
                               {t('calendar.clockIn')} {formatClockTime(shift.clockIn, lang)}
                             </span>
                           )}
                           {shift.clockOut && (
                             <span className="cd-day-detail__clock-item cd-day-detail__clock-item--out">
-                              <Icons.clock size={11} sw={2} />
+                              <Clock size={11} sw={2} />
                               {t('calendar.clockOut')} {formatClockTime(shift.clockOut, lang)}
                             </span>
                           )}
                         </div>
                       )}
-                    </div>
+                    </button>
                   ))
                 )}
               </div>
