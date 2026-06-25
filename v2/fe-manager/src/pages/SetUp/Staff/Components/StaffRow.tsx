@@ -5,36 +5,33 @@ import { fmtVND, locById, rolesOf, roleById } from '../../../../services/setup';
 import type { Staff as StaffType } from '../../../../services/setup';
 import { SystemRoleBadges } from './SystemRoles';
 
-export function StaffRow({ staff, borderTop, isSelected, col, onClick }: {
+export function StaffRow({ staff, borderTop, isSelected, col, onClick }: Readonly<{
   staff: StaffType; borderTop: boolean; isSelected: boolean;
   col: string; onClick: () => void;
-}) {
+}>) {
   const { t } = useTranslation('setup');
   const [hover, setHover] = useState(false);
+  const hoverBg = hover ? 'rgba(0,180,160,0.03)' : 'transparent';
   const primaryPay = staff.payType === 'monthly'
     ? fmtVND(staff.monthly ?? 0) + t('setup.staff.detail.pay.perMonth')
     : fmtVND(staff.rate ?? 0) + t('setup.staff.detail.pay.perHour');
 
   return (
-    <div
+    <button
       className="staff-row"
-      role="button"
-      tabIndex={0}
       onClick={onClick}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
         display: 'grid', gridTemplateColumns: col,
         padding: '13px 20px', alignItems: 'center',
         borderTop: borderTop ? '1px solid rgba(200,212,220,0.3)' : 'none',
-        background: isSelected
-          ? 'rgba(0,180,160,0.07)'
-          : hover ? 'rgba(0,180,160,0.03)' : 'transparent',
+        background: isSelected ? 'rgba(0,180,160,0.07)' : hoverBg,
         cursor: 'pointer',
         transition: 'background 120ms',
         borderLeft: isSelected ? '3px solid #00B4A0' : '3px solid transparent',
         boxSizing: 'border-box',
+        border: 'none', width: '100%', textAlign: 'left',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
@@ -87,6 +84,6 @@ export function StaffRow({ staff, borderTop, isSelected, col, onClick }: {
       <div style={{ fontSize: 12, color: isSelected ? '#008C7C' : '#3A4F63', fontWeight: 600 }}>
         {primaryPay}
       </div>
-    </div>
+    </button>
   );
 }
