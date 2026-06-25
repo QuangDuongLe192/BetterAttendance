@@ -202,14 +202,12 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                     transition: 'box-shadow 150ms',
                   }}>
                     {/* Card header row */}
-                    <div
-                      role="button"
-                      tabIndex={0}
+                    <button
+                      type="button"
                       onClick={() => setExpandedLoc(isExpanded ? null : cfg.locId)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedLoc(isExpanded ? null : cfg.locId); }}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px',
-                        cursor: 'pointer',
+                        cursor: 'pointer', width: '100%', textAlign: 'left', border: 'none',
                         background: isExpanded ? 'rgba(247,249,250,0.6)' : 'transparent',
                         borderBottom: isExpanded ? '1px solid rgba(200,212,220,0.25)' : 'none',
                         transition: 'background 120ms',
@@ -261,12 +259,12 @@ export function Delegated({ isLoading, error, onDirtyChange }: Props = {}) {
                       </div>
 
                       {/* Toggle */}
-                      <div onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
+                      <div role="none" onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
                         <Switch checked={cfg.enabled} onChange={v => update(cfg.locId, { enabled: v })} />
                       </div>
 
                       <ChevD size={14} stroke="#9BAAB5" style={{ transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 150ms', flexShrink: 0 }} />
-                    </div>
+                    </button>
 
                     {/* Expanded — enabled */}
                     {isExpanded && cfg.enabled && (
