@@ -254,7 +254,7 @@ export function MonthGrid({
             onTouchStart={handleMonthTouchStart}
             onTouchEnd={handleMonthTouchEnd}
           >
-            {cells.map((day, i) => ({ day, cellKey: day !== null ? `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : `e${i}` })).map(({ day, cellKey }) => {
+            {cells.map((day, i) => ({ day, cellKey: day === null ? `e${i}` : `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` })).map(({ day, cellKey }) => {
               if (day === null) {
                 return <div key={cellKey} className="cd-month-cal__cell cd-month-cal__cell--empty" />;
               }
