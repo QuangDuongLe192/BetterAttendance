@@ -78,7 +78,6 @@ export function StaffDetail({ staff, onClose }: Readonly<{ staff: StaffType; onC
       <div
         onClick={onClose}
         onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
-        role="presentation"
         style={{ position: 'fixed', inset: 0, background: 'rgba(15,25,35,0.38)', zIndex: 900, animation: 'backdropFadeIn 200ms ease', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
       />
 
