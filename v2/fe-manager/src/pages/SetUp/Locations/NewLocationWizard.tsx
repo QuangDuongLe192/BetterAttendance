@@ -310,12 +310,12 @@ function WizardFooter({ step, total, onBack, onNext, isLast, onCancel, cancelLab
         )}
       </div>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-        {Array.from({ length: total }).map((_, i) => {
-          const activeDotBg = step === i + 1 ? '#fff' : 'rgba(255,255,255,0.2)';
-          const dotBg = i + 1 < step ? '#00B4A0' : activeDotBg;
+        {Array.from({ length: total }, (_, i) => i + 1).map(stepNum => {
+          const activeDotBg = step === stepNum ? '#fff' : 'rgba(255,255,255,0.2)';
+          const dotBg = stepNum < step ? '#00B4A0' : activeDotBg;
           return (
-            <div key={`dot-${i}`} style={{
-              height: 6, width: step === i + 1 ? 22 : 6, borderRadius: 999,
+            <div key={`dot-${stepNum}`} style={{
+              height: 6, width: step === stepNum ? 22 : 6, borderRadius: 999,
               background: dotBg,
               transition: 'all 280ms cubic-bezier(0.2,0.7,0.2,1)'
             }} />
