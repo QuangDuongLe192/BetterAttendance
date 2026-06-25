@@ -154,18 +154,18 @@ export function StaffSystemRoles({ scopes, setScopes }: Readonly<{
           const isManager = roles.includes('MANAGER');
           const isFinance = roles.includes('FINANCE');
           return (
-            <div
+            <button
+              type="button"
               key={s.larkUserId}
-              role={isAdmin ? undefined : 'button'}
-              tabIndex={isAdmin ? undefined : 0}
-              onClick={() => !isAdmin && setDrawerStaffId(s.larkUserId)}
-              onKeyDown={(e) => { if (!isAdmin && (e.key === 'Enter' || e.key === ' ')) setDrawerStaffId(s.larkUserId); }}
+              disabled={isAdmin}
+              onClick={() => setDrawerStaffId(s.larkUserId)}
               style={{
                 display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.2fr) minmax(0,1.6fr) 36px',
                 alignItems: 'center', padding: '12px 20px',
                 borderTop: i > 0 ? '1px solid rgba(200,212,220,0.25)' : 'none',
                 cursor: isAdmin ? 'default' : 'pointer', transition: 'background 100ms',
                 background: isFinance ? 'rgba(230,249,247,0.35)' : 'transparent',
+                border: 'none', width: '100%', textAlign: 'left',
               }}
               onMouseEnter={e => { if (!isAdmin) e.currentTarget.style.background = 'rgba(0,180,160,0.04)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = isFinance ? 'rgba(230,249,247,0.35)' : 'transparent'; }}
@@ -203,7 +203,7 @@ export function StaffSystemRoles({ scopes, setScopes }: Readonly<{
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 {!isAdmin && <ChevR size={13} stroke="#C8D4DC" />}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -237,8 +237,14 @@ export function StaffSystemRoles({ scopes, setScopes }: Readonly<{
 }
 
 function PageBtn({ children, onClick, disabled, active }: Readonly<{ children: React.ReactNode; onClick: () => void; disabled?: boolean; active?: boolean }>) {
-  const bgColor = active ? '#E6F9F7' : disabled ? 'transparent' : 'rgba(255,255,255,0.6)';
-  const textColor = active ? '#00B4A0' : disabled ? '#C8D4DC' : '#3A4F63';
+  let bgColor: string;
+  if (active) bgColor = '#E6F9F7';
+  else if (disabled) bgColor = 'transparent';
+  else bgColor = 'rgba(255,255,255,0.6)';
+  let textColor: string;
+  if (active) textColor = '#00B4A0';
+  else if (disabled) textColor = '#C8D4DC';
+  else textColor = '#3A4F63';
   return (
     <button onClick={onClick} disabled={disabled} style={{
       minWidth: 28, height: 28, padding: '0 6px', borderRadius: 6, fontSize: 13, fontWeight: active ? 700 : 400,
