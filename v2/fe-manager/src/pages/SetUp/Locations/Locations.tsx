@@ -11,6 +11,11 @@ import { WifiScannerCard } from './Components/WifiScannerCard';
 import { GeofenceMapCard } from './Components/GeofenceMapCard';
 import { StaffAssignmentCard } from './Components/StaffAssignmentCard';
 
+const ChevR = Icons.chevR;
+const Pin = Icons.pin;
+const Edit = Icons.edit;
+const Check = Icons.check;
+
 interface LocationsProps { openId?: string; isLoading?: boolean; error?: string | null; onEditingChange?: (v: boolean) => void; }
 
 const glass: React.CSSProperties = {
@@ -21,7 +26,7 @@ const glass: React.CSSProperties = {
   boxShadow: '0 4px 16px rgba(30,45,61,0.07), inset 0 1px 0 rgba(255,255,255,0.7)',
 };
 
-export function Locations({ openId, isLoading, error, onEditingChange }: LocationsProps) {
+export function Locations({ openId, isLoading, error, onEditingChange }: Readonly<LocationsProps>) {
   const routerLoc = useRouterLocation();
   const scrollTo = (routerLoc.state as { scrollTo?: string } | null)?.scrollTo;
   const locationsList = LOCATIONS ?? [];
@@ -60,12 +65,16 @@ interface TabBtnProps {
 }
 
 function getTabButtonStyle(active: boolean, disabled: boolean): CSSProperties {
+  let color: string;
+  if (disabled) color = '#C8D4DC';
+  else if (active) color = '#fff';
+  else color = '#6B7E8E';
   return {
     display: 'flex', alignItems: 'center', gap: 6,
     padding: '8px 18px', borderRadius: 8, border: 'none',
     cursor: disabled ? 'not-allowed' : 'pointer',
     fontSize: 13, fontWeight: active ? 700 : 500,
-    color: disabled ? '#C8D4DC' : active ? '#fff' : '#6B7E8E',
+    color,
     background: active ? '#1E2D3D' : 'transparent',
     boxShadow: active ? '0 2px 8px rgba(30,45,61,0.25)' : 'none',
     opacity: disabled ? 0.5 : 1,
@@ -189,7 +198,7 @@ function LocationInfoTab({ draft, locId, isEditing, setDraft }: LocationInfoTabP
   );
 }
 
-function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location; scrollToStaff?: boolean; onEditingChange?: (v: boolean) => void }) {
+function LocationDetail({ loc, scrollToStaff, onEditingChange }: Readonly<{ loc: Location; scrollToStaff?: boolean; onEditingChange?: (v: boolean) => void }>) {
   const navigate = useNavigate();
   const { t } = useTranslation('setup');
   const staffRef = useRef<HTMLDivElement>(null);
@@ -255,7 +264,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
             onClick={() => isEditing ? setConfirmBack(true) : navigate('/setup/locations')}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', color: '#6B7E8E', fontSize: 13, fontWeight: 600, padding: 0, fontFamily: 'var(--font-display)' }}
           >
-            <Icons.chevR size={14} stroke="#6B7E8E" style={{ transform: 'scaleX(-1)' }} />
+            <ChevR size={14} stroke="#6B7E8E" style={{ transform: 'scaleX(-1)' }} />
             {t('setup.locations.back')}
           </button>
         </div>
@@ -279,7 +288,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
                 {isEditing
                   ? <Input value={draft.addr} onChange={v => setDraft(d => ({ ...d, addr: v }))} />
                   : <div style={{ fontSize: 13, color: '#6B7E8E', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Icons.pin size={12} stroke="#9BAAB5" />
+                      <Pin size={12} stroke="#9BAAB5" />
                       <span>{draft.addr}</span>
                     </div>
                 }
@@ -287,7 +296,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
                 <ColorPicker color={color} onChange={setColor} disabled={!isEditing} />
                 {!isEditing && (
-                  <Btn variant="ghost" size="sm" icon={<Icons.edit size={14} />} onClick={() => setEditing(true)} disabled={tab === 'staff'}>{t('setup.locations.editBtn')}</Btn>
+                  <Btn variant="ghost" size="sm" icon={<Edit size={14} />} onClick={() => setEditing(true)} disabled={tab === 'staff'}>{t('setup.locations.editBtn')}</Btn>
                 )}
               </div>
             </div>
@@ -353,7 +362,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <Btn variant="ghost" size="sm" icon={<Icons.x size={14} />} onClick={handleCancel}>{t('setup.locations.saveBar.cancel')}</Btn>
-            <Btn variant="primary" size="sm" icon={<Icons.check size={14} />} onClick={handleSave} disabled={hasInvalidBssid}>{t('setup.locations.saveBar.save')}</Btn>
+            <Btn variant="primary" size="sm" icon={<Check size={14} />} onClick={handleSave} disabled={hasInvalidBssid}>{t('setup.locations.saveBar.save')}</Btn>
           </div>
         </div>
       )}
@@ -361,7 +370,7 @@ function LocationDetail({ loc, scrollToStaff, onEditingChange }: { loc: Location
   );
 }
 
-function HeroStat({ label, value }: { label: string; value: string }) {
+function HeroStat({ label, value }: Readonly<{ label: string; value: string }>) {
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: '#9BAAB5', letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'var(--font-display)', marginBottom: 3 }}>{label}</div>
@@ -370,20 +379,21 @@ function HeroStat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ModeOption({ icon, title, sub, selected, onClick }: { icon: string; title: string; sub: string; selected: boolean; onClick?: () => void }) {
+function ModeOption({ icon, title, sub, selected, onClick }: Readonly<{ icon: string; title: string; sub: string; selected: boolean; onClick?: () => void }>) {
   const IconComp = Icons[icon as keyof typeof Icons];
-  return (
-    <div role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined} onClick={onClick} onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined} style={{
-      padding: '16px 18px', borderRadius: 10,
-      border: `1.5px solid ${selected ? '#00B4A0' : 'rgba(200,212,220,0.5)'}`,
-      background: selected ? 'rgba(0,180,160,0.08)' : 'rgba(255,255,255,0.5)',
-      cursor: onClick ? 'pointer' : 'default',
-      position: 'relative',
-      transition: 'border-color 150ms, background 150ms',
-    }}>
+  const containerStyle: React.CSSProperties = {
+    padding: '16px 18px', borderRadius: 10,
+    border: `1.5px solid ${selected ? '#00B4A0' : 'rgba(200,212,220,0.5)'}`,
+    background: selected ? 'rgba(0,180,160,0.08)' : 'rgba(255,255,255,0.5)',
+    cursor: onClick ? 'pointer' : 'default',
+    position: 'relative',
+    transition: 'border-color 150ms, background 150ms',
+  };
+  const inner = (
+    <>
       {selected && (
         <span style={{ position: 'absolute', top: 12, right: 12, width: 18, height: 18, borderRadius: 999, background: '#00B4A0', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Icons.check size={10} stroke="#fff" sw={2.5} />
+          <Check size={10} stroke="#fff" sw={2.5} />
         </span>
       )}
       <IconComp size={18} stroke={selected ? '#00B4A0' : '#6B7E8E'} />
@@ -391,11 +401,15 @@ function ModeOption({ icon, title, sub, selected, onClick }: { icon: string; tit
         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13, color: '#1E2D3D', marginBottom: 3 }}>{title}</div>
         <div style={{ fontSize: 11, color: '#6B7E8E', lineHeight: 1.5 }}>{sub}</div>
       </div>
-    </div>
+    </>
   );
+  if (onClick) {
+    return <button type="button" onClick={onClick} style={{ ...containerStyle, width: '100%', textAlign: 'left' }}>{inner}</button>;
+  }
+  return <div style={containerStyle}>{inner}</div>;
 }
 
-function AutoToggleRow({ label, sub, checked, disabled, onChange }: { label: string; sub: string; checked: boolean; disabled?: boolean; onChange?: (v: boolean) => void }) {
+function AutoToggleRow({ label, sub, checked, disabled, onChange }: Readonly<{ label: string; sub: string; checked: boolean; disabled?: boolean; onChange?: (v: boolean) => void }>) {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 16,
@@ -420,7 +434,7 @@ function SetupLocationsSkeleton() {
       <Skeleton h={32} w={200} style={{ marginBottom: 24 }} />
       <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 24 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} lines={2} />)}
+          {(['a', 'b', 'c', 'd'] as const).map(k => <SkeletonCard key={k} lines={2} />)}
         </div>
         <SkeletonCard lines={6} />
       </div>
