@@ -4,6 +4,10 @@ import { Icons } from '../../../shared/components/Icons';
 import { deriveShiftStatus, formatClockTime, formatShiftTime } from '../../../shared/lib/shift';
 import type { WeeklyDayShift } from '../types';
 
+const Pin = Icons.pin;
+const User = Icons.user;
+const Clock = Icons.clock;
+
 interface DayDetailProps {
   shifts: WeeklyDayShift[];
   isLoading: boolean;
@@ -23,7 +27,7 @@ function DayOffIllustration() {
   );
 }
 
-export function DayDetail({ shifts, isLoading }: DayDetailProps) {
+export function DayDetail({ shifts, isLoading }: Readonly<DayDetailProps>) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -72,24 +76,21 @@ export function DayDetail({ shifts, isLoading }: DayDetailProps) {
         }
 
         return (
-          <div
+          <button
             key={shift.shiftId}
             className="cd-day-detail__card"
-            role="button"
-            tabIndex={0}
             onClick={() => navigate(`/shifts/${shift.shiftId}`)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/shifts/${shift.shiftId}`); }}
           >
             <div className="cd-day-detail__time">
               {formatShiftTime(shift.start, i18n.language)} — {formatShiftTime(shift.end, i18n.language)}
             </div>
             <div className="cd-day-detail__meta">
               <div className="cd-day-detail__meta-row">
-                <Icons.pin size={13} sw={2} />
+                <Pin size={13} sw={2} />
                 <span>{shift.locationName}</span>
               </div>
               <div className="cd-day-detail__meta-row">
-                <Icons.user size={13} sw={2} />
+                <User size={13} sw={2} />
                 <span>{shift.roleName}</span>
               </div>
             </div>
@@ -98,13 +99,13 @@ export function DayDetail({ shifts, isLoading }: DayDetailProps) {
               <div className="cd-day-detail__clock">
                 {shift.clockIn && (
                   <span className="cd-day-detail__clock-item">
-                    <Icons.clock size={11} sw={2} />
+                    <Clock size={11} sw={2} />
                     {t('calendar.clockIn')} {formatClockTime(shift.clockIn, i18n.language)}
                   </span>
                 )}
                 {shift.clockOut && (
                   <span className="cd-day-detail__clock-item cd-day-detail__clock-item--out">
-                    <Icons.clock size={11} sw={2} />
+                    <Clock size={11} sw={2} />
                     {t('calendar.clockOut')} {formatClockTime(shift.clockOut, i18n.language)}
                   </span>
                 )}
@@ -118,7 +119,7 @@ export function DayDetail({ shifts, isLoading }: DayDetailProps) {
                 ))}
               </div>
             )}
-          </div>
+          </button>
         );
       })}
     </div>
