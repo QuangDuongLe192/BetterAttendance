@@ -91,30 +91,37 @@ function Lollipop() {
 
 const FRAGS = [
   {
+    id: 'frag-1',
     style: { top: 18, left: 8, animation: 'fb-f1 2.8s ease-in-out infinite alternate' },
     svg: <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="6.5" fill="#DC2626" opacity="0.7"/></svg>,
   },
   {
+    id: 'frag-2',
     style: { top: 50, right: 6, animation: 'fb-f2 3.4s ease-in-out 0.3s infinite alternate' },
     svg: <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="0" y="0" width="11" height="11" rx="2" fill="#1E2D3D" opacity="0.65"/></svg>,
   },
   {
+    id: 'frag-3',
     style: { top: 110, left: 4, animation: 'fb-f3 2.3s ease-in-out 0.6s infinite alternate' },
     svg: <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><circle cx="4.5" cy="4.5" r="4" fill="none" stroke="#DC2626" strokeWidth="2" opacity="0.6"/></svg>,
   },
   {
+    id: 'frag-4',
     style: { top: 140, right: 2, animation: 'fb-f4 3.9s ease-in-out 0.1s infinite alternate' },
     svg: <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="1" width="8" height="8" rx="1" fill="#FEF2F2" stroke="#DC2626" strokeWidth="1.5" transform="rotate(20 5 5)"/></svg>,
   },
   {
+    id: 'frag-5',
     style: { bottom: 80, left: 14, animation: 'fb-f5 3.1s ease-in-out 0.8s infinite alternate' },
     svg: <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="4" fill="#C8D4DC"/></svg>,
   },
   {
+    id: 'frag-6',
     style: { bottom: 60, right: 16, animation: 'fb-f6 2.6s ease-in-out 0.4s infinite alternate' },
     svg: <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><polygon points="6,0 12,10 0,10" fill="#1E2D3D" opacity="0.4"/></svg>,
   },
   {
+    id: 'frag-7',
     style: { top: 70, left: '50%', marginLeft: -4, animation: 'fb-f7 2.0s ease-in-out 1s infinite alternate' },
     svg: <svg width="6" height="6" viewBox="0 0 6 6" fill="none"><circle cx="3" cy="3" r="3" fill="#DC2626" opacity="0.5"/></svg>,
   },
@@ -171,8 +178,8 @@ export function ForbiddenPage() {
             borderRadius: '50%',
             animation: 'fb-shadowPulse 3.6s ease-in-out infinite alternate',
           }} />
-          {FRAGS.map((f, i) => (
-            <div key={i} style={{ position: 'absolute', ...f.style as React.CSSProperties }}>
+          {FRAGS.map((f) => (
+            <div key={f.id} style={{ position: 'absolute', ...f.style as React.CSSProperties }}>
               {f.svg}
             </div>
           ))}
@@ -224,3 +231,4 @@ export function ForbiddenPage() {
     </div>
   );
 }
+
