@@ -2,12 +2,15 @@ import { useTranslation } from "react-i18next";
 import { Icons } from "../../../../components/Icons";
 import { Approval, approvalIcon, fmtAge, fmtHHMM } from "../../../../services/manager";
 
-export function ApprovalCard({ approval, handled, approve, openDetail }: {
+const Check = Icons.check;
+const X = Icons.x;
+
+export function ApprovalCard({ approval, handled, approve, openDetail }: Readonly<{
   approval: Approval;
   handled?: 'approved' | 'rejected';
   approve: (id: string) => void;
   openDetail: (id: string, rejectMode?: boolean) => void;
-}) {
+}>) {
   const { t } = useTranslation('manager');
 
   const KIND_CHIP: Record<string, { label: string; bg: string; fg: string }> = {
@@ -20,8 +23,8 @@ export function ApprovalCard({ approval, handled, approve, openDetail }: {
   const IconComp = Icons[approvalIcon(approval.kind) as keyof typeof Icons] ?? Icons.clock;
   const kc = KIND_CHIP[approval.kind] ?? KIND_CHIP.edit;
 
-  const origDisplay  = approval.original != null ? fmtHHMM(approval.original) : '—';
-  const propDisplay  = approval.proposed != null ? fmtHHMM(approval.proposed) : '—';
+  const origDisplay  = approval.original == null ? '—' : fmtHHMM(approval.original);
+  const propDisplay  = approval.proposed == null ? '—' : fmtHHMM(approval.proposed);
   const showTimeLine = approval.original != null || approval.proposed != null;
 
   return (
@@ -41,7 +44,7 @@ export function ApprovalCard({ approval, handled, approve, openDetail }: {
         <div style={{ fontSize: 13, color: '#3A4F63', marginBottom: 8, lineHeight: 1.4 }}>{approval.body}</div>
         {showTimeLine && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
-            <span style={{ color: '#9BAAB5', textDecoration: approval.original != null ? 'line-through' : 'none' }}>{origDisplay}</span>
+            <span style={{ color: '#9BAAB5', textDecoration: approval.original == null ? 'none' : 'line-through' }}>{origDisplay}</span>
             <span style={{ color: '#9BAAB5' }}>→</span>
             <span style={{ fontWeight: 700, color: '#1E2D3D' }}>{propDisplay}</span>
           </div>
@@ -55,10 +58,10 @@ export function ApprovalCard({ approval, handled, approve, openDetail }: {
         ) : (
           <>
             <button className="btn-approve" onClick={() => approve(approval.id)}>
-              <Icons.check size={13} stroke="currentColor" sw={2.5} /> {t('manager.approvals.approve')}
+              <Check size={13} stroke="currentColor" sw={2.5} /> {t('manager.approvals.approve')}
             </button>
             <button className="btn-reject" onClick={() => openDetail(approval.id, true)}>
-              <Icons.x size={13} stroke="currentColor" /> {t('manager.approvals.reject')}
+              <X size={13} stroke="currentColor" /> {t('manager.approvals.reject')}
             </button>
           </>
         )}
