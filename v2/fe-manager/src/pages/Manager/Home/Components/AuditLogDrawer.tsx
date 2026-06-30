@@ -46,7 +46,9 @@ const dotColor = (e: ActivityEntry) =>
   : e.type === 'request' ? '#7C4FBF'
   : '#00B4A0';
 
-export function AuditLogDrawer({ open, onClose, activeStore }: Props) {
+const ChevR = Icons.chevR;
+
+export function AuditLogDrawer({ open, onClose, activeStore }: Readonly<Props>) {
   const { t, i18n } = useTranslation('manager');
   const MONTHS = i18n.language === 'en' ? MONTHS_EN : MONTHS_VI;
   const [date, setDate]         = useState(LAST_DATA_DATE);
@@ -72,7 +74,7 @@ export function AuditLogDrawer({ open, onClose, activeStore }: Props) {
   const dim  = daysInMonth(calYear, calMonth);
   const skip = firstWeekday(calYear, calMonth);
   const cells: (number | null)[] = [
-    ...Array(skip).fill(null),
+    ...new Array(skip).fill(null),
     ...Array.from({ length: dim }, (_, i) => i + 1),
   ];
   while (cells.length % 7 !== 0) cells.push(null);
@@ -115,13 +117,13 @@ export function AuditLogDrawer({ open, onClose, activeStore }: Props) {
             {/* Month nav */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
               <button onClick={prevMonth} style={{ background: 'none', border: '1px solid #E8ECEF', borderRadius: 6, width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <Icons.chevR size={13} stroke="#6B7E8E" style={{ transform: 'scaleX(-1)' }} />
+                <ChevR size={13} stroke="#6B7E8E" style={{ transform: 'scaleX(-1)' }} />
               </button>
               <span style={{ fontSize: 13, fontWeight: 700, color: '#1E2D3D' }}>
                 {MONTHS[calMonth]}, {calYear}
               </span>
               <button onClick={nextMonth} disabled={isNextDisabled} style={{ background: 'none', border: '1px solid #E8ECEF', borderRadius: 6, width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isNextDisabled ? 'not-allowed' : 'pointer', opacity: isNextDisabled ? 0.35 : 1 }}>
-                <Icons.chevR size={13} stroke="#6B7E8E" />
+                <ChevR size={13} stroke="#6B7E8E" />
               </button>
             </div>
 
