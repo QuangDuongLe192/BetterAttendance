@@ -206,7 +206,7 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
                   <div style={{ fontSize: 13, color: '#9BAAB5' }}>{t('manager.home.activity.empty')}</div>
                 </div>
               ) : actSlice.map((a, i) => (
-                <ActivityRow key={i} entry={a} borderTop={i > 0} />
+                <ActivityRow key={`${a.t}-${a.actor.name}`} entry={a} borderTop={i > 0} />
               ))}
             </div>
 
@@ -232,9 +232,8 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
 }
 
 function ActivityRow({ entry, borderTop }: Readonly<{ entry: ActivityEntry; borderTop: boolean }>) {
-  const dotColor = entry.event.includes('late') ? '#F59E0B'
-    : entry.type === 'request' ? '#8B5CF6'
-    : '#00B4A0';
+  const innerColor = entry.type === 'request' ? '#8B5CF6' : '#00B4A0';
+  const dotColor = entry.event.includes('late') ? '#F59E0B' : innerColor;
   return (
     <div className="act-row" style={{
       padding: '12px 18px',
@@ -277,7 +276,7 @@ function MgrHomeSkeleton() {
       <Skeleton h={14} w={140} style={{ marginBottom: 12 }} />
       <Skeleton h={36} w={320} style={{ marginBottom: 32 }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 14, marginBottom: 24 }}>
-        {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} lines={1} />)}
+        {KPI_TILES.map((tile) => <SkeletonCard key={tile.key} lines={1} />)}
       </div>
       <SkeletonCard lines={2} style={{ marginBottom: 20 }} />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 20 }}>
