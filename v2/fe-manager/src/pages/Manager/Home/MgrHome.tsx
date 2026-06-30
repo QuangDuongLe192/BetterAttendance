@@ -11,6 +11,10 @@ import { ApprovalCard } from './Components/ApprovalCard';
 import { AuditLogDrawer } from './Components/AuditLogDrawer';
 import { useAuth } from '../../../stores/AuthContext';
 
+const ArrowR = Icons.arrowR;
+const Check = Icons.check;
+const Clock = Icons.clock;
+
 const ACT_PAGE_SIZE = 5;
 
 interface Props {
@@ -38,7 +42,7 @@ const KPI_TILES = [
   { key: 'overtime',  tKey: 'manager.home.kpi.overtime',  color: '#6366F1', icon: 'clock'     as const },
 ] as const;
 
-export function MgrHome({ activeStore, isLoading, error, handled = {}, approve = () => {}, openDetail = () => {} }: Props) {
+export function MgrHome({ activeStore, isLoading, error, handled = {}, approve = () => {}, openDetail = () => {} }: Readonly<Props>) {
   const { t } = useTranslation('manager');
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -161,7 +165,7 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
                 </div>
               </div>
               <button onClick={() => navigate(`/manager/approvals/${activeStore}`)} style={{ fontSize: 13, color: '#00B4A0', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', paddingTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {t('manager.home.approvals.viewAll')} <Icons.arrowR size={13} stroke="#00B4A0" />
+                {t('manager.home.approvals.viewAll')} <ArrowR size={13} stroke="#00B4A0" />
               </button>
             </div>
             {(APPROVALS ?? []).slice(0, 4).map(a => (
@@ -170,7 +174,7 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
             {(APPROVALS ?? []).length === 0 && (
               <div style={{ padding: '40px 24px', textAlign: 'center' }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(0,180,160,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px' }}>
-                  <Icons.check size={20} stroke="#00B4A0" />
+                  <Check size={20} stroke="#00B4A0" />
                 </div>
                 <div style={{ fontSize: 13, color: '#9BAAB5' }}>{t('manager.home.approvals.empty')}</div>
               </div>
@@ -189,7 +193,7 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
                 </div>
               </div>
               <button onClick={() => setAuditOpen(true)} style={{ fontSize: 13, color: '#00B4A0', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', paddingTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {t('manager.home.activity.history')} <Icons.arrowR size={13} stroke="#00B4A0" />
+                {t('manager.home.activity.history')} <ArrowR size={13} stroke="#00B4A0" />
               </button>
             </div>
 
@@ -197,7 +201,7 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
               {actSlice.length === 0 ? (
                 <div style={{ padding: '32px 20px', textAlign: 'center' }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(0,180,160,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px' }}>
-                    <Icons.clock size={18} stroke="#00B4A0" />
+                    <Clock size={18} stroke="#00B4A0" />
                   </div>
                   <div style={{ fontSize: 13, color: '#9BAAB5' }}>{t('manager.home.activity.empty')}</div>
                 </div>
@@ -227,7 +231,7 @@ export function MgrHome({ activeStore, isLoading, error, handled = {}, approve =
   );
 }
 
-function ActivityRow({ entry, borderTop }: { entry: ActivityEntry; borderTop: boolean }) {
+function ActivityRow({ entry, borderTop }: Readonly<{ entry: ActivityEntry; borderTop: boolean }>) {
   const dotColor = entry.event.includes('late') ? '#F59E0B'
     : entry.type === 'request' ? '#8B5CF6'
     : '#00B4A0';
@@ -251,7 +255,7 @@ function ActivityRow({ entry, borderTop }: { entry: ActivityEntry; borderTop: bo
   );
 }
 
-function PgBtn({ children, onClick, disabled }: { children: React.ReactNode; onClick: () => void; disabled?: boolean }) {
+function PgBtn({ children, onClick, disabled }: Readonly<{ children: React.ReactNode; onClick: () => void; disabled?: boolean }>) {
   return (
     <button onClick={onClick} disabled={disabled} style={{
       width: 26, height: 26, borderRadius: 6, fontSize: 14,
